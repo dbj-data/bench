@@ -1,0 +1,6 @@
+[submodule "sheredom"]
+	path = sheredom
+	url = https://github.com/dbj-data/sheredom.git
+[submodule "EASTL2020CORE"]
+	path = EASTL2020CORE
+	url = https://github.com/dbj-data/EASTL2020CORE.git
