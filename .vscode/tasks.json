@@ -10,7 +10,6 @@
                 "/DUNICODE",
                 "/D_UNICODE",
                 "/D_DEBUG",
-                "/I", "${workspaceFolder}\\sheredom",
                 "/Zi",
                 "/kernel",
                 "/MDd",
@@ -34,7 +33,6 @@
             "command": "cl.exe",
             "args": [
                 "/std:c++17",
-                "/I", "${workspaceFolder}\\sheredom",
                 "/GL",
                 "/GR-",
                 "/nologo",

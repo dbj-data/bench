@@ -1,4 +1,6 @@
 ::
+:: (c) 2020 by dbj@dbj.org
+:: windows only script
 :: any argument will make exe's and pdb's be deleted, too
 ::
 @echo off

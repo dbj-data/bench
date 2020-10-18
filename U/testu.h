@@ -79,14 +79,13 @@ printf("\n %s -- %d numbers removed.\n", __FUNCSIG__, count );
 }
 /******************************************************************/
 // enum { HASHSIZE = 1048576 };  // 20MB
-#if 1
-struct my_fixture {
+struct dbj_fixture {
 int HASH /* = HASHSIZE - 1 */;
 int hasharr[HASHSIZE];
 long data[MAXN] /* = { 0L }*/ ;
 };
 
-UBENCH_F_SETUP(my_fixture) 
+UBENCH_F_SETUP(dbj_fixture) 
 {
 ubench_fixture->HASH = HASHSIZE - 1;
 // make random data
@@ -98,9 +97,9 @@ for (int i = 0; i < HASHSIZE; i ++) ubench_fixture->hasharr[i] = FREE_SLOT_MARK;
   printf("\nLeaving %s", __FUNCSIG__) ;
 }
 
-UBENCH_F_TEARDOWN(my_fixture) { /* nothing to do */ }
+UBENCH_F_TEARDOWN(dbj_fixture) { /* nothing to do */ }
 
-static void * produce_uniques ( struct my_fixture * ubench_fixture)  {
+static void * produce_uniques ( struct dbj_fixture * ubench_fixture)  {
 int count = 0;
 for (int i = 0; i < MAXN; i ++) {
         int key = hashKey(ubench_fixture->data[i]); // unbound hash key
@@ -122,7 +121,7 @@ for (int i = 0; i < MAXN; i ++) {
     return ubench_fixture;
 }
 
-UBENCH_F(my_fixture, produce_them_at_last) 
+UBENCH_F(dbj_fixture, dbj_uniques_arr ) 
 {
      UBENCH_DO_NOTHING(0);
 int count = 0;
@@ -143,8 +142,6 @@ for (int i = 0; i < MAXN; i ++) {
         }
     }
 }
-
-#endif // 0
 
 #ifdef __cplusplus
 } // extern "C" {
