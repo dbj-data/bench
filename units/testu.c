@@ -86,7 +86,14 @@ int hasharr[TESTU_HASHSIZE];
 long data[TESTU_MAXN] /* = { 0L }*/ ;
 };
 
+#if 0
 UBENCH_F_SETUP(testu_dbj_data) 
+#else
+static void 
+ubench_f_setup_testu_dbj_data(
+    struct testu_dbj_data *ubench_fixture
+    )
+#endif
 {
 ubench_fixture->TESTU_HASH = TESTU_HASHSIZE - 1;
 // make random data
@@ -100,7 +107,15 @@ for (int i = 0; i < TESTU_HASHSIZE; i ++)
   printf("\nLeaving %s", __FUNCSIG__) ;
 }
 
-UBENCH_F_TEARDOWN(testu_dbj_data) { 
+#if 0
+UBENCH_F_TEARDOWN(testu_dbj_data) 
+#else
+static void ubench_f_teardown_testu_dbj_data
+ (
+     struct testu_dbj_data *ubench_fixture
+)
+#endif
+{ 
  memset(ubench_fixture->data, 0L, __crt_countof(ubench_fixture->data) ) ;
  memset(ubench_fixture->hasharr, 0, __crt_countof(ubench_fixture->hasharr) ) ;
 }
@@ -127,7 +142,56 @@ for (int i = 0; i < TESTU_MAXN; i ++) {
     return ubench_fixture;
 }
 
+#if 0
 UBENCH_F(testu_dbj_data, dbj_uniques_arr ) 
 {
-    UBENCH_DO_NOTHING( produce_uniques( ubench_fixture ) );
+    UBENCH_F_SETUP(testu_dbj_data) ;
+    produce_uniques( ubench_fixture ) ;
 }
+
+#else 
+
+extern struct ubench_state_s ubench_state; 
+static void ubench_f_setup_testu_dbj_data(struct testu_dbj_data *); 
+static void ubench_f_teardown_testu_dbj_data(struct testu_dbj_data *); 
+static void ubench_run_testu_dbj_data_dbj_uniques_arr(struct testu_dbj_data *); 
+static void ubench_f_testu_dbj_data_dbj_uniques_arr(ubench_int64_t *const ns, const ubench_int64_t size) 
+{ 
+    ubench_int64_t i = 0; 
+    struct testu_dbj_data fixture; 
+    memset(&fixture, 0, sizeof(fixture)); 
+    ubench_f_setup_testu_dbj_data(&fixture); 
+    for (i = 0; i < size; i++) { 
+        ns[i] = ubench_ns(); 
+        ubench_run_testu_dbj_data_dbj_uniques_arr(&fixture); 
+        ns[i] = ubench_ns() - ns[i]; 
+        } 
+        ubench_f_teardown_testu_dbj_data(&fixture); 
+   } 
+   static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void); 
+   __pragma(comment(linker, "/include:" "ubench_register_testu_dbj_data_dbj_uniques_arr" "_")); 
+   __declspec(allocate(".CRT$XCU")) 
+     void(__cdecl * ubench_register_testu_dbj_data_dbj_uniques_arr_)(void) 
+         = ubench_register_testu_dbj_data_dbj_uniques_arr; 
+   static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void)
+    { 
+        const size_t index = ubench_state.benchmarks_length++; 
+        const char *name_part = "testu_dbj_data" "." "dbj_uniques_arr"; 
+        const size_t name_size = strlen(name_part) + 1; 
+        char *name = ((char *)malloc(name_size)); 
+        ubench_state.benchmarks = ((struct ubench_benchmark_state_s *)
+           realloc(
+               ((void *)ubench_state.benchmarks), 
+                 sizeof(struct ubench_benchmark_state_s) * ubench_state.benchmarks_length)
+           ); 
+        ubench_state.benchmarks[index].func = &ubench_f_testu_dbj_data_dbj_uniques_arr; 
+        ubench_state.benchmarks[index].name = name; 
+        _snprintf_s(name, name_size, name_size, "%s", name_part); 
+    } 
+    void ubench_run_testu_dbj_data_dbj_uniques_arr(struct testu_dbj_data *ubench_fixture)
+    {
+    // UBENCH_F_SETUP(testu_dbj_data) ;
+    produce_uniques( ubench_fixture ) ;
+    }
+
+#endif // ! 0
