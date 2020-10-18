@@ -70,6 +70,7 @@ static void *produce_uniques(struct testu_dbj_data *ubench_fixture) {
   return ubench_fixture;
 }
 
+// this is called once from the loop function
 #if 0
 UBENCH_F_SETUP(testu_dbj_data)
 #else
@@ -118,6 +119,7 @@ static void ubench_run_testu_dbj_data_dbj_uniques_arr(struct testu_dbj_data *);
 
 /*
 in here is the loop
+this is registered as a benchmark function
 */
 static void ubench_f_testu_dbj_data_dbj_uniques_arr
 (ubench_int64_t *const ns, const ubench_int64_t size) 
@@ -150,6 +152,7 @@ __declspec(allocate(".CRT$XCU")) void(
 
 /*
 this is the registration function itself
+this *is* called before main starts
 */
 static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void) {
   const size_t index = ubench_state.benchmarks_length++;
