@@ -15,7 +15,7 @@ enum { FREE_SLOT_MARK = HASHSIZE } ;
 enum { MAXN = 0xFFFF } ;
 
 #ifndef _WIN64
-static hashKey(long x) {
+static int hashKey(long x) {
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = ((x >> 16) ^ x) * 0x45d9f3b;
     x = (x >> 16) ^ x;

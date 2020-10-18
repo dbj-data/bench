@@ -3,6 +3,31 @@
     "tasks": [
         {
             "type": "shell",
+            "label": "CLANG_DEBUG_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "args": [
+                "/std:c++17",
+                "/DUNICODE",
+                "/D_UNICODE",
+                "/D_DEBUG",
+                "/Zi",
+                "/kernel",
+                "/MDd",
+                "/Fe${workspaceFolder}/${fileBasenameNoExtension}_dbg.exe",
+                "${file}",
+                "${workspaceFolder}/program.cpp"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build",
+            "detail": "Active File Only"
+        },
+        {
+            "type": "shell",
             "label": "DEBUG_BUILD",
             "command": "cl.exe",
             "args": [
