@@ -1,11 +1,10 @@
 // (c) dbj.org -- DBJ_LICENSE -- https://dbj.org/dbj_license 
 #include <stdint.h>
 #include <time.h>
+
 #include "../ubench.h/ubench.h"
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
-/******************************************************************/
+
+
 // https://codingforspeed.com/c-coding-example-using-hash-algorithm-to-remove-duplicate-number-by-on/
 
 enum { TESTU_HASHSIZE = 1048576 };  // 20MB
@@ -132,7 +131,3 @@ UBENCH_F(testu_dbj_data, dbj_uniques_arr )
 {
     UBENCH_DO_NOTHING( produce_uniques( ubench_fixture ) );
 }
-
-#ifdef __cplusplus
-} // extern "C"  and anon space 
-#endif // __cplusplus

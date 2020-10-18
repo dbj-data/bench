@@ -14,7 +14,7 @@
                 "/kernel",
                 "/MDd",
                 "/Fe${workspaceFolder}/bench_dbg.exe",
-                "${workspaceFolder}/fwk/main.cpp",
+                "${workspaceFolder}/fwk/main.c",
                 "${workspaceFolder}/program.cpp",
                 "${workspaceFolder}/units/*.c"
             ],
@@ -41,7 +41,7 @@
                 "/MDd",
                 "/Fe:",
                 "${workspaceFolder}\\bench_dbg.exe",
-                "${workspaceFolder}\\fwk\\main.cpp",
+                "${workspaceFolder}\\fwk\\main.c",
                 "${workspaceFolder}\\program.cpp",
                 "${workspaceFolder}\\units\\*.c"
             ],
@@ -70,7 +70,7 @@
                 "/MD",
                 "/Fe:",
                 "${workspaceFolder}\\bench.exe",
-                "${workspaceFolder}\\fwk\\main.cpp",
+                "${workspaceFolder}\\fwk\\main.c",
                 "${workspaceFolder}\\program.cpp",
                 "${workspaceFolder}\\units\\*.c"
             ],
