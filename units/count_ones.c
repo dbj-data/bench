@@ -1,6 +1,6 @@
 #include "../ubench.h/ubench.h"
 
-static long CountOne1(long n) {
+static long CountOne1 (long n) {
   long i = 0, j = 1;
   long count = 0;
   for (i = 1; i <= n; i++) {
