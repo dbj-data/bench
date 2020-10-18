@@ -13,9 +13,10 @@
                 "/Zi",
                 "/kernel",
                 "/MDd",
-                "/Fe${workspaceFolder}/${fileBasenameNoExtension}_dbg.exe",
-                "${file}",
-                "${workspaceFolder}/program.cpp"
+                "/Fe${workspaceFolder}/bench_dbg.exe",
+                "${workspaceFolder}/fwk/main.cpp",
+                "${workspaceFolder}/program.cpp",
+                "${workspaceFolder}/units/*.c"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -24,7 +25,7 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Active File Only"
+            "detail": "Start from anywhere"
         },
         {
             "type": "shell",
@@ -39,9 +40,10 @@
                 "/kernel",
                 "/MDd",
                 "/Fe:",
-                "${workspaceFolder}\\${fileBasenameNoExtension}_dbg.exe",
-                "${file}",
-                "${workspaceFolder}\\program.cpp"
+                "${workspaceFolder}\\bench_dbg.exe",
+                "${workspaceFolder}\\fwk\\main.cpp",
+                "${workspaceFolder}\\program.cpp",
+                "${workspaceFolder}\\units\\*.c"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -50,7 +52,7 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Active File Only"
+            "detail": "Start from anywhere"
         },
         {
             "type": "shell",
@@ -67,9 +69,10 @@
                 "/kernel",
                 "/MD",
                 "/Fe:",
-                "${workspaceFolder}\\${fileBasenameNoExtension}.exe",
-                "${file}",
-                "${workspaceFolder}\\program.cpp"
+                "${workspaceFolder}\\bench.exe",
+                "${workspaceFolder}\\fwk\\main.cpp",
+                "${workspaceFolder}\\program.cpp",
+                "${workspaceFolder}\\units\\*.c"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -78,7 +81,7 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Active File Only"
+            "detail": "Start from anywhere"
         },
         {
             "type": "shell",

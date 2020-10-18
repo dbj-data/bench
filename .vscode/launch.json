@@ -8,7 +8,7 @@
             "name": "main_dbg.exe",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}\\main_dbg.exe",
+            "program": "${workspaceFolder}\\bench_dbg.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
