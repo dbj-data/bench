@@ -34,30 +34,30 @@ void my_handler() noexcept
 }
 // --------------------------------------------------------------------------
 // https://docs.microsoft.com/en-us/cpp/build/reference/kernel-create-kernel-mode-binary?view=vs-2019
-// optional?
-// somehow /kernel switch is confusing me
-// it mentions the new and delete operator  
-// so they appear as not optional?
-// but. it seems CL will always compile and linker will link
-// with or without these in any kind of C++ builds
 #ifdef _DEBUG
 #define DBJ_FOLLOWS_KERNEL_ADVICE
 #else // _DEBUG
 #undef DBJ_FOLLOWS_KERNEL_ADVICE
 #endif // ! _DEBUG
 
-// optional?
+#ifdef __clang__
+#define NEW_DEL_NOEXCEPT
+#else  // ! __clang__ 
+#define NEW_DEL_NOEXCEPT noexcept
+#endif // ! __clang__
+
+// 
 #ifdef DBJ_FOLLOWS_KERNEL_ADVICE
 #ifdef __cpp_aligned_new
 namespace my {  enum class align_val_t : size_t {}; }
 #endif // __cpp_aligned_new
-inline void* operator new  ( size_t count ) noexcept {  return calloc(1, count) ;}
+void* __CRTDECL operator new  ( size_t count ) NEW_DEL_NOEXCEPT {  return calloc(1, count) ;}
 #ifdef __cpp_aligned_new
-inline void* operator new  ( size_t count, my::align_val_t al )  noexcept { return calloc(1, count) ; }
+void* __CRTDECL operator new  ( size_t count, my::align_val_t al )  NEW_DEL_NOEXCEPT { return calloc(1, count) ; }
 #endif
-inline void operator delete  ( void* ptr ) noexcept { free(ptr); }
+void __CRTDECL operator delete  ( void* ptr ) NEW_DEL_NOEXCEPT { free(ptr); }
 #ifdef __cpp_aligned_new
-inline void operator delete  ( void* ptr, my::align_val_t al ) noexcept {free(ptr); }
+void __CRTDECL operator delete  ( void* ptr, my::align_val_t al ) NEW_DEL_NOEXCEPT {free(ptr); }
 #endif
 
 #endif // DBJ_FOLLOWS_KERNEL_ADVICE
