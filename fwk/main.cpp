@@ -1,9 +1,8 @@
-
 #include "../ubench.h/ubench.h"
+#include "dbj_kernel.h"
 
-int dbj_main (int argc, char ** argv) ;
 
- UBENCH_STATE();
+
 
 int main (int argc, char ** argv)  
 {

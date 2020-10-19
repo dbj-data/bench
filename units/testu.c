@@ -134,7 +134,7 @@ this is registered as a benchmark function
 the problem is calling this function produces stack overflow
 Why?
 */
-/* dbj: removed --> static */ void ubench_f_my_data_dbj_uniques_arr
+/* dbj: removed --> static, no result */ void ubench_f_my_data_dbj_uniques_arr
 (ubench_int64_t *const ns, const ubench_int64_t size) 
 { // <-- dbj: cl.exe __chkstk() kicks in here and stops the show
   ubench_int64_t i = 0;

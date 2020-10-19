@@ -1,7 +1,7 @@
 
 #include "units/comonu.h"
-#include "fwk/dbj_kernel.h"
 
+ UBENCH_STATE();
 // user code start here
 // this is called from framework
 // framework is where SE handling is implemented
