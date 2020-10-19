@@ -16,13 +16,24 @@
 
 // https://codingforspeed.com/c-coding-example-using-hash-algorithm-to-remove-duplicate-number-by-on/
 
+#ifdef BEFORE
+
 enum { TESTU_HASHSIZE = 1048576 }; // 20MB
 static const int TESTU_HASH = TESTU_HASHSIZE - 1;
-static int hasharr[TESTU_HASHSIZE];
-
 // the data numbers can't be the value of TESTU_HASHSIZE,
 enum { FREE_SLOT_MARK = TESTU_HASHSIZE };
 enum { TESTU_MAXN = 0xFFFF };
+
+#else // AFTER still does not help
+
+#define TESTU_HASHSIZE 1048576
+#define TESTU_HASH TESTU_HASHSIZE - 1
+// the data numbers can't be the value of TESTU_HASHSIZE,
+#define FREE_SLOT_MARK TESTU_HASHSIZE 
+#define TESTU_MAXN 0xFFFF
+
+#endif // AFTER
+
 
 #ifndef _WIN64
 static int hashKey(long x) {
@@ -41,14 +52,14 @@ static uint64_t hashKey(uint64_t x) {
 #endif // _WIN64
 /******************************************************************/
 // this is the 'fixture'
-struct testu_dbj_data {
-  int TESTU_HASH /* = TESTU_HASHSIZE - 1 */;
+struct my_data {
+  int HASH ;
   int hasharr[TESTU_HASHSIZE];
-  long data[TESTU_MAXN] /* = { 0L }*/;
+  long data[TESTU_MAXN] ;
 };
 /******************************************************************/
 
-static void *produce_uniques(struct testu_dbj_data *ubench_fixture) {
+static void *produce_uniques(struct my_data *ubench_fixture) {
   int count = 0;
   for (int i = 0; i < TESTU_MAXN; i++) {
     int key = hashKey(ubench_fixture->data[i]); // unbound hash key
@@ -57,7 +68,7 @@ static void *produce_uniques(struct testu_dbj_data *ubench_fixture) {
       if (ubench_fixture->hasharr[key] == FREE_SLOT_MARK) { // slot is available
         ubench_fixture->hasharr[key] = i; // means the number appears first time
         break;
-      } else if (ubench_fixture->data[hasharr[key]] ==
+      } else if (ubench_fixture->data[ubench_fixture->hasharr[key]] ==
                  ubench_fixture->data[i]) { // same number
         count++;
         break;
@@ -70,14 +81,14 @@ static void *produce_uniques(struct testu_dbj_data *ubench_fixture) {
   return ubench_fixture;
 }
 
-// this is called once from the loop function
+// this is to be called once from the loop function
 #if 0
-UBENCH_F_SETUP(testu_dbj_data)
+UBENCH_F_SETUP(my_data)
 #else
-static void ubench_f_setup_testu_dbj_data(struct testu_dbj_data *ubench_fixture)
+static void ubench_f_setup_my_data(struct my_data *ubench_fixture)
 #endif
 {
-  ubench_fixture->TESTU_HASH = TESTU_HASHSIZE - 1;
+  ubench_fixture->HASH = TESTU_HASHSIZE - 1;
   // make random data
   srand(time(NULL));
   for (int i = 0; i < TESTU_MAXN; i++)
@@ -90,10 +101,10 @@ static void ubench_f_setup_testu_dbj_data(struct testu_dbj_data *ubench_fixture)
 }
 
 #if 0
-UBENCH_F_TEARDOWN(testu_dbj_data)
+UBENCH_F_TEARDOWN(my_data)
 #else
 static void
-ubench_f_teardown_testu_dbj_data(struct testu_dbj_data *ubench_fixture)
+ubench_f_teardown_my_data(struct my_data *ubench_fixture)
 #endif
 {
   memset(ubench_fixture->data, 0L, __crt_countof(ubench_fixture->data));
@@ -101,9 +112,9 @@ ubench_f_teardown_testu_dbj_data(struct testu_dbj_data *ubench_fixture)
 }
 
 #if 0
-UBENCH_F(testu_dbj_data, dbj_uniques_arr ) 
+UBENCH_F(my_data, dbj_uniques_arr ) 
 {
-    UBENCH_F_SETUP(testu_dbj_data) ;
+    UBENCH_F_SETUP(my_data) ;
     produce_uniques( ubench_fixture ) ;
 }
 
@@ -111,52 +122,53 @@ UBENCH_F(testu_dbj_data, dbj_uniques_arr )
 
 extern struct ubench_state_s ubench_state;
 
-static void ubench_f_setup_testu_dbj_data(struct testu_dbj_data *);
+static void ubench_f_setup_my_data(struct my_data *);
 
-static void ubench_f_teardown_testu_dbj_data(struct testu_dbj_data *);
+static void ubench_f_teardown_my_data(struct my_data *);
 
-static void ubench_run_testu_dbj_data_dbj_uniques_arr(struct testu_dbj_data *);
+static void ubench_run_my_data_dbj_uniques_arr(struct my_data *);
 
 /*
 in here is the loop
 this is registered as a benchmark function
+the problem is calling this function produces stack overflow
+Why?
 */
-static void ubench_f_testu_dbj_data_dbj_uniques_arr
+/* dbj: removed --> static */ void ubench_f_my_data_dbj_uniques_arr
 (ubench_int64_t *const ns, const ubench_int64_t size) 
-{
+{ // <-- dbj: cl.exe __chkstk() kicks in here and stops the show
   ubench_int64_t i = 0;
-  struct testu_dbj_data fixture;
+  struct my_data fixture;
   memset(&fixture, 0, sizeof(fixture));
   /* setup is called from here -- once */
-  ubench_f_setup_testu_dbj_data(&fixture);
+  ubench_f_setup_my_data(&fixture);
   for (i = 0; i < size; i++) {
     ns[i] = ubench_ns();
-    ubench_run_testu_dbj_data_dbj_uniques_arr(&fixture);
+    ubench_run_my_data_dbj_uniques_arr(&fixture);
     ns[i] = ubench_ns() - ns[i];
   }
-  ubench_f_teardown_testu_dbj_data(&fixture);
+  ubench_f_teardown_my_data(&fixture);
 }
 
-/*
-this is the code for registering the benchmark
-*/
-static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void);
+/* this is forward declaration */
+#ifdef BEFORE
+static void __cdecl ubench_register_my_data_dbj_uniques_arr(void);
 
 __pragma(comment(linker, "/include:"
-                         "ubench_register_testu_dbj_data_dbj_uniques_arr"
+                         "ubench_register_my_data_dbj_uniques_arr"
                          "_"));
-
 __declspec(allocate(".CRT$XCU")) void(
-    __cdecl *ubench_register_testu_dbj_data_dbj_uniques_arr_)(void) =
-    ubench_register_testu_dbj_data_dbj_uniques_arr;
+    __cdecl *ubench_register_my_data_dbj_uniques_arr_)(void) =
+    ubench_register_my_data_dbj_uniques_arr;
+#endif // BEFORE
 
 /*
 this is the registration function itself
-this *is* called before main starts
+this *is* indeed called before main starts
 */
-static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void) {
+static void __cdecl ubench_register_my_data_dbj_uniques_arr(void) {
   const size_t index = ubench_state.benchmarks_length++;
-  const char *name_part = "testu_dbj_data"
+  const char *name_part = "my_data"
                           "."
                           "dbj_uniques_arr";
   const size_t name_size = strlen(name_part) + 1;
@@ -166,17 +178,28 @@ static void __cdecl ubench_register_testu_dbj_data_dbj_uniques_arr(void) {
       sizeof(struct ubench_benchmark_state_s) *
           ubench_state.benchmarks_length));
   ubench_state.benchmarks[index].func =
-      &ubench_f_testu_dbj_data_dbj_uniques_arr;
+      /* dbj:removed --> & , does not help */ubench_f_my_data_dbj_uniques_arr;
   ubench_state.benchmarks[index].name = name;
   _snprintf_s(name, name_size, name_size, "%s", name_part);
 }
 
+#ifndef BEFORE
+// no forward declaration --> static void __cdecl ubench_register_my_data_dbj_uniques_arr(void);
+
+__pragma(comment(linker, "/include:"
+                         "ubench_register_my_data_dbj_uniques_arr"
+                         "_"));
+__declspec(allocate(".CRT$XCU")) void(
+    __cdecl *ubench_register_my_data_dbj_uniques_arr_)(void) =
+    ubench_register_my_data_dbj_uniques_arr;
+#endif // ! BEFORE
+
 /*
 this is called from the loop
 */
-void ubench_run_testu_dbj_data_dbj_uniques_arr(
-    struct testu_dbj_data *ubench_fixture) {
-  // UBENCH_F_SETUP(testu_dbj_data) ;
+void ubench_run_my_data_dbj_uniques_arr(
+    struct my_data *ubench_fixture) {
+  // UBENCH_F_SETUP(my_data) ;
   produce_uniques(ubench_fixture);
 }
 
