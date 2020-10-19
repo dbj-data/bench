@@ -31,7 +31,10 @@
             "label": "DEBUG_BUILD",
             "command": "cl.exe",
             "args": [
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/EHsc",
                 "/std:c++17",
+                "/D_HAS_EXCEPTIONS=1",
                 "/DUNICODE",
                 "/D_UNICODE",
                 "/D_DEBUG",
@@ -41,7 +44,9 @@
                 "${workspaceFolder}\\bench_dbg.exe",
                 "${workspaceFolder}\\fwk\\main.cpp",
                 "${workspaceFolder}\\program.cpp",
-                "${workspaceFolder}\\units\\*.c"
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -50,16 +55,19 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "_HAS_EXCEPTIONS=1"
         },
         {
             "type": "shell",
             "label": "RELEASE_BUILD",
             "command": "cl.exe",
             "args": [
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/GL",
                 "/std:c++17",
                 "/GR-",
                 "/nologo",
+                "/D_HAS_EXCEPTIONS=0",
                 "/DUNICODE",
                 "/D_UNICODE",
                 "/DNDEBUG",
@@ -68,7 +76,9 @@
                 "${workspaceFolder}\\bench.exe",
                 "${workspaceFolder}\\fwk\\main.cpp",
                 "${workspaceFolder}\\program.cpp",
-                "${workspaceFolder}\\units\\*.c"
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -77,7 +87,7 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "_HAS_EXCEPTIONS=0"
         },
         {
             "type": "shell",

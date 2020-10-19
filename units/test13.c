@@ -1,5 +1,5 @@
 #include "../ubench.h/ubench.h"
-
+#if 0
 UBENCH(dbj_test_13, do_nothing) {
   static char a[8 * 1024 * 1024];
   static char b[8 * 1024 * 1024];
@@ -29,3 +29,5 @@ UBENCH_F(dbj_fixture_13, strchr) {
 UBENCH_F(dbj_fixture_13, strrchr) {
   UBENCH_DO_NOTHING(strrchr(ubench_fixture->data, 'f'));
 }
+
+#endif // 0
