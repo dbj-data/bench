@@ -2,11 +2,41 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "../ubench.h/ubench.h"
+#include "dbjbench.h"
 
 #ifndef _MSC_VER
 #error This is Windows build only
 #endif
+
+#ifndef BEFORE
+
+#define THE_SECTION ".CRT$XCU"
+
+// dbj: this does not help too
+#ifdef __cplusplus
+    #define INITIALIZER(f) \
+        static void f(void); \
+        struct f##_t_ { f##_t_(void) { f(); } }; static f##_t_ f##_; \
+        static void f(void)
+#elif defined(_MSC_VER)
+    #pragma section( THE_SECTION,read)
+    #define INITIALIZER2_(f,p) \
+        static void f(void); \
+        __declspec(allocate(THE_SECTION)) void (*f##_)(void) = f; \
+        __pragma(comment(linker,"/include:" p #f "_")) \
+        static void f(void)
+    #ifdef _WIN64
+        #define INITIALIZER(f) INITIALIZER2_(f,"")
+    #else
+        #define INITIALIZER(f) INITIALIZER2_(f,"_")
+    #endif
+#else
+    #define INITIALIZER(f) \
+        static void f(void) __attribute__((constructor)); \
+        static void f(void)
+#endif
+
+#endif // ! BEFORE
 
 //
 // the way of 'fixtures' but without macros
@@ -134,8 +164,11 @@ this is registered as a benchmark function
 the problem is calling this function produces stack overflow
 Why?
 */
-/* dbj: removed --> static, no result */ void ubench_f_my_data_dbj_uniques_arr
-(ubench_int64_t *const ns, const ubench_int64_t size) 
+/* dbj: removed --> static, no result */ 
+void ubench_f_my_data_dbj_uniques_arr
+  (
+  ubench_int64_t *const ns, const ubench_int64_t size
+  ) 
 { // <-- dbj: cl.exe __chkstk() kicks in here and stops the show
   ubench_int64_t i = 0;
   struct my_data fixture;
@@ -184,14 +217,7 @@ static void __cdecl ubench_register_my_data_dbj_uniques_arr(void) {
 }
 
 #ifndef BEFORE
-// no forward declaration --> static void __cdecl ubench_register_my_data_dbj_uniques_arr(void);
-
-__pragma(comment(linker, "/include:"
-                         "ubench_register_my_data_dbj_uniques_arr"
-                         "_"));
-__declspec(allocate(".CRT$XCU")) void(
-    __cdecl *ubench_register_my_data_dbj_uniques_arr_)(void) =
-    ubench_register_my_data_dbj_uniques_arr;
+INITIALIZER( ubench_register_my_data_dbj_uniques_arr );
 #endif // ! BEFORE
 
 /*
@@ -204,3 +230,14 @@ void ubench_run_my_data_dbj_uniques_arr(
 }
 
 #endif // ! 0
+
+// https://community.intel.com/t5/Intel-C-Compiler/attribute-constructor-alternative/td-p/1152384
+
+#ifdef __clang__
+// implementation of beforeMain
+__attribute__((constructor))
+void beforeMain(void) {
+        printf("Hello before main()\n") ;
+}
+#endif // __clang__
+
