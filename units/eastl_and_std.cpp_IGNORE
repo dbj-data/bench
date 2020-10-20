@@ -1,7 +1,7 @@
 #include "../ubench.h/ubench.h"
 
 struct common_data final {
-     inline static long loop_size = 0xFFFFUL ;
+     inline static long loop_size = 0xFF ;
      inline static const char * small_string = "Small";
      inline static const char * large_string = 
     "Large Large Large Large Large Large Large Large "
@@ -23,10 +23,12 @@ struct common_data final {
 static auto once = [&]() ->bool
 { 
     printf(
-        "\n\nLoop size: %6lld\nSmall string length: %6zu\nLarge string length: %6zu\n\n", 
+        "\n\nLoop size: %6d\nSmall string length: %6zu"
+        "\nLarge string length: %6zu\n_HAS_EXCEPTIONS : %2d\n\n", 
        common_data::loop_size ,
        strlen( common_data::small_string) ,
-       strlen( common_data::large_string) 
+       strlen( common_data::large_string) ,
+       _HAS_EXCEPTIONS
        );
     return true ;
 }();
@@ -34,7 +36,7 @@ static auto once = [&]() ->bool
 #include <vector>
 #include <string>
 
-UBENCH( std_, std_vector_small_string ){
+UBENCH( std_, small ){
      std::vector<std::string> vs_ ;
 
      for (auto k = 0UL; k < common_data::loop_size; ++k )
@@ -47,7 +49,7 @@ UBENCH( std_, std_vector_small_string ){
      }
 }
 
-UBENCH( std_, std_vector_large_string ){
+UBENCH( std_, large ){
      std::vector<std::string> vs_ ;
 
      for (auto k = 0UL; k < common_data::loop_size; ++k )
@@ -63,7 +65,7 @@ UBENCH( std_, std_vector_large_string ){
 #include <eastl/vector.h>
 #include <eastl/string.h>
 
-UBENCH( dbjeastl, vector_small_string ){
+UBENCH( eastl, small ){
      eastl::vector<eastl::string> vs_ ;
 
      for (auto k = 0UL; k < common_data::loop_size; ++k )
@@ -76,7 +78,7 @@ UBENCH( dbjeastl, vector_small_string ){
      }
 }
 
-UBENCH( dbjeastl, vector_large_string ){
+UBENCH( eastl, large ){
      eastl::vector<eastl::string> vs_ ;
 
      for (auto k = 0UL; k < common_data::loop_size; ++k )
