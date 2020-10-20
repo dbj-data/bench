@@ -2,19 +2,13 @@
 #include <memory>
 #include <EASTL/unique_ptr.h>
 
+// cheating, but EASTL is still almost as fast
 namespace dbj {
-
-// using namespace std;
-using namespace eastl;
-
-extern "C" struct freer {
-  void operator()(void *p) { free(p); };
-};
 
 template<typename T >
 struct arr_ptr final 
 {
-     using value_type = remove_extent_t<T>;
+     using value_type = eastl::remove_extent_t<T>;
 
     size_t size_{} ;
     value_type * data_{} ;
@@ -54,22 +48,26 @@ struct arr_ptr final
     }
 };
 
-template <class T_
-          , enable_if_t<is_array_v<T_> && extent_v<T_> == 0, int> = 0
-          >
-[[nodiscard]] arr_ptr< remove_extent_t<T_> > make_arr_unique(size_t sze) {
-  using e_type = remove_extent_t<T_>;
-  return arr_ptr<e_type>(sze);
+template <class T_, 
+eastl::enable_if_t<eastl::is_array_v<T_> && eastl::extent_v<T_> == 0, int> = 0
+>
+[[nodiscard]] arr_ptr< T_ > make_arr_unique(size_t sze) {
+  return arr_ptr<T_>(sze);
 }
 
 } // namespace dbj
 
 extern "C" {
-static struct { size_t SZE; } common_data = {0xFF};
+    
+static struct { 
+    size_t SZE; 
+    size_t LOP; 
+} common_data = {0xFF, 0xF };
+
 }
 
 auto loopy_schmoopy = [&](auto cback) {
-  for (auto k = 0L; k < common_data.SZE; k++) {
+  for (auto k = 0L; k < common_data.LOP; k++) {
     auto uap_ = cback();
   }
 };
