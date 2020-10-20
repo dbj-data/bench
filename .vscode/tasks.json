@@ -3,19 +3,55 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_DEBUG_BUILD",
+            "label": "CLANG_64bit_RELEASE_BUILD",
             "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
             "args": [
+                "--target=x86_64-pc-windows-msvc",
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/nologo",
+                "/GR-",
+                "/Zc:wchar_t",
+                "/std:c++17",
+                "/DUNICODE",
+                "/D_UNICODE",
+                "/DNDEBUG",
+                "/MD",
+                "/Fe${workspaceFolder}/bench.exe",
+                "${workspaceFolder}/fwk/main.cpp",
+                "${workspaceFolder}/program.cpp",
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build",
+            "detail": "Start from anywhere"
+        },
+        {
+            "type": "shell",
+            "label": "CLANG_64bit_DEBUG_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "args": [
+                "--target=x86_64-pc-windows-msvc",
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/std:c++17",
                 "/DUNICODE",
                 "/D_UNICODE",
                 "/D_DEBUG",
+                "/Zc:wchar_t",
                 "/Zi",
                 "/MDd",
                 "/Fe${workspaceFolder}/bench_dbg.exe",
                 "${workspaceFolder}/fwk/main.cpp",
                 "${workspaceFolder}/program.cpp",
-                "${workspaceFolder}/units/*.c"
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -31,6 +67,7 @@
             "label": "DEBUG_BUILD",
             "command": "cl.exe",
             "args": [
+                "/nologo",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/EHsc",
                 "/std:c++17",
@@ -38,6 +75,7 @@
                 "/DUNICODE",
                 "/D_UNICODE",
                 "/D_DEBUG",
+                "/Zc:wchar_t",
                 "/Zi",
                 "/MDd",
                 "/Fe:",
@@ -72,6 +110,7 @@
                 "/D_UNICODE",
                 "/DNDEBUG",
                 "/MD",
+                "/Zc:wchar_t",
                 "/Fe:",
                 "${workspaceFolder}\\bench.exe",
                 "${workspaceFolder}\\fwk\\main.cpp",

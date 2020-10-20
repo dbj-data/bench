@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main_dbg.exe",
+            "name": "DEBUG",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}\\bench_dbg.exe",

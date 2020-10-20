@@ -66,7 +66,7 @@ static struct {
 
 }
 
-auto loopy_schmoopy = [&](auto cback) {
+auto loopy_schmoopy = [](auto cback) {
   for (auto k = 0L; k < common_data.LOP; k++) {
     auto uap_ = cback();
   }
