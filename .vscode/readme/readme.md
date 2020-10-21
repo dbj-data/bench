@@ -67,9 +67,9 @@ is a necessary switch for clang-cl 64 bit builds. Again, don't ask.
 
 Without that arcane,ridiculous, beautiful switch, linker will not link after `clang-cl` succesfully compiles in a 64 bit mode. From your VS Code on Windows 10.
 
-And now it compiles and links. You are in the business. ["You are in the grove Jackson!"](https://youtu.be/m7COYi2_58g). 
+And now it compiles and links. You are in the business! ["You are in the grove Jackson!"](https://youtu.be/m7COYi2_58g). 
 
-Job done? Well, there is this thing we call.
+Job done? Well, there is this thing we usually call:
 
 ### 2. The right path
 
