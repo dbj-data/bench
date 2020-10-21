@@ -21,10 +21,11 @@ static void construct( void )
     data_ = (char *)DBJ_FLT_PROMPT("data") ;
 }
 
+// it seems this will be visited only 
+// if we link with the static runtime lib
 static void destruct( void )
 {
     data_ = NULL ;
-    assert( data_ );
 }
 
 #endif // __clang__

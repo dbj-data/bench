@@ -3,7 +3,8 @@
 - [1. Difficult path](#1-difficult-path)
 - [2. The right path](#2-the-right-path)
 - [3. Moral of the story](#3-moral-of-the-story)
-- [PS](#ps)
+- [4. PS](#4-ps)
+- [5. Apendix A : my settings.json comented](#5-apendix-a--my-settingsjson-comented)
 
 You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions and now you are ready to use clang and compile. 
 
@@ -39,7 +40,7 @@ Admitedly a message from hell. Perhaps translated into human it might be:
 
 "But wait... stay!". You hear the voice. "Trust me, I will solve this for you. Let me take you down this..."
 
-### 1. Difficult path
+## 1. Difficult path
 
 Step One. Click on that VS command line icon again: 
 
@@ -72,7 +73,7 @@ And now it compiles and links. You are in the business! ["You are in the grove J
 
 Job done? Well, there is this thing we usually call:
 
-### 2. The right path
+## 2. The right path
 
 It is short and simple path. You have gone to the wrong bin directory in the step one. As taken by me. 
 
@@ -106,10 +107,88 @@ The right command in yuor tasks.json is to be: (replace `...` with the root of y
 
 Compiles, links, runs. That is for the 64 bit clang-cl builds only.
 
-### 3. Moral of the story
+## 3. Moral of the story
 
 The right path is not always the difficult one.
 
-### PS
+## 4. PS
 
 In case you have free time to waste please use ["Rapid Environment Editor"](https://www.rapidee.com/en/about) to study what is going on as a result of running `vcvarsall.bat`. The most ridiculuous and beautiful batch file to be found in the depths of the Visual Studio 2019 installation.
+
+## 5. Apendix A : my settings.json comented
+
+Ok, only important stuff is commented
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "CLANG_64bit_RELEASE_BUILD",
+```
+We simple state the full path to the clang-cl. here. **Remember!** This is good, but only for building in 32 bit mode.
+```json
+"command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "args": [
+```
+Target architecture for clang-cl.exe in that folder is `Target: i686-pc-windows-msvc`. And that is 32 bit builds.
+
+Since we are starting "X64 Native tools" from the Start menu and then VS Code from the command line thus opened, we have to match the llvm target architecture to 64 bit, otherwise linker will not link.
+```json                
+"--target=x86_64-pc-windows-msvc",
+```
+We could have also used the clang-cl from the `x64/bin` folder. That is builr for 64 bit builds only.
+
+The rest of this config section is less interesting.
+```json               
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/nologo",
+                "/GR-",
+                "/Zc:wchar_t",
+                "/std:c++17",
+                "/DUNICODE",
+                "/D_UNICODE",
+```
+Yes indeed, that macro must exist in the release builds, as it is in the standard.
+```json                
+                "/DNDEBUG",
+```
+Curently it seems `__declspec__(destructor)` works only if we link with the static runtime lib. Hence this next switch:
+```json                
+                "/MT",
+```
+Next config section
+```json                
+        {
+            "type": "shell",
+            "label": "CLANG_64bit_DEBUG_BUILD",
+```
+All the same as release build above. Except. For debug builds as ever, we use the `/Zi` switch
+```json            
+                "/Zi",
+```
+And we link to the static runtime lib.
+```json                
+                "/MTd",
+```
+Perhaps intresting is the "CLEAN" config section where we simply clean the cruft left after builds.
+```json
+        {
+            "type": "shell",
+            "label": "CLEAN",
+            "command": "del /S /Q",
+            "args": [
+                "${workspaceFolder}\\*pdb",
+                "${workspaceFolder}\\*obj",
+                "${workspaceFolder}\\*ilk"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "detail": "Delete all, *pdb *obj and *ilk files"
+        }
+    ]
+}
+```
