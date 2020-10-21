@@ -3,6 +3,7 @@
 - [1. Difficult path](#1-difficult-path)
 - [2. The right path](#2-the-right-path)
 - [3. Moral of the story](#3-moral-of-the-story)
+- [PS](#ps)
 
 You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions and now you are ready to use clang and compile. 
 
@@ -108,3 +109,7 @@ Compiles, links, runs. That is for the 64 bit clang-cl builds only.
 ### 3. Moral of the story
 
 The right path is not always the difficult one.
+
+### PS
+
+In case you have free time to waste please use ["Rapid Environment Editor"](https://www.rapidee.com/en/about) to study what is going on as a result of running `vcvarsall.bat`. The most ridiculuous and beautiful batch file to be found in the depths of the Visual Studio 2019 installation.

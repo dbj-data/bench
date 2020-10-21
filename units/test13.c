@@ -1,5 +1,5 @@
-#include "../ubench.h/ubench.h"
 #if 0
+#include "../ubench.h/ubench.h"
 UBENCH(dbj_test_13, do_nothing) {
   static char a[8 * 1024 * 1024];
   static char b[8 * 1024 * 1024];
