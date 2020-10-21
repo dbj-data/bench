@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1.0.1. Difficult path</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 18px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-light">
+        <h1> clang + VS Code, on Windows 10</h1>
+<ul>
+<li><a href="#101-difficult-path">1.0.1. Difficult path</a></li>
+<li><a href="#102-the-right-path">1.0.2. The right path</a></li>
+</ul>
+<p>You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions and now you are ready to use clang and compile.</p>
+<p>You have installed Visual Studio 2019 with clang.</p>
+<p>From Visual Studio, clang build &quot;just works&quot;. But you want to use VS Code because you are in total control of the numerous, arcane, ridiculous and beautifull command line switches of the cl.exe compiler and its llvm specialy prepared <code>cl.exe</code> alter ego: <code>clang-cl.exe</code>.</p>
+<p>Now you use one of the VS installed &quot;Command Prompt&quot; icons on your start menu to open the cmd.exe and execute the <code>vcvarsall.bat</code> in a proper way. All done for you.</p>
+<p><img src="file:///d:\DEVL\serverside.systems\bench\.vscode\readme\vs2019_start_the_cli.jpg" alt="vs cli icons"></p>
+<p>You know you need to use <code>clang-cl.exe</code> as a llvm version of the <code>cl.exe</code>. You realize it is not on the path so you copy your default building configuration that VS Code has generated for you, and you just add the full path to it in your VS Code <code>taks.json</code>. Thus the critical line is now this:</p>
+<p>(elipsis aka <code>...</code> is the root of your VS2019 installation)</p>
+<pre><code class="language-cpp"><div><span class="hljs-string">"command"</span>: <span class="hljs-string">"...\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe"</span>,
+</div></code></pre>
+<p>And lo and behold! That works and you compile using <code>clang-cl</code>.</p>
+<p>But alas, the linker refuses to link. For me on my machine the message was this:</p>
+<pre><code><code><div>msvcrtd.lib(chkstk.obj) : fatal error LNK1112: module machine type 'x64' conflicts with target machine type 'x86'
+clang-cl: error: linker command failed with exit code 1112 (use -v to see invocation)
+The terminal process &quot;C:\WINDOWS\System32\cmd.exe /d /c &quot;D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe&quot; /ID:\DEVL\serverside.systems\bench\EASTL2020CORE\include /std:c++17 /DUNICODE /D_UNICODE /D_DEBUG /Zc:wchar_t /Zi /MDd /FeD:\DEVL\serverside.systems\bench/bench_dbg.exe D:\DEVL\serverside.systems\bench/fwk/main.cpp D:\DEVL\serverside.systems\bench/program.cpp D:\DEVL\serverside.systems\bench\units\*.c D:\DEVL\serverside.systems\bench\units\*.cpp D:\DEVL\serverside.systems\bench\EASTL2020CORE\source\*.cpp&quot; terminated with exit code: 1112.
+</div></code></code></pre>
+<p>Admitedly a message from hell. Perhaps translated into human it might be:</p>
+<p>&quot;Back off boy! You are in the real man developers teritory. Leave while you can.&quot;</p>
+<p>&quot;But wait... stay!&quot;. You hear the voice. &quot;Trust me, I will solve this for you. Let me take you down this...&quot;</p>
+<h3 id="101-difficult-path">1.0.1. Difficult path</h3>
+<p>Step One. Click on that VS command line icon again:</p>
+<p><img src="file:///d:\DEVL\serverside.systems\bench\.vscode\readme\vs2019_start_the_cli.jpg" alt="vs cli icons"></p>
+<p>Now, goto the clang bin directory. Execute <code>clang-cl --version</code>. On my <code>W10</code> machine that displays:</p>
+<pre><code><code><div>C:\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin&gt;clang-cl --version
+clang version 10.0.0
+Target: i686-pc-windows-msvc
+Thread model: posix
+InstalledDir: C:\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin
+</div></code></code></pre>
+<p>Aha! That <code>Target</code> means clang-cl indeed &quot;just works&quot;, but only for 32 bit command line builds. Dont ask, just trust me. Thus it will not link if you start the VS Code from Visual Studio 64 bit command line prompt, opened after <code>vcvars64.bat</code> is executed.</p>
+<p>Now, I have to tell you:</p>
+<pre><code><code><div>--target=x86_64-pc-windows-msvc
+</div></code></code></pre>
+<p>is a necessary switch for clang-cl 64 bit builds. Again, don't ask.</p>
+<blockquote>
+<p>Without that switch linker will not link after clang-cl succesfully compiles in 64 bit mode.</p>
+</blockquote>
+<p>And now you clang build compiles and links. You are in the business.</p>
+<p>Job done?</p>
+<h3 id="102-the-right-path">1.0.2. The right path</h3>
+<p>Is short and simple. You have gone to the wrong bin directory in the step one. Taken by me.</p>
+<blockquote>
+<p>The whole point of the excersize is to match the right clang-cl.exe to x86 or x64 builds.</p>
+</blockquote>
+<p>Thus, after a long &quot;devl night&quot;, it is a sunny morning, and first shoot of caffeine kicks in. And looking into:</p>
+<p><code>...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\</code></p>
+<p>This morning, you spot the <code>x64</code> and you spot the <code>bin</code> under it.</p>
+<p><img src="file:///d:\DEVL\serverside.systems\bench\.vscode\readme\clang_tree.jpg" alt="clang vstudio location"></p>
+<p>Yes! That is where the clang-cl for 64 bit builds is. Indeed, the above dofficult path was not the right path, and we have found the way out from it. Although it is a bit of a moot point why we went down that path in the first place. Who me? Instead , one could just use the <code>clang-cl.exe</code> build for x64 and all will be fine.</p>
+<pre><code><code><div>...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin&gt;clang-cl --version
+clang version 10.0.0
+Target: x86_64-pc-windows-msvc
+Thread model: posix
+InstalledDir: ...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
+</div></code></code></pre>
+<p>Spot the <code>Target</code>, again. Do you, get it? Good.</p>
+<p>The right command in yuor tasks.json is to be: (replace <code>...</code> with the root of your installation )</p>
+<pre><code class="language-cpp"><div><span class="hljs-string">"command"</span>: <span class="hljs-string">"...\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe"</span>,
+</div></code></pre>
+<p>Compiles, links, runs. That is for the 64 bit clang-cl builds only.</p>
+
+    </body>
+    </html>

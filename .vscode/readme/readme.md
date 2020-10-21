@@ -1,7 +1,8 @@
 <h1> clang + VS Code, on Windows 10</h1>
 
-- [1.0.1. Difficult path](#101-difficult-path)
-- [1.0.2. The right path](#102-the-right-path)
+- [1. Difficult path](#1-difficult-path)
+- [2. The right path](#2-the-right-path)
+- [3. Moral of the story](#3-moral-of-the-story)
 
 You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions and now you are ready to use clang and compile. 
 
@@ -37,7 +38,7 @@ Admitedly a message from hell. Perhaps translated into human it might be:
 
 "But wait... stay!". You hear the voice. "Trust me, I will solve this for you. Let me take you down this..."
 
-### 1.0.1. Difficult path
+### 1. Difficult path
 
 Step One. Click on that VS command line icon again: 
 
@@ -64,25 +65,27 @@ Now, I have to tell you:
 
 is a necessary switch for clang-cl 64 bit builds. Again, don't ask.
 
-> Without that switch linker will not link after clang-cl succesfully compiles in 64 bit mode.
+Without that arcane,ridiculous, beautiful switch, linker will not link after `clang-cl` succesfully compiles in a 64 bit mode. From your VS Code on Windows 10.
 
-And now you clang build compiles and links. You are in the business.
+And now you it compiles and links. You are in the business.
 
-Job done?
+Job done? Well, there is this thing we call.
 
-### 1.0.2. The right path
+### 2. The right path
 
-Is short and simple. You have gone to the wrong bin directory in the step one. Taken by me. 
+It is short and simple path. You have gone to the wrong bin directory in the step one. As taken by me. 
 
 > The whole point of the excersize is to match the right clang-cl.exe to x86 or x64 builds. 
  
-Thus, after a long "devl night", it is a sunny morning, and first shoot of caffeine kicks in. And looking into:
+Now, after a long "`devl` night", it is a sunny morning, and first shoot of caffeine kicks in. And looking into:
 
 `...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\`
 
-You spot the `x64` and you spot the `bin` under it. 
+This morning, you spot the `x64` and you spot the `bin` under it. 
 
-Yes! That is where the clang-cl for 64 bit builds is. So the above path was wrong, and we have found the way out from it. Although it is a bit of a moot point why we went down that path in the first place. One could just use the clang-cl.exe build for x64 and all will be fine.
+![clang vstudio location](clang_tree.jpg)
+
+Yes! That is where the clang-cl for 64 bit builds is. Indeed, the above dofficult path was not the right path, and we have found the way out from it. Although it is a bit of a moot point why we went down that path in the first place. (Who me?) Instead , one could just use the `clang-cl.exe` made for x64 and all will be fine. Let's check.
 
 ```
 ...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin>clang-cl --version
@@ -92,14 +95,16 @@ Thread model: posix
 InstalledDir: ...\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\x64\bin
 ```
 
-Spot the `Target`.
+Spot the `Target`, again. Do you, get it? Good.
 
-Where the elipsis aka `...` is the root of your instalation of the Visual Studio 2019 that includes CLANG. As you requested while installing the said VS2019.
-
-So. The right command in yuor tasks.json is now: (replace `...` with the root of your installation )
+The right command in yuor tasks.json is to be: (replace `...` with the root of your installation )
 
 ```cpp
 "command": "...\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
 ```
 
-That is for the 64 bit clang-cl builds only.
+Compiles, links, runs. That is for the 64 bit clang-cl builds only.
+
+### 3. Moral of the story
+
+The right path is not always the difficult one.
