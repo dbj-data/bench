@@ -4,9 +4,6 @@
 #include "../ubench.h/ubench.h"
 #include "../fwk/nanoclib.h"
 
-#include <stdio.h>
-
-
 static char *data_ = NULL;
 
 UBENCH(clang_cl, sampler) { UBENCH_DO_NOTHING(data_ ? strchr(data_, 'r') : 0); }
