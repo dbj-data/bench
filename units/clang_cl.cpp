@@ -1,3 +1,4 @@
+
 #ifdef __clang__
 #include <assert.h>
 
@@ -29,3 +30,29 @@ static void destruct( void )
 }
 
 #endif // __clang__
+
+void before_main ( void ) ;
+
+// #pragma clang diagnostic push
+// #pragma clang diagnostic ignored "-W#pragma-messages"
+
+// compiled with clang-cl on WIN
+// clang-cl is part of Visual Studio 2019
+
+// _MSC_VER and __clang__ are defined
+#ifdef _MSC_VER
+#pragma message "_MSC_VER defined"
+#endif // _MSC_VER
+
+#ifdef __clang__
+#pragma message "__clang__ defined"
+#endif // __clang__
+
+// #pragma clang diagnostic pop
+
+// this is cl.exe initializer, not clang-cl.exe initializer
+UBENCH_INITIALIZER( before_main )
+{
+    data_ = (char *)"when is this?" ;
+
+}
