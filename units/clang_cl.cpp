@@ -1,40 +1,27 @@
-
-#ifdef __clang__
 #include <assert.h>
 
+#include "../utest.h/utest.h"
 #include "../ubench.h/ubench.h"
 #include "../fwk/nanoclib.h"
 
 #include <stdio.h>
-  
-void construct() __attribute__((constructor));
-void destruct() __attribute__((destructor));
 
-static char * data_ = NULL ;
- 
-UBENCH(clang_cl, sampler)
-{
-    UBENCH_DO_NOTHING( data_ ? strchr( data_, 'r') : 0 ) ;
-}
- 
-static void construct( void )
-{ 
-    data_ = (char *)DBJ_FLT_PROMPT("data") ;
-}
 
-// it seems this will be visited only 
+static char *data_ = NULL;
+
+UBENCH(clang_cl, sampler) { UBENCH_DO_NOTHING(data_ ? strchr(data_, 'r') : 0); }
+
+void construct( void ) ;
+UBENCH_INITIALIZER (construct) { data_ = (char *)DBJ_FLT_PROMPT("data"); }
+
+#ifdef __clang__
+// it seems this will be visited only
 // if we link with the static runtime lib
-static void destruct( void )
-{
-    data_ = NULL ;
-}
-
+void destruct(void) __attribute__((destructor));
+static void destruct(void) { data_ = NULL; }
 #endif // __clang__
 
-static void before_main ( void ) ;
-// 
-UBENCH_INITIALIZER( before_main )
-{
-    data_ = (char *)"when is this?" ;
-
+UTEST(dbj, utest ) {
+ ASSERT_EQ(42, 42);
+ ASSERT_EQ(42, 13);
 }
