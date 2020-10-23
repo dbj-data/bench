@@ -97,4 +97,5 @@ extern "C" inline int dbj_main(int argc, char **argv) {
     DBJ_ERROR("Unknown Exception!");
   }
 #endif
+  return 0;
 } // main

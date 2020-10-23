@@ -60,8 +60,7 @@ struct command_line final {
        static char path_delim = '/';
        #endif
 
-       int str_len_ = strlen(path_);
-       DBJ_ASSERT( str_len_ > 2 ) ; // sanity check
+       DBJ_ASSERT(strlen(path_) > 2 ) ; // sanity check
        const char * last_delim_pos = strrchr( path_,  path_delim) ;
 
        if ( last_delim_pos == nullptr) {

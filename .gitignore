@@ -6,3 +6,6 @@
 *.user
 *.filters
 build
+x64
+Release
+Debug
