@@ -1,12 +1,21 @@
 #include <assert.h>
 
+#if DBJ_USE_UTEST
 // #include "../utest.h/utest.h"
+#endif
+
+#if DBJ_USE_UBENCH
 #include "../ubench.h/ubench.h"
-#include "../fwk/nanoclib.h"
+#endif
 
 // https://stackoverflow.com/a/27958565/10870835
-// faster but ridiculously slow when compared to math.h sqrt
+// faster vs hand made implementations in here 
+// but **sometimes** ridiculously slow when compared to math.h sqrt
 static double squareroot(double x) {
+
+// be aware: assert slows things down considerably
+assert(x >= 0);
+
   if (x < 1)
     return 1.0 / squareroot(x); // MSalter's general solution
 
@@ -65,7 +74,7 @@ static double sqrt_newton(double x) {
   return guess;
 }
 /* ---------------------------------------------------------- */
-
+#if DBJ_USE_UBENCH
 static double data_ = 0;
 
 void construct(void);
@@ -84,6 +93,9 @@ void destruct(void) __attribute__((destructor));
 static void destruct(void) { data_ = 0; }
 #endif // __clang__
 
+#endif // DBJ_USE_UBENCH
+
+/* ---------------------------------------------------------- */
 #if DBJ_USE_UTEST
  UTEST(dbj, utest) { UTEST_EXPECT(sqrt_int(9), 3, ==); }
 #endif

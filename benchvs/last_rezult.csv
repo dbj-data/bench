@@ -1,0 +1,4 @@
+name, mean (ns), stddev (%), confidence (%)
+dbj.sqrt_int, 430, 33.478681, 3.856818,
+clib.sqrt, 77, 55.267332, 6.366919,
+dbj.sqrt_newton, 652, 20.354789, 2.344917,

@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dbj-fwk\dbj-fwk-lib\dbj-fwk-lib.vcxproj">
+      <Project>{e2ea48ae-16f3-4612-9c0d-df2c2d996deb}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj">
       <Project>{12049086-1403-4d93-ba0d-45c93fd22f89}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\fwk\main.cpp" />
     <ClCompile Include="..\program.cpp" />
     <ClCompile Include="..\units\empty_file.c" />
     <ClCompile Include="..\units\empty_file.cpp" />
