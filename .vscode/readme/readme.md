@@ -2,8 +2,9 @@
 
 - [1. Difficult path](#1-difficult-path)
 - [2. The right path](#2-the-right-path)
-- [3. Moral of the story](#3-moral-of-the-story)
-  - [3.1. Post Scriptum](#31-post-scriptum)
+- [3. Trouble shooting](#3-trouble-shooting)
+- [4. Moral of the story](#4-moral-of-the-story)
+  - [4.1. Post Scriptum](#41-post-scriptum)
 
 You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions. And now you are ready to use clang and compile away. The key extension is: [C/C++ for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools). 
 
@@ -191,7 +192,7 @@ Compiles, links, runs. That is for the 64 bit clang-cl builds only. No need to f
 }
 ```
 
-## Trouble shooting
+## 3. Trouble shooting
 
 All of this requires focus, knowledge and experience. Most of the time problems with VS Code do arise when you move to another machine. It can be a very different machine and things need readjusting. 
 
@@ -204,19 +205,19 @@ Copyright (C) Microsoft Corporation.  All rights reserved.
 
 What that means? 
 
-That means you have cl on the path which is a good thing. That also means it is a 32 bit version. See that "for x86"? So it is very likely your clang-cl version is still the 64 bit one. And you can non not link. Just change it to 32 bit version, as isntructed above, at length.
+That means you have cl on the path which is a good thing. That also means it is a 32 bit version. See that "for x86"? So it is very likely your clang-cl version, in the settings.json, is still the 64 bit one. And you can non not link. Just change it to 32 bit version, as instructed above, at length.
 
 In case cl can not be found, close the VS. Click again on one of those icons and start the code again.  That will set up the required environment for you.
 
-## 3. Moral of the story
+## 4. Moral of the story
 
 The right path is not always the difficult one.
 
-### 3.1. Post Scriptum
+### 4.1. Post Scriptum
 
 In case you have free time to waste please use ["Rapid Environment Editor"](https://www.rapidee.com/en/about) to study what is going on as a result of running `vcvarsall.bat`. The most ridiculuous and beautiful batch file to be found in the depths of the Visual Studio 2019 installation.
 
-My [settings.json](../settings.json), is just above this folder and you can look it up.
+My [settings.json](../settings.json), is just above this folder and you can look it up too.
 
 Ultimately someone has to make a single cmd file that will setup the path to the required clang-cl.exe, by looking into 
 
@@ -226,4 +227,4 @@ VSCMD_ARG_HOST_ARCH=x86
 VSCMD_ARG_TGT_ARCH=x86
 ```
 
-envvar avialable after vcvarsall.cmd has done its job.
+envvars avialable, after vcvarsall.cmd has done its job.
