@@ -48,4 +48,9 @@ Architecture rules. No architecture to success.
 
 ## PS
 
-Why this `dbj` prefix everywhere? Ego trip? No. It is just the easy way to have unique names on the GitHub. That is the only reason.
+Why this `dbj` prefix everywhere, ego trip? No. It is just the easy way to have unique names on the GitHub. That is the only reason.
+
+
+[Serverside Systems](https://github.com/dbj-data) is part of [dbj.systems](.https://dbj.systems) group.
+
+![serverside](./media/serversidelogo.png)

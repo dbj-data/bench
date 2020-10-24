@@ -19,11 +19,16 @@
                 "/DNDEBUG",
                 "/MT",
                 "/Fe${workspaceFolder}/bench.exe",
-                "${workspaceFolder}/fwk/main.cpp",
+                "${workspaceFolder}/dbj-fwk/main.cpp",
                 "${workspaceFolder}/program.cpp",
                 "${workspaceFolder}\\units\\*.c",
                 "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
+                "${workspaceFolder}\\zallocators\\*.cpp",
+                "${workspaceFolder}\\zallocators\\kalloc\\kalloc.c",
+                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
+                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
+
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -51,11 +56,15 @@
                 "/Zi",
                 "/MTd",
                 "/Fe${workspaceFolder}/bench_dbg.exe",
-                "${workspaceFolder}/fwk/main.cpp",
+                "${workspaceFolder}/dbj-fwk/main.cpp",
                 "${workspaceFolder}/program.cpp",
                 "${workspaceFolder}\\units\\*.c",
                 "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
+                "${workspaceFolder}\\zallocators\\*.cpp",
+                "${workspaceFolder}\\zallocators\\kalloc\\kalloc.c",
+                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
+                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -65,74 +74,6 @@
             ],
             "group": "build",
             "detail": "Start from anywhere"
-        },
-        {
-            "type": "shell",
-            "label": "DEBUG_BUILD",
-            "command": "cl.exe",
-            "args": [
-                "/nologo",
-                "/I${workspaceFolder}\\EASTL2020CORE\\include",
-                "/EHsc",
-                "/std:c++17",
-                "/D_HAS_EXCEPTIONS=1",
-                "/DUNICODE",
-                "/D_UNICODE",
-                "/D_DEBUG",
-                "/DDBJ_USE_UBENCH",
-                "/Zc:wchar_t",
-                "/Zi",
-                "/MDd",
-                "/Fe:",
-                "${workspaceFolder}\\bench_dbg.exe",
-                "${workspaceFolder}\\fwk\\main.cpp",
-                "${workspaceFolder}\\program.cpp",
-                "${workspaceFolder}\\units\\*.c",
-                "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": "build",
-            "detail": "_HAS_EXCEPTIONS=1"
-        },
-        {
-            "type": "shell",
-            "label": "RELEASE_BUILD",
-            "command": "cl.exe",
-            "args": [
-                "/I${workspaceFolder}\\EASTL2020CORE\\include",
-                "/GL",
-                "/std:c++17",
-                "/GR-",
-                "/nologo",
-                "/D_HAS_EXCEPTIONS=0",
-                "/DUNICODE",
-                "/D_UNICODE",
-                "/DDBJ_USE_UBENCH",
-                "/DNDEBUG",
-                "/MD",
-                "/Zc:wchar_t",
-                "/Fe:",
-                "${workspaceFolder}\\bench.exe",
-                "${workspaceFolder}\\fwk\\main.cpp",
-                "${workspaceFolder}\\program.cpp",
-                "${workspaceFolder}\\units\\*.c",
-                "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": "build",
-            "detail": "_HAS_EXCEPTIONS=0"
         },
         {
             "type": "shell",
@@ -147,7 +88,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "detail": "Delete all, *pdb *obj and *ilk files"
+            "detail": "Delete *ALL*, *pdb *obj and *ilk files found"
         }
     ]
 }
