@@ -138,6 +138,13 @@ UBENCH(allocators, fixed_mem_pool)
 		}
 #endif // 0
 // ----------------------------------------------------------
+UBENCH(allocators, straight_calloc_free)
+{
+	meta_driver(
+		[&](size_t sze_) { return calloc(test_array_size, sizeof(int) ); },
+		[&](int *array_) { free(array_); });
+}
+// ----------------------------------------------------------
 UBENCH(allocators, dbj_nano_calloc_free)
 {
 	meta_driver(

@@ -11,7 +11,7 @@
                 "/GR-",
                 "/Zc:wchar_t",
                 "/std:c++17",
-                "/D_HAS_EXCEPTIONS=0",
+                "/D_HAS_EXCEPTIONS=0", 
                  "/DUNICODE",
                 "/D_UNICODE",
                 "/DDBJ_USE_UBENCH",
