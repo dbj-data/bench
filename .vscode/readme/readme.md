@@ -196,7 +196,7 @@ Compiles, links, runs. That is for the 64 bit clang-cl builds only. No need to f
 
 All of this requires focus, knowledge and experience. Most of the time problems with VS Code do arise when you move to another machine. It can be a very different machine and things need readjusting. 
 
-In case some of these builds "suddenly" stop working, just open the terminal from VS Code and type "cl". Part of your output will be this
+In case some of these builds "suddenly" stop working, just open the terminal from VS Code and type `cl`. Part of your output will be very simillar to this:
 
 ```
 Microsoft (R) C/C++ Optimizing Compiler Version 19.27.29112 for x86
@@ -205,7 +205,7 @@ Copyright (C) Microsoft Corporation.  All rights reserved.
 
 What that means? 
 
-That means you have cl on the path which is a good thing. That also means it is a 32 bit version. See that "for x86"? So it is very likely your clang-cl version, in the settings.json, is still the 64 bit one. And you can non not link. Just change it to 32 bit version, as instructed above, at length.
+That means you have `cl` on the path which is a good thing. That also means it is a 32 bit version. See that "for x86"? So it is very likely your clang-cl version, in the settings.json, is still the 64 bit one. And you can non not link. Just change it to 32 bit version, as instructed above, at length.
 
 In case cl can not be found, close the VS. Click again on one of those icons and start the code again.  That will set up the required environment for you.
 
