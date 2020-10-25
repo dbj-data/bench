@@ -4,7 +4,7 @@
         {
             "type": "shell",
             "label": "CLANG_RELEASE_BUILD",
-            "command": "${env:CLANGCL_BIN}clang-cl.exe",
+            "command": "${dbj:compilerPath}",
             "args": [
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/nologo",
@@ -89,9 +89,20 @@
         },
         {
             "type": "shell",
-            "label": "CLANG-CL",
-            "command": "@echo ${env:CLANGCL_BIN}",
-            "detail": "display CLANGCL_BIN",
+            "label": "USERNAME*",
+            "command": "echo USERNAME : ${env:USERNAME}",
+            "problemMatcher": []
+        },
+        {
+            "label": "${workspaceFolder}",
+            "type": "shell",
+            "command": "echo ${workspaceFolder}",
+            "problemMatcher": []
+        },
+        {
+            "label": "ADD CLANG-CL",
+            "type": "shell",
+            "command": "${workspaceFolder}\\.vscode\\addclang.cmd",
             "problemMatcher": []
         }
     ]
