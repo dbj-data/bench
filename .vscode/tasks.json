@@ -89,20 +89,14 @@
         },
         {
             "type": "shell",
-            "label": "USERNAME*",
-            "command": "echo USERNAME : ${env:USERNAME}",
-            "problemMatcher": []
-        },
-        {
-            "label": "${workspaceFolder}",
-            "type": "shell",
-            "command": "echo ${workspaceFolder}",
+            "label": "CLANGCL_BIN\\clang-cl.exe",
+            "command": "echo CLANGCL_BIN\\clang-cl.exe : ${env:CLANGCL_BIN}\\clang-cl.exe",
             "problemMatcher": []
         },
         {
             "label": "ADD CLANG-CL",
             "type": "shell",
-            "command": "${workspaceFolder}\\.vscode\\addclang.cmd",
+            "command": "start ${workspaceFolder}\\.vscode\\addclang.cmd",
             "problemMatcher": []
         }
     ]
