@@ -90,7 +90,7 @@
         {
             "type": "shell",
             "label": "CLANG-CL",
-            "command": "@echo %CLANGCL_BIN%",
+            "command": "@echo ${env:CLANGCL_BIN}",
             "detail": "display CLANGCL_BIN",
             "problemMatcher": []
         }
