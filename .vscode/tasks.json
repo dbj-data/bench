@@ -91,11 +91,6 @@
             "type": "shell",
             "label": "CLANG-CL",
             "command": "@echo %CLANGCL_BIN%",
-            "args": [],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "build",
             "detail": "display CLANGCL_BIN",
             "problemMatcher": []
         }
