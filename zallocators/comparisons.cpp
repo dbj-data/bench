@@ -37,29 +37,27 @@
 #include "nedmalloc/nedmalloc.h"
 
 /// ---------------------------------------------------------------------
-#ifdef NDEBUG
-constexpr int test_loop_size = 2, test_array_size = 10 * 100000 * 50;
-#else
-constexpr int test_loop_size = 2, test_array_size = 40 * 100000;
-#endif // NDEBUG
+
+using test_array_type = double ;
+constexpr int test_array_size = 0xFFFFF; 
 
 /// ---------------------------------------------------------------------
-inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> int {
+inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
 	static auto _ = [] {
 		srand((unsigned)time(NULL));
 		return true;
 	}();
 
-	return (rand() % max_ + min_);
+	return test_array_type(rand() % max_ + min_);
 };
 /// ---------------------------------------------------------------------
 inline auto meta_driver = [](auto aloka, auto dealoka) {
-	int *array_ = (int *)aloka(test_array_size);
+	test_array_type *array_ = (test_array_type *)aloka(test_array_size);
 	DBJ_ASSERT(array_);
-	for (int k = 0; k < (test_array_size / 4); ++k)
-	{
-		array_[k] = randomizer();
-	}
+	// for (int k = 0; k < (test_array_size / 4); ++k)
+	// {
+	// 	array_[k] = randomizer();
+	// }
 	dealoka(array_);
 };
 
@@ -73,8 +71,8 @@ inline auto meta_driver = [](auto aloka, auto dealoka) {
 UBENCH(allocators, kmem)
 {
 	meta_driver(
-		[&](size_t sze_) { return DBJ_KALLOC(int, test_array_size); },
-		[&](int *array_) { DBJ_KFREE(array_); });
+		[&](size_t sze_) { return DBJ_KALLOC(test_array_type, test_array_size); },
+		[&](test_array_type *array_) { DBJ_KFREE(array_); });
 }
 
 #if _HAS_EXCEPTIONS
@@ -84,20 +82,20 @@ UBENCH(allocators, static_nvwa_pool)
 	using nvwa_pool = nvwa::static_mem_pool<test_array_size>;
 
 	meta_driver(
-		[&](size_t sze_) { return (int *)nvwa_pool::instance_known().allocate(); },
-		[&](int *array_) { nvwa_pool::instance_known().deallocate(array_); });
+		[&](size_t sze_) { return (test_array_type *)nvwa_pool::instance_known().allocate(); },
+		[&](test_array_type *array_) { nvwa_pool::instance_known().deallocate(array_); });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, fixed_mem_pool)
 {
-	using nvwa_pool = nvwa::fixed_mem_pool<int>;
+	using nvwa_pool = nvwa::fixed_mem_pool<test_array_type>;
 	static nvwa_pool nvwa;
 	nvwa_pool::initialize(test_array_size);
 	_ASSERTE(true == nvwa.is_initialized());
 
 	meta_driver(
-		[&](size_t sze_) { return (int *)nvwa.allocate(); },
-		[&](int *array_) { nvwa.deallocate(array_); });
+		[&](size_t sze_) { return (test_array_type *)nvwa.allocate(); },
+		[&](test_array_type *array_) { nvwa.deallocate(array_); });
 	nvwa_pool::deinitialize();
 }
 #endif // _HAS_EXCEPTIONS                                            \
@@ -141,29 +139,29 @@ UBENCH(allocators, fixed_mem_pool)
 UBENCH(allocators, straight_calloc_free)
 {
 	meta_driver(
-		[&](size_t sze_) { return calloc(test_array_size, sizeof(int) ); },
-		[&](int *array_) { free(array_); });
+		[&](size_t sze_) { return calloc(test_array_size, sizeof(test_array_type) ); },
+		[&](test_array_type *array_) { free(array_); });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, dbj_nano_calloc_free)
 {
 	meta_driver(
-		[&](size_t sze_) { return DBJ_CALLOC(test_array_size, int); },
-		[&](int *array_) { DBJ_FREE(array_); });
+		[&](size_t sze_) { return DBJ_CALLOC(test_array_size, test_array_type); },
+		[&](test_array_type *array_) { DBJ_FREE(array_); });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, standard_new_delete)
 {
 	meta_driver(
-		[&](size_t sze_) { return new int[test_array_size]; },
-		[&](int *array_) { delete[] array_; });
+		[&](size_t sze_) { return new test_array_type[test_array_size]; },
+		[&](test_array_type *array_) { delete[] array_; });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, ned_14)
 {
 	meta_driver(
-		[&](size_t sze_) { return (int *)::nedcalloc(test_array_size, sizeof(int)); },
-		[&](int *array_) { ::nedfree((void *)array_); });
+		[&](size_t sze_) { return (test_array_type *)::nedcalloc(test_array_size, sizeof(test_array_type)); },
+		[&](test_array_type *array_) { ::nedfree((void *)array_); });
 }
 
 // ----------------------------------------------------------

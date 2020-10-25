@@ -1,0 +1,13 @@
+{
+    "env": {
+      "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"],
+      "clang-cl": "/usr/local/bin/gcc-7"
+    }
+    ,
+  "configurations": [
+    {
+      "name": "dbj"
+    }
+  ],
+  "version": 4
+}

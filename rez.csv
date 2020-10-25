@@ -1,7 +1,4 @@
 name, mean (ns), stddev (%), confidence (%)
-dbj.sqrt_int, 525, 36.187982, 4.168936,
-clib.sqrt, 370, 32.661567, 3.762685,
-dbj.sqrt_newton, 619, 33.130471, 3.816704,
 allocators.kmem, 349307174, 6.054981, 4.932404,
 allocators.straight_calloc_free, 342218902, 2.838318, 2.312102,
 allocators.dbj_nano_calloc_free, 336511234, 0.851669, 0.693772,
