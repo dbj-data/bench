@@ -20,34 +20,36 @@ if "%VSCMD_VER%"=="" (
 @echo VCINSTALLDIR = %VCINSTALLDIR%
 @echo.
 
+SET "CLANGCL_BIN="
 ::
 :: Tools\Llvm\bin
+:: SETX CLANGCL_BIN "%CLANGCL_BIN%"
 if  "%VSCMD_ARG_TGT_ARCH%"=="x86" (
-    SET "CLANGCL_BIN=%VCINSTALLDIR%Tools\Llvm\bin"
-    SETX CLANGCL_BIN "%CLANGCL_BIN%"
+    SET CLANGCL_BIN="%VCINSTALLDIR%Tools\Llvm\bin\clang-cl.exe"
 )
 
 ::
 :: Tools\Llvm\x64\bin
+:: SETX CLANGCL_BIN "%CLANGCL_BIN%"
 if  "%VSCMD_ARG_TGT_ARCH%"=="x64" (
-    SET "CLANGCL_BIN=%VCINSTALLDIR%Tools\Llvm\x64\bin"
-    SETX CLANGCL_BIN "%CLANGCL_BIN%"
+    SET CLANGCL_BIN="%VCINSTALLDIR%Tools\Llvm\x64\bin\clang-cl.exe"
 )
 
-if "%CLANGCL_BIN%"=="" (
+if %CLANGCL_BIN%=="" (
     @echo Unknown architecture %VSCMD_ARG_TGT_ARCH% ?
     goto exit
 )
-    SET  "PATH=%CLANGCL_BIN%;%PATH%"
-    SETX PATH "%CLANGCL_BIN%";%PATH%
+
+::    SET  "PATH=%CLANGCL_BIN%;%PATH%"
+::    SETX PATH "%CLANGCL_BIN%";%PATH%
 
     @echo.
-    @echo %CLANGCL_BIN% , added to the PATH
+    @echo CLANGCL_BIN : %CLANGCL_BIN% 
     @echo.
     @echo.
     @echo -----------------------------------------------------------------------
 
-    clang-cl --version
+    %CLANGCL_BIN%  --version
 
     @echo.
     @echo -----------------------------------------------------------------------

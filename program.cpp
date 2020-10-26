@@ -3,10 +3,10 @@
 // we will conidtionaly compile one or the other
 
 #ifdef DBJ_USE_UBENCH
-#include "ubench.h/ubench.h"
+#include "ubench/ubench.h"
  UBENCH_STATE();
 #elif DBJ_USE_UTEST
-#include "ubench.h/utest.h"
+#include "utest.h/utest.h"
  UTEST_STATE();
 #else 
 #error "Neither DBJ_USE_UBENCH nor DBJ_USE_UTEST, are defined?"

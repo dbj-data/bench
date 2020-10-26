@@ -6,11 +6,11 @@
 #include <time.h>
 
 #ifdef DBJ_USE_UTEST
-// #include "../utest.h/utest.h"
+// #include "../utest/utest.h"
 #endif
 
 #ifdef DBJ_USE_UBENCH
-#include "../ubench.h/ubench.h"
+#include "../ubench/ubench.h"
 #endif
 
 /// ---------------------------------------------------------------------

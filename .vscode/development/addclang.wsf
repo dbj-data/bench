@@ -1,0 +1,22 @@
+<job>
+<script language="VBScript">
+Set wshShell = WSH.Shell ' CreateObject( "WScript.Shell" )
+WScript.Echo Left( "Expanded" & Space( 12 ), 12 ) & wshShell.ExpandEnvironmentStrings( "TEMP=%TEMP%" )
+arrEnvironments = Array( "PROCESS", "SYSTEM", "USER", "VOLATILE" )
+For Each strEnv In arrEnvironments
+	Set wshEnv = wshShell.Environment( strEnv )
+	WScript.Echo Left( strEnv & Space( 12 ), 12 ) & "TEMP=" & wshEnv( "TEMP" )
+Next
+Set wshEnv   = Nothing
+Set wshShell = Nothing
+</script>
+<script language="JScript">
+// worketh
+// WSH.echo("hello world (from js) using WSH.echo()");
+//
+// this opens error dialogue since it is an error
+// there is no DOM in WSH 
+//  
+// alert("hello world (from js) alert() function");
+</script>
+</job>

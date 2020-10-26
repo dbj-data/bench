@@ -3,17 +3,16 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_64bit_RELEASE_BUILD",
-            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "label": "CLANG_RELEASE_BUILD",
+            "command": "${env:CLANGCL_BIN}",
             "args": [
-                "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/nologo",
                 "/GR-",
                 "/Zc:wchar_t",
                 "/std:c++17",
                 "/D_HAS_EXCEPTIONS=0",
-                 "/DUNICODE",
+                "/DUNICODE",
                 "/D_UNICODE",
                 "/DDBJ_USE_UBENCH",
                 "/DNDEBUG",
@@ -28,7 +27,6 @@
                 "${workspaceFolder}\\zallocators\\kalloc\\kalloc.c",
                 "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
                 "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
-
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -37,14 +35,13 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "make sure .vscode/addclang.cmd was started"
         },
         {
             "type": "shell",
-            "label": "CLANG_64bit_DEBUG_BUILD",
-            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "label": "CLANG_DEBUG_BUILD",
+            "command": "${env:CLANGCL_BIN}",
             "args": [
-                "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/std:c++17",
                 "/D_HAS_EXCEPTIONS=0",
@@ -73,7 +70,7 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "make sure .vscode/addclang.cmd was started"
         },
         {
             "type": "shell",
@@ -89,6 +86,18 @@
             },
             "group": "build",
             "detail": "Delete *ALL*, *pdb *obj and *ilk files found"
+        },
+        {
+            "type": "shell",
+            "label": "CLANGCL_BIN display",
+            "command": "echo CLANGCL_BIN : ${env:CLANGCL_BIN}",
+            "detail": "Show CLANGCL_BIN"
+        },
+        {
+            "label": "ADD CLANG-CL",
+            "type": "shell",
+            "command": "start /W /B ${workspaceFolder}\\.vscode\\addclang.cmd",
+            "detail": "Run the .vscode/addclang.cmd"
         }
     ]
 }

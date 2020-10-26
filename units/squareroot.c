@@ -1,11 +1,11 @@
 #include <assert.h>
 
 #if DBJ_USE_UTEST
-// #include "../utest.h/utest.h"
+// #include "../utest/utest.h"
 #endif
 
 #if DBJ_USE_UBENCH
-#include "../ubench.h/ubench.h"
+#include "../ubench/ubench.h"
 #endif
 
 // https://stackoverflow.com/a/27958565/10870835
