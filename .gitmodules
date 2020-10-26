@@ -1,12 +1,12 @@
 [submodule "EASTL2020CORE"]
 	path = EASTL2020CORE
 	url = https://github.com/dbj-data/EASTL2020CORE.git
-[submodule "ubench.h"]
-	path = ubench.h
-	url = https://github.com/sheredom/ubench.h.git
-[submodule "utest.h"]
-	path = utest.h
-	url = https://github.com/sheredom/utest.h.git
 [submodule "dbj-fwk"]
 	path = dbj-fwk
 	url = https://github.com/dbj-data/dbj-fwk.git
+[submodule "utest"]
+	path = utest
+	url = https://github.com/DBJDBJ/utest.git
+[submodule "ubench"]
+	path = ubench
+	url = https://github.com/DBJDBJ/ubench.git
