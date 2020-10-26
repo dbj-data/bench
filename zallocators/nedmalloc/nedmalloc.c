@@ -1215,7 +1215,7 @@ size_t nedflushlogs(nedpool *p, char *filepath) THROWSPEC
 		p=&syspool;
 		if(!syspool.threads) InitPool(&syspool, 0, -1);
 	}
-	if( p->caches != NULL )
+	if( /* DBJ:  1 -- slows it down a lot */ p->caches != NULL )
 	{
 		threadcache *tc;
 		int n;
@@ -1299,7 +1299,7 @@ size_t nedflushlogs(nedpool *p, char *filepath) THROWSPEC
 }
 static void DestroyCaches(nedpool *RESTRICT p) THROWSPEC
 {
-	if( p->caches != NULL )
+	if( /* DBJ: 1 */ p->caches != NULL )
 	{
 		threadcache *tc;
 		int n;
@@ -1675,6 +1675,7 @@ static PoolList *poollist;
 NEDMALLOCNOALIASATTR NEDMALLOCPTRATTR nedpool *nedcreatepool(size_t capacity, int threads) THROWSPEC
 {
 	nedpool *ret=0;
+
 	if(!poollist)
 	{
 		PoolList *newpoollist=0;
@@ -1715,6 +1716,7 @@ badexit:
 		RELEASE_LOCK(&poollistlock);
 #endif
 	}
+
 	return ret;
 }
 void neddestroypool(nedpool *p) THROWSPEC

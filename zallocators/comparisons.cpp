@@ -30,11 +30,13 @@
 /// nedmalloc primary purpose is multithreaded applications
 /// it is also notoriously difficult to use in its raw form
 ///
+#if DBJ_USES_NEDMALLOC
 #define NEDMALLOC_DEBUG 0
 #undef ENABLE_LOGGING /* 0xffffffff  */
 #define NEDMALLOC_TESTLOGENTRY 0
 #define NO_NED_NAMESPACE
 #include "nedmalloc/nedmalloc.h"
+#endif // DBJ_USES_NEDMALLOC
 
 /// ---------------------------------------------------------------------
 
@@ -157,13 +159,14 @@ UBENCH(allocators, standard_new_delete)
 		[&](test_array_type *array_) { delete[] array_; });
 }
 // ----------------------------------------------------------
+#if DBJ_USES_NEDMALLOC
 UBENCH(allocators, ned_14)
 {
 	meta_driver(
 		[&](size_t sze_) { return (test_array_type *)::nedcalloc(test_array_size, sizeof(test_array_type)); },
 		[&](test_array_type *array_) { ::nedfree((void *)array_); });
 }
-
+#endif // DBJ_USES_NEDMALLOC
 // ----------------------------------------------------------
 #ifdef DBJ_TESTING_NED_POOL
 dbj::collector coll_ned_14_pool("NED14 Pool");
