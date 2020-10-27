@@ -25,7 +25,8 @@
                 "${workspaceFolder}\\units\\*.cpp",
                 "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
                 "${workspaceFolder}\\zallocators\\*.cpp",
-                "${workspaceFolder}\\zallocators\\kalloc\\kalloc.c",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.cpp",
                 "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
                 "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
 
@@ -62,7 +63,8 @@
                 "${workspaceFolder}\\units\\*.cpp",
                 "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
                 "${workspaceFolder}\\zallocators\\*.cpp",
-                "${workspaceFolder}\\zallocators\\kalloc\\kalloc.c",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.cpp",
                 "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
                 "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
             ],

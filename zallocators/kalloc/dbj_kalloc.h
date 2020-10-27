@@ -32,6 +32,7 @@ extern "C" {
 		km_destroy(k_memory_());
 	}
 
+// call to k_memory_() takes time
 #define DBJ_KALLOC(T_,CNT_) (T_*)kcalloc( k_memory_(), CNT_, sizeof(T_))
 #define DBJ_KREALLOC(P_, S_) krealloc( k_memory_() , P_, S_ )
 #define DBJ_KFREE( P_ ) kfree( k_memory_(), (void *)P_  )
