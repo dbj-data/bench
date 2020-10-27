@@ -31,17 +31,17 @@
     <ClCompile Include="..\units\empty_file.c" />
     <ClCompile Include="..\units\empty_file.cpp" />
     <ClCompile Include="..\units\squareroot.c" />
+    <ClCompile Include="..\zallocators\comparisons.cpp" />
+    <ClCompile Include="..\zallocators\kalloc\kalloc.c" />
+    <ClCompile Include="..\zallocators\kalloc\kvec_sampling.cpp" />
+    <ClCompile Include="..\zallocators\nvwa\mem_pool_base.cpp" />
+    <ClCompile Include="..\zallocators\nvwa\static_mem_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\units\clang_cl.cpp_IGNORE" />
-    <None Include="..\units\count_ones.c_IGNORE" />
-    <None Include="..\units\eastl_and_std.cpp_IGNORE" />
     <None Include="..\units\readme.md" />
-    <None Include="..\units\test13.c_IGNORE" />
-    <None Include="..\units\unique_arr_ptr.cpp_IGNORE" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\units\comonu.h" />
+    <ClInclude Include="..\ubench\win_vt100_user.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -113,6 +113,19 @@ int main() {
 constexpr auto test_array_size = 0xFFFF ;
 using test_array_type = int ;
 ///-----------------------------------------------
+
+#include <atlsimpcoll.h>
+
+using atl_vec = ATL::CSimpleArray<int>;
+
+UBENCH( kvec_std_vec , atl_vec_dynamic )  {
+	atl_vec array_;
+	// inner loop
+	for (int count_ = 0; count_ < test_array_size; ++count_) {
+		array_.Add(count_);
+	}
+}
+///-----------------------------------------------
 UBENCH( kvec_std_vec , kvec_resize )  {
 	kvec_t(test_array_type) array_;
 	kv_init(array_);
