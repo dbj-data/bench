@@ -1215,7 +1215,7 @@ size_t nedflushlogs(nedpool *p, char *filepath) THROWSPEC
 		p=&syspool;
 		if(!syspool.threads) InitPool(&syspool, 0, -1);
 	}
-	if( /* DBJ:  1 -- slows it down a lot */ p->caches != NULL )
+	if( /* DBJ: */  1 /* -- slows it down a lot p->caches != NULL */ )
 	{
 		threadcache *tc;
 		int n;
@@ -1299,7 +1299,7 @@ size_t nedflushlogs(nedpool *p, char *filepath) THROWSPEC
 }
 static void DestroyCaches(nedpool *RESTRICT p) THROWSPEC
 {
-	if( /* DBJ: 1 */ p->caches != NULL )
+	if( /* DBJ: */ 1 /* p->caches != NULL*/ )
 	{
 		threadcache *tc;
 		int n;

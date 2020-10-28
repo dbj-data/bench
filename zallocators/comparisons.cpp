@@ -30,7 +30,8 @@
 /// nedmalloc primary purpose is multithreaded applications
 /// it is also notoriously difficult to use in its raw form
 ///
-#if DBJ_USES_NEDMALLOC
+#define DBJ_USES_NEDMALLOC
+#ifdef DBJ_USES_NEDMALLOC
 #define NEDMALLOC_DEBUG 0
 #undef ENABLE_LOGGING /* 0xffffffff  */
 #define NEDMALLOC_TESTLOGENTRY 0
@@ -159,7 +160,7 @@ UBENCH(allocators, standard_new_delete)
 		[&](test_array_type *array_) { delete[] array_; });
 }
 // ----------------------------------------------------------
-#if DBJ_USES_NEDMALLOC
+#ifdef DBJ_USES_NEDMALLOC
 UBENCH(allocators, ned_14)
 {
 	meta_driver(

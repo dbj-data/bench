@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}\\bench_dbg.exe",
-            "args": [],
+            "args": ["--filter=vec*", "--confidence=9"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
