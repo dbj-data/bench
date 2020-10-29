@@ -1,3 +1,5 @@
+#ifndef AC_KVEC_H
+#define AC_KVEC_H
 /* The MIT License
 
    Copyright (c) 2008, by Attractive Chaos <attractor@live.co.uk>
@@ -21,9 +23,7 @@
    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
 
-/*
   An example:
 
 #include "kvec.h"
@@ -36,17 +36,17 @@ int main() {
 	kv_destroy(array);
 	return 0;
 }
-*/
 
-/*
   2008-09-22 (0.1.0):
 
 	* The initial version.
 
 */
 
-#ifndef AC_KVEC_H
-#define AC_KVEC_H
+// DBJ added
+#ifdef __cpusplus
+#pragma message("CAUTION: in the context of C++. KVEC can handle only scalaras.")
+#endif
 
 #include <stdlib.h>
 
