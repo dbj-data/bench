@@ -1,6 +1,8 @@
 <h1>dbj*bench</h1>
 (c) 2020 by dbj@dbj.org -- licemse.md applies
 
+![bench](media/dbj-bench.png)
+
 There are some more readme's scattered bellow this one; please use them.
 
 ## Principles
