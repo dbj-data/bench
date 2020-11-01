@@ -3,9 +3,10 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_32bit_RELEASE_BUILD",
-            "command": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "label": "CLANG_64bit_RELEASE_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
             "args": [
+                "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/nologo",
                 "/GR-",
@@ -42,9 +43,10 @@
         },
         {
             "type": "shell",
-            "label": "CLANG_32bit_DEBUG_BUILD",
-            "command": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "label": "CLANG_64bit_DEBUG_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
             "args": [
+                "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/std:c++17",
                 "/D_HAS_EXCEPTIONS=0",
