@@ -3,9 +3,11 @@
 
 There are some more readme's scattered bellow this one; please use them.
 
-## Architectural App principles
+## Principles
 
-Architecture rules. No architecture to success.
+### Architecture
+
+Architecture rules. No architecture no success.
 
 ### serverside.systems bench
 
