@@ -16,7 +16,8 @@ Architecture rules. No architecture no success.
 - Using sheredom ubench and utest. Which are both modified.
 - not using Cmake, nmake, msbuild or any other building system (bazel is rather good) 
 - using Visual Studio (2019)
-- preffering clang-cl to cl
+     - solution for the whole is in the folder `benchvs`
+- we do prefer clang-cl to cl
 - VS is used to making lib's
 - using static libs (not dll's)
     - among other dll problems some key clang-cl features do work with `/MT` but not with `/MD`
@@ -39,9 +40,9 @@ Architecture rules. No architecture no success.
           -  2020 Q4: C11 and C17 are (at last) becoming officialy supported at least by cl.exe
                 -  mistery decision makers have decided  *no* VLA
 - clang + WIN32
-    -  using VLA but not for stack abuse
+    -  using VLA but [not for stack abuse](https://gustedt.wordpress.com/2014/09/08/dont-use-fake-matrices/)
     -  VLA typedefs and VLA based heap allocation are the key.
-- SEH is unavoidable on Windows
+- SEH is [unavoidable](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160) on Windows
     -  that is what `fwk` lib is for
 - COM is unavoidable too; it is based on MSRPC which stil rules.
     - comdef.h was good, it seems abandoned but nobody knows for certain
