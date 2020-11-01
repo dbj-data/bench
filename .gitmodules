@@ -4,9 +4,3 @@
 [submodule "dbj-fwk"]
 	path = dbj-fwk
 	url = https://github.com/dbj-data/dbj-fwk.git
-[submodule "utest"]
-	path = utest
-	url = https://github.com/DBJDBJ/utest.git
-[submodule "ubench"]
-	path = ubench
-	url = https://github.com/DBJDBJ/ubench.git
