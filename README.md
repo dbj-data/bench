@@ -1,5 +1,7 @@
 <h1>dbj*bench</h1>
-(c) 2020 by dbj@dbj.org -- licemse.md applies
+(c) 2020 by dbj@dbj.org 
+
+Please check the [license](https://dbj.org/license_dbj/)
 
 ![bench](media/dbj-bench.png)
 
