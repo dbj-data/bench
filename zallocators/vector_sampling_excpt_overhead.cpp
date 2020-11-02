@@ -37,7 +37,7 @@ UBENCH(bad_index_vector, atl_simple_arr)
 	// on bad index ATL raises SE with id: EXCEPTION_ARRAY_BOUNDS_EXCEEDED
 	// which is defined in minwinbase.h
 	// AFAICS, ATL in that scenario never throws C++ exception ...
-	int can_place_debug_stop_on_this_line = 42 ;
+	(void)42 ;
 	}
 }
 #endif // __has_include(<atlsimpcoll.h>)
@@ -49,7 +49,7 @@ static const std::string  empty_std_string{} ;
 
 UBENCH(bad_index_vector, ms_stl_vec_)
 {
-	#if _HAS_EXCEPTIONS
+	#if _HAS_EXCEPTIONS == 1
 	try {
 	#else
 	int se_code = 0 ;
@@ -61,15 +61,15 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 	array_.push_back(empty_std_string);
 	// use illegal index
 	(void)array_.at(9);
-	#if _HAS_EXCEPTIONS
+	#if _HAS_EXCEPTIONS == 1
 	} catch ( std::out_of_range & x) 
 	{
-	const char * can_place_debug_stop_on_this_line = x.what();
+	(void)x.what();
 	}
 	#else // _HAS_EXCEPTIONS
 	} __except ( se_code = GetExceptionCode(), EXCEPTION_CONTINUE_EXECUTION ) 
 	{
-	int can_place_debug_stop_on_this_line = se_code ;
+	(void)se_code ;
 	}
 	#endif // _HAS_EXCEPTIONS
 
@@ -82,7 +82,7 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 /// or will exit the app if debugger is not running
 /// thus, EASTL doe not use SEH
 /// it exists if c++ exceptions as switched of
-#if _HAS_EXCEPTIONS
+#if _HAS_EXCEPTIONS == 1
 
 #include <EASTL/vector.h>
 #include <EASTL/string.h>
@@ -111,7 +111,7 @@ UBENCH(bad_index_vector, eastl_vec_)
 	} catch ( std::out_of_range & x) 
 	{
 		// yes EASTL will use std:: exceptions
-	const char * can_place_debug_stop_on_this_line = x.what();
+		(void)x.what();
 	}
 }
 

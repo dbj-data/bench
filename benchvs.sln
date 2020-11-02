@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "benchvs", "benchvs.vcxproj", "{283F8476-DF71-48E9-8062-42CC6C69BCA1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbj-fwk-lib", "dbj-fwk\dbj-fwk-lib\dbj-fwk-lib.vcxproj", "{E2EA48AE-16F3-4612-9C0D-DF2C2D996DEB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eastl2020dbj", "EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj", "{12049086-1403-4D93-BA0D-45C93FD22F89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{283F8476-DF71-48E9-8062-42CC6C69BCA1}.Debug|x64.ActiveCfg = Debug|x64
+		{283F8476-DF71-48E9-8062-42CC6C69BCA1}.Debug|x64.Build.0 = Debug|x64
+		{283F8476-DF71-48E9-8062-42CC6C69BCA1}.Release|x64.ActiveCfg = Release|x64
+		{283F8476-DF71-48E9-8062-42CC6C69BCA1}.Release|x64.Build.0 = Release|x64
+		{E2EA48AE-16F3-4612-9C0D-DF2C2D996DEB}.Debug|x64.ActiveCfg = Debug|x64
+		{E2EA48AE-16F3-4612-9C0D-DF2C2D996DEB}.Debug|x64.Build.0 = Debug|x64
+		{E2EA48AE-16F3-4612-9C0D-DF2C2D996DEB}.Release|x64.ActiveCfg = Release|x64
+		{E2EA48AE-16F3-4612-9C0D-DF2C2D996DEB}.Release|x64.Build.0 = Release|x64
+		{12049086-1403-4D93-BA0D-45C93FD22F89}.Debug|x64.ActiveCfg = Debug|x64
+		{12049086-1403-4D93-BA0D-45C93FD22F89}.Debug|x64.Build.0 = Debug|x64
+		{12049086-1403-4D93-BA0D-45C93FD22F89}.Release|x64.ActiveCfg = Release|x64
+		{12049086-1403-4D93-BA0D-45C93FD22F89}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C7FB49D-EDC5-4C66-AC45-9D5789254EEA}
+	EndGlobalSection
+EndGlobal

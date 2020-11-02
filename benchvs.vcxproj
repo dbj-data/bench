@@ -19,29 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dbj-fwk\dbj-fwk-lib\dbj-fwk-lib.vcxproj">
+    <ClCompile Include="program.cpp" />
+    <ClCompile Include="zallocators\kalloc\kalloc.c" />
+    <ClCompile Include="zallocators\vector_sampling.cpp" />
+    <ClCompile Include="zallocators\vector_sampling_excpt_overhead.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="dbj-fwk\dbj-fwk-lib\dbj-fwk-lib.vcxproj">
       <Project>{e2ea48ae-16f3-4612-9c0d-df2c2d996deb}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj">
+    <ProjectReference Include="EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj">
       <Project>{12049086-1403-4d93-ba0d-45c93fd22f89}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\program.cpp" />
-    <ClCompile Include="..\units\empty_file.c" />
-    <ClCompile Include="..\units\empty_file.cpp" />
-    <ClCompile Include="..\units\squareroot.c" />
-    <ClCompile Include="..\zallocators\comparisons.cpp" />
-    <ClCompile Include="..\zallocators\kalloc\kalloc.c" />
-    <ClCompile Include="..\zallocators\kalloc\kvec_sampling.cpp" />
-    <ClCompile Include="..\zallocators\nvwa\mem_pool_base.cpp" />
-    <ClCompile Include="..\zallocators\nvwa\static_mem_pool.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\units\readme.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\ubench\win_vt100_user.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -97,15 +86,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)\EASTL2020CORE\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)\EASTL2020CORE\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)\EASTL2020CORE\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)\EASTL2020CORE\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,8 +108,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/DDBJ_USE_UBENCH %(AdditionalOptions) /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,8 +128,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/DNDEBUG %(AdditionalOptions) /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,8 +148,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/DDBJ_USE_UBENCH %(AdditionalOptions) /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,8 +168,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/DNDEBUG %(AdditionalOptions) /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -46,10 +46,10 @@ constexpr int test_array_size = 0xFFFFF;
 
 /// ---------------------------------------------------------------------
 inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
-	static auto _ = [] {
-		srand((unsigned)time(NULL));
-		return true;
-	}();
+	//static auto _ = [] {
+	//	srand((unsigned)time(NULL));
+	//	return true;
+	//}();
 
 	return test_array_type(rand() % max_ + min_);
 };
