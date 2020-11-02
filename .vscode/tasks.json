@@ -3,23 +3,22 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_64bit_RELEASE_BUILD",
+            "label": "CLANG_64bit_SEH_RELEASE_BUILD",
             "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
             "args": [
                 "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/nologo",
-                "/GR-",
                 "/Zc:wchar_t",
                 "/std:c++17",
-                "/D_HAS_EXCEPTIONS=0",
-                 "/DUNICODE",
-                "/D_UNICODE",
+                "/GR-", "/D_HAS_EXCEPTIONS=0",
+                 "/DUNICODE","/D_UNICODE",
                 "/DDBJ_USE_UBENCH",
                 "/DNDEBUG",
                 "/DDBJ_FWK_DISPLAY_INFO",
+                "/DWINVER=0x0A00", "/D_WIN32_WINNT=0x0A00",
                 "/MT",
-                "/Fe${workspaceFolder}/bench.exe",
+                "/Fe${workspaceFolder}/bench_seh.exe",
                 "${workspaceFolder}/dbj-fwk/main.cpp",
                 "${workspaceFolder}/program.cpp",
                 "${workspaceFolder}\\units\\*.c",
@@ -27,7 +26,6 @@
                 "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
                 "${workspaceFolder}\\zallocators\\*.cpp",
                 "${workspaceFolder}\\zallocators\\kalloc\\*.c",
-                "${workspaceFolder}\\zallocators\\kalloc\\*.cpp",
                 "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
                 "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
 
@@ -39,7 +37,45 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "No Exception and no RTTI"
+        },
+        {
+            "type": "shell",
+            "label": "CLANG_64bit_RELEASE_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "args": [
+                "--target=x86_64-pc-windows-msvc",
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/nologo",
+                "/Zc:wchar_t",
+                "/std:c++17",
+                "/GR", "/EHsc", "/D_HAS_EXCEPTIONS=1",
+                 "/DUNICODE","/D_UNICODE",
+                "/DDBJ_USE_UBENCH",
+                "/DNDEBUG",
+                "/DDBJ_FWK_DISPLAY_INFO",
+                "/DWINVER=0x0A00", "/D_WIN32_WINNT=0x0A00",
+                "/MT",
+                "/Fe${workspaceFolder}/bench.exe",
+                "${workspaceFolder}/dbj-fwk/main.cpp",
+                "${workspaceFolder}/program.cpp",
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
+                "${workspaceFolder}\\zallocators\\*.cpp",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
+                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
+                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
+
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build",
+            "detail": "YES Exceptions and YES RTTI"
         },
         {
             "type": "shell",
@@ -49,12 +85,12 @@
                 "--target=x86_64-pc-windows-msvc",
                 "/I${workspaceFolder}\\EASTL2020CORE\\include",
                 "/std:c++17",
-                "/D_HAS_EXCEPTIONS=0",
-                "/DUNICODE",
-                "/D_UNICODE",
+                "/GR", "/EHsc", "/D_HAS_EXCEPTIONS=1",
+                "/DUNICODE","/D_UNICODE",
                 "/D_DEBUG",
                 "/DDBJ_USE_UBENCH",
                 "/DDBJ_FWK_DISPLAY_INFO",
+                "/DWINVER=0x0A00", "/D_WIN32_WINNT=0x0A00",
                 "/Zc:wchar_t",
                 "/Zi",
                 "/MTd",
@@ -66,7 +102,6 @@
                 "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
                 "${workspaceFolder}\\zallocators\\*.cpp",
                 "${workspaceFolder}\\zallocators\\kalloc\\*.c",
-                "${workspaceFolder}\\zallocators\\kalloc\\*.cpp",
                 "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
                 "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
             ],
@@ -77,7 +112,44 @@
                 "$msCompile"
             ],
             "group": "build",
-            "detail": "Start from anywhere"
+            "detail": "YES exceptions and yes RTTI"
+        },
+        {
+            "type": "shell",
+            "label": "CLANG_64bit_SEH_DEBUG_BUILD",
+            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
+            "args": [
+                "--target=x86_64-pc-windows-msvc",
+                "/I${workspaceFolder}\\EASTL2020CORE\\include",
+                "/std:c++17",
+                "/GR-", "/D_HAS_EXCEPTIONS=0",
+                "/DUNICODE","/D_UNICODE",
+                "/D_DEBUG",
+                "/DDBJ_USE_UBENCH",
+                "/DDBJ_FWK_DISPLAY_INFO",
+                "/DWINVER=0x0A00", "/D_WIN32_WINNT=0x0A00",
+                "/Zc:wchar_t",
+                "/Zi",
+                "/MTd",
+                "/Fe${workspaceFolder}/bench_seh_dbg.exe",
+                "${workspaceFolder}/dbj-fwk/main.cpp",
+                "${workspaceFolder}/program.cpp",
+                "${workspaceFolder}\\units\\*.c",
+                "${workspaceFolder}\\units\\*.cpp",
+                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
+                "${workspaceFolder}\\zallocators\\*.cpp",
+                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
+                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
+                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build",
+            "detail": "No Exceptions and no RTTI"
         },
         {
             "type": "shell",

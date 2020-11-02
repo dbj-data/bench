@@ -1,6 +1,12 @@
 
-// we can mix utest and ubench but we wont
-// we will conidtionaly compile one or the other
+// we can NOT mix utest and ubench 
+#ifdef DBJ_USE_UBENCH
+#ifdef DBJ_USE_UTEST
+#error Currently can not accomodate UBENCH and UTEST in the same program
+#endif 
+#endif 
+
+// we will conidtionaly compile for one or the other
 
 #ifdef DBJ_USE_UBENCH
 #include "ubench/ubench.h"
