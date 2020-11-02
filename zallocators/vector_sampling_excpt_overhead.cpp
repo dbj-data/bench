@@ -12,22 +12,38 @@ static const test_array_type test_array_element = std::string(__FILE__);
 ///-----------------------------------------------
 // on bad index ATL does ATL_ASSERT on debug build
 // so lets do only release builds
-#ifdef NDEBUG
+#ifndef _DEBUG
 #if __has_include(<atlsimpcoll.h>)
 
 #include <atlsimpcoll.h>
 using atl_vec = ATL::CSimpleArray<test_array_type>;
 
+static void atl_simple_array() {
+#if _HAS_EXCEPTIONS
+	try {
+#endif // _HAS_EXCEPTIONS
+		atl_vec array_;
+		// add 3 elements
+		array_.Add(test_array_element);
+		array_.Add(test_array_element);
+		array_.Add(test_array_element);
+		// use illegal index
+		(void)array_[9];
+#if _HAS_EXCEPTIONS
+	}
+	catch ( ...) {
+    }
+#endif // _HAS_EXCEPTIONS
+
+}
+
 UBENCH(bad_index_vector, atl_simple_arr)
 {
+	// SEH is always available but not mixed
+	// in the same function
+	// with C++ exceptions
 	__try {
-	atl_vec array_;
-	// add 3 elements
-	array_.Add(test_array_element);
-	array_.Add(test_array_element);
-	array_.Add(test_array_element);
-	// use illegal index
-	(void)array_[9];
+		atl_simple_array();
 	}
 	__except ( 
 		GetExceptionCode() == EXCEPTION_ARRAY_BOUNDS_EXCEEDED 
@@ -47,31 +63,26 @@ UBENCH(bad_index_vector, atl_simple_arr)
 
 static const std::string  empty_std_string{} ;
 
+static void mst_stl_bad_index_vector () {
+#if _HAS_EXCEPTIONS
+	try {
+#endif
+		std::vector<test_array_type> array_{};
+		array_.push_back(empty_std_string);
+		array_.push_back(empty_std_string);
+		array_.push_back(empty_std_string);
+		// use illegal index
+		(void)array_.at(9);
+#if _HAS_EXCEPTIONS
+	} catch (std::out_of_range & ) {}
+#endif
+}
+
 UBENCH(bad_index_vector, ms_stl_vec_)
 {
-	#if _HAS_EXCEPTIONS == 1
-	try {
-	#else
-	int se_code = 0 ;
 	__try {
-	#endif
-	std::vector<test_array_type> array_{};
-	array_.push_back(empty_std_string);
-	array_.push_back(empty_std_string);
-	array_.push_back(empty_std_string);
-	// use illegal index
-	(void)array_.at(9);
-	#if _HAS_EXCEPTIONS == 1
-	} catch ( std::out_of_range & x) 
-	{
-	(void)x.what();
-	}
-	#else // _HAS_EXCEPTIONS
-	} __except ( se_code = GetExceptionCode(), EXCEPTION_CONTINUE_EXECUTION ) 
-	{
-	(void)se_code ;
-	}
-	#endif // _HAS_EXCEPTIONS
+		mst_stl_bad_index_vector();
+	} __except (EXCEPTION_EXECUTE_HANDLER) { }
 
 }
 ///-----------------------------------------------
@@ -92,8 +103,7 @@ static const eastl::string
 
 UBENCH(bad_index_vector, eastl_vec_)
 {
-	
-	try {
+  try {
 	eastl::vector<eastl::string> array_{};
 	array_.push_back(eastl_test_array_element);
 	array_.push_back(eastl_test_array_element);

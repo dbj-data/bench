@@ -5,7 +5,7 @@
 
 #include <string>
 ///-----------------------------------------------
-constexpr auto test_array_size = 0xFFFF;
+constexpr auto test_array_size = 1;  // 0xFFFF;
 using test_array_type = std::string;
 static const test_array_type test_array_element = std::string(__FILE__);
 ///-----------------------------------------------
@@ -27,7 +27,7 @@ UBENCH(vector_dynamic_push, atl_simple_arr)
 ///-----------------------------------------------
 #include <vector>
 
-UBENCH(vector_dynamic_push, std_vec_)
+UBENCH(vector_dynamic_push, ms_stl_vec_)
 {
 	std::vector<test_array_type> array_{};
 	for (int count_ = 0; count_ < test_array_size; ++count_)
