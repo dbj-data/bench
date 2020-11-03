@@ -6,6 +6,16 @@
 #include <string>
 #include <stdexcept>
 
+// just for this file
+enum { RESET, GREEN, RED };
+static char* colours_[] = { (char*)"\033[0m", (char*)"\033[32m", (char*)"\033[31m" };
+
+#ifdef _DEBUG
+constexpr static  bool debugging_ = true ;
+#else
+constexpr static  bool debugging_ = false ;
+#endif 
+
 ///-----------------------------------------------
 using test_array_type = std::string;
 static const test_array_type test_array_element = std::string(__FILE__);
@@ -63,6 +73,8 @@ UBENCH(bad_index_vector, atl_simple_arr)
 
 static const std::string  empty_std_string{} ;
 
+// SEH and C++ exceptions can not be 
+//mixed in one function
 static void mst_stl_bad_index_vector () {
 #if _HAS_EXCEPTIONS
 	try {
@@ -77,7 +89,7 @@ static void mst_stl_bad_index_vector () {
 	} catch (std::out_of_range & ) {}
 #endif
 }
-
+// SEH is always there
 UBENCH(bad_index_vector, ms_stl_vec_)
 {
 	__try {
@@ -85,15 +97,18 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 	} __except (EXCEPTION_EXECUTE_HANDLER) { }
 
 }
+
 ///-----------------------------------------------
 /// EASTL2020 CORE
 
-/// otherwise EASTL will call debug break
+/// if no C++ exceptions, EASTL will call debug break
 /// which will attach to the debuger if one is running
 /// or will exit the app if debugger is not running
 /// thus, EASTL doe not use SEH
 /// it exists if c++ exceptions as switched of
-#if _HAS_EXCEPTIONS == 1
+
+// #if EASTL_EXCEPTIONS_ENABLED
+
 
 #include <EASTL/vector.h>
 #include <EASTL/string.h>
@@ -101,29 +116,48 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 static const eastl::string
    eastl_test_array_element = eastl::string(__FILE__);
 
-UBENCH(bad_index_vector, eastl_vec_)
+static void eastl_vector_of_strings() 
 {
-  try {
-	eastl::vector<eastl::string> array_{};
-	array_.push_back(eastl_test_array_element);
-	array_.push_back(eastl_test_array_element);
-	array_.push_back(eastl_test_array_element);
-	// use illegal index
-	// EASTL simply does no index checks inside operator[]
-	// if there are no C++ exceptions
-	// EASTL does EASTL_FAIL_MSG()
-	// which boils down to OutputDebugStringA()
-	// but only if debugger is present
-	// if it is not, I do not see anything happening?
-	// so the result bellow will provoke very bad things
-	(void)array_.at(9);
+#if _HAS_EXCEPTIONS
+	try {
+#endif
+		eastl::vector<eastl::string> array_{};
+		array_.push_back(eastl_test_array_element);
+		array_.push_back(eastl_test_array_element);
+		array_.push_back(eastl_test_array_element);
+		// use illegal index
+		// if there are no C++ exceptions
+		// EASTL does EASTL_FAIL_MSG()
+		// which boils down to debug break
+		// but only if debugger is present
+		// if it is not, I do not see anything happening?
+		// so the result bellow will provoke very bad things
+		eastl::string disaster = array_.operator[](9);
 
-	} catch ( std::out_of_range & x) 
+#if _HAS_EXCEPTIONS
+	}
+	catch (std::out_of_range& x)
 	{
 		// yes EASTL will use std:: exceptions
 		(void)x.what();
 	}
+#endif
 }
 
-#endif // _HAS_EXCEPTIONS
+static bool done_that = false;
+
+UBENCH(bad_index_vector, eastl_vec_)
+{
+	__try {
+		eastl_vector_of_strings();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+		if ( !done_that ) {
+			printf("\n%sEASTL index out of range caught by SEH!%s\n", colours_[RED], colours_[RESET]);
+			done_that = true;
+		}
+	}
+}
+
+// #endif // _HAS_EXCEPTIONS
 
