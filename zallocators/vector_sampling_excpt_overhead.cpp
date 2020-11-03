@@ -21,6 +21,7 @@ using test_array_type = std::string;
 static const test_array_type test_array_element = std::string(__FILE__);
 ///-----------------------------------------------
 // on bad index ATL does ATL_ASSERT on debug build
+// which provokes UCRT dialogue offering to debug
 // so lets do only release builds
 #ifndef _DEBUG
 #if __has_include(<atlsimpcoll.h>)
@@ -72,7 +73,7 @@ UBENCH(bad_index_vector, atl_simple_arr)
 	}
 }
 #endif // __has_include(<atlsimpcoll.h>)
-#endif // NDEBUG
+#endif // ! _DEBUG
 ///-----------------------------------------------
 #include <vector>
 
