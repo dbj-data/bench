@@ -38,7 +38,7 @@ static void atl_simple_array() {
 		array_.Add(test_array_element);
 		array_.Add(test_array_element);
 		// use illegal index
-		(void)array_[9];
+		(void)array_.operator[](9);
 #if _HAS_EXCEPTIONS
 	}
 	catch ( ...) {
@@ -49,6 +49,7 @@ static void atl_simple_array() {
 
 UBENCH(bad_index_vector, atl_simple_arr)
 {
+	static bool done_that = false;
 	// SEH is always available but not mixed
 	// in the same function
 	// with C++ exceptions
@@ -59,11 +60,15 @@ UBENCH(bad_index_vector, atl_simple_arr)
 		GetExceptionCode() == EXCEPTION_ARRAY_BOUNDS_EXCEEDED 
 		? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_EXECUTION )
 	{
-	// RELEASE build
+	// RELEASE or DEBUG build
 	// on bad index ATL raises SE with id: EXCEPTION_ARRAY_BOUNDS_EXCEEDED
 	// which is defined in minwinbase.h
-	// AFAICS, ATL in that scenario never throws C++ exception ...
-	(void)42 ;
+	// ATL never throws C++ exceptions
+		if (!done_that) {
+			printf("%sATL index out of range caught by SEH, on each call!%s\n", colours_[RED], colours_[RESET]);
+			done_that = true;
+		}
+
 	}
 }
 #endif // __has_include(<atlsimpcoll.h>)
@@ -144,16 +149,16 @@ static void eastl_vector_of_strings()
 #endif
 }
 
-static bool done_that = false;
-
 UBENCH(bad_index_vector, eastl_vec_)
 {
+static bool done_that = false;
+
 	__try {
 		eastl_vector_of_strings();
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 		if ( !done_that ) {
-			printf("\n%sEASTL index out of range caught by SEH!%s\n", colours_[RED], colours_[RESET]);
+			printf("%sEASTL index out of range caught by SEH, on each call!%s\n", colours_[RED], colours_[RESET]);
 			done_that = true;
 		}
 	}

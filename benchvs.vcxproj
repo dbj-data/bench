@@ -32,6 +32,10 @@
       <Project>{12049086-1403-4d93-ba0d-45c93fd22f89}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ubench\dbj_win_lib.h" />
+    <ClInclude Include="ubench\ubench.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -108,7 +112,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO  /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -128,7 +132,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO  /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -148,7 +152,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO  /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -168,7 +172,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_DISPLAY_INFO  /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
