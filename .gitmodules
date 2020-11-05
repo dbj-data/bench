@@ -10,3 +10,6 @@
 [submodule "dbj-fwk"]
 	path = dbj-fwk
 	url = https://github.com/dbj-data/dbj-fwk.git
+[submodule "dbj--simplelog"]
+	path = dbj--simplelog
+	url = https://github.com/dbj-systems/dbj--simplelog.git
