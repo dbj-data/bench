@@ -1,7 +1,7 @@
 <h1>dbj*bench</h1>
 (c) 2020 by dbj@dbj.org 
 
-Contributions and contributors are wellcome.
+[Contributions](CODE_OF_CONDUCT.md) and [contributors](CONTRIBUTING.md) are wellcome.
 
 Please check the [license](https://dbj.org/license_dbj/)
 
