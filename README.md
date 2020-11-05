@@ -1,9 +1,11 @@
 <h1>dbj*bench</h1>
 (c) 2020 by dbj@dbj.org 
 
+Contributions and contributors are wellcome.
+
 Please check the [license](https://dbj.org/license_dbj/)
 
-![bench](media/dbj-bench.png)
+![bench](media/bench.png)
 
 There are some more readme's scattered bellow this one; please use them.
 
@@ -57,7 +59,9 @@ Architecture rules. No architecture no success.
 
 Why this `dbj` prefix everywhere, ego trip? No. It is just the easy way to have unique names on the GitHub. That is the only reason.
 
+![dbj-bench-logo](./media/dbj-bench%20128x128.png)
+
+DBJ*BENCH&trade;
 
 [Serverside Systems](https://github.com/dbj-data) is part of [dbj.systems](.https://dbj.systems) group.
 
-![serverside](./media/serversidelogo.png)
