@@ -4,18 +4,13 @@
 #include "../ubench/ubench.h"
 #include "../dbj-fwk/printing_macros.h"
 
-#include <string>
 #include <stdexcept>
 
-#ifdef _DEBUG
-constexpr static  bool debugging_ = true ;
-#else
-constexpr static  bool debugging_ = false ;
-#endif 
-
 ///-----------------------------------------------
-using test_array_type = std::string;
-static const test_array_type test_array_element = std::string(__FILE__);
+struct buffer_type { char data[0xFF]; };
+using test_array_type = buffer_type;
+static const test_array_type test_array_element = { {'?'} };
+
 ///-----------------------------------------------
 // on bad index ATL does ATL_ASSERT on debug build
 // which provokes UCRT dialogue offering to debug
@@ -25,10 +20,9 @@ static const test_array_type test_array_element = std::string(__FILE__);
 
 #include <atlcoll.h>
 
-using atl_arr = ATL::CAtlArray<test_array_type>;
-
 static void atl_array() 
 {
+	using atl_arr = ATL::CAtlArray<test_array_type>;
 	// _ATL_NO_EXCEPTIONS ?
 #if _HAS_EXCEPTIONS
 	try {
@@ -58,8 +52,11 @@ UBENCH(bad_index_vector, atl_arr)
 		atl_array();
 	}
 	__except (
-		GetExceptionCode() == EXCEPTION_ARRAY_BOUNDS_EXCEEDED
-		? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_EXECUTION)
+		//GetExceptionCode() == EXCEPTION_ILLEGAL_INSTRUCTION
+		///* unlike simple arr which raises EXCEPTION_ARRAY_BOUNDS_EXCEEDED */
+		//? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_EXECUTION
+		EXCEPTION_EXECUTE_HANDLER
+		)
 	{
 		// RELEASE or DEBUG build
 		// on bad index ATL raises SE with id: EXCEPTION_ARRAY_BOUNDS_EXCEEDED
@@ -74,9 +71,11 @@ UBENCH(bad_index_vector, atl_arr)
 }
 
 #include <atlsimpcoll.h>
-using atl_vec = ATL::CSimpleArray<test_array_type>;
 
 static void atl_simple_array() {
+
+	using atl_vec = ATL::CSimpleArray<test_array_type>;
+
 #if _HAS_EXCEPTIONS
 	try {
 #endif // _HAS_EXCEPTIONS
@@ -87,26 +86,6 @@ static void atl_simple_array() {
 		array_.Add(test_array_element);
 		// use illegal index
 		(void)array_.operator[](9);
-/*
-
-AtlDef.h approx line 171
-
-#ifndef AtlThrow
-#ifndef _ATL_CUSTOM_THROW
-#define AtlThrow ATL::AtlThrowImpl
-#endif
-
-ATL::AtlThrowImpl(); can be compiled to throw c++ exceotions or raise SE 
-regarding the exsitence of _ATL_NO_EXCEPTIONS
-
-The problem: ATL::CSimpleArray<T>; does not use AtlThrow
-Thus even if the host is compiled with /EHsc its instance will raise the SE
-on e.g. range error in its operator []
-Same issue is with ATL::CSimpleMap<K,V> ;
-
-My comment: this is why ATL::CSimpleArray<T> is very fast
-
-*/
 
 #if _HAS_EXCEPTIONS
 	}
@@ -145,68 +124,75 @@ UBENCH(bad_index_vector, atl_simple_arr)
 ///-----------------------------------------------
 #include <vector>
 
-static const std::string  empty_std_string{} ;
-
 // SEH and C++ exceptions can not be 
 //mixed in one function
 static void mst_stl_bad_index_vector () {
 #if _HAS_EXCEPTIONS
 	try {
+		static bool done_that = false;
 #endif
 		std::vector<test_array_type> array_{};
-		array_.push_back(empty_std_string);
-		array_.push_back(empty_std_string);
-		array_.push_back(empty_std_string);
+		array_.push_back(test_array_element);
+		array_.push_back(test_array_element);
+		array_.push_back(test_array_element);
 		// use illegal index
 		(void)array_.at(9);
 #if _HAS_EXCEPTIONS
-	} catch (std::out_of_range & ) {}
+	} catch (std::out_of_range & x ) {
+		if (!done_that) {
+			DBJ_WARN("MS STL C++ exception: '%s' ,caught on each call!", x.what() );
+			done_that = true;
+		}
+	}
 #endif
 }
 // SEH is always there
 UBENCH(bad_index_vector, ms_stl_vec_)
 {
+	static bool done_that = false;
 	__try {
 		mst_stl_bad_index_vector();
-	} __except (EXCEPTION_EXECUTE_HANDLER) { }
+	} __except (EXCEPTION_EXECUTE_HANDLER) { 
+		if (!done_that) {
+			DBJ_WARN("MS STL index out of range caught by SEH, on each call!");
+			done_that = true;
+		}
+	}
 
 }
 
 ///-----------------------------------------------
 /// EASTL2020 CORE
 
-/// if no C++ exceptions AND debug build
-/// EASTL will call debug break
+/// In debug builds EASTL will call debug break
 /// which will attach to the debuger if one is running
-/// and keep you on that same spot
+/// and keep you on that same spot for ever
 /// 
-/// EASTL doe not use SEH
+/// EASTL does not use SEH
 
-#ifndef _DEBUG
+// #ifndef _DEBUG
 
 #include <EASTL/vector.h>
-#include <EASTL/string.h>
-
-static const eastl::string
-   eastl_test_array_element = eastl::string(__FILE__);
 
 static void eastl_vector_of_strings() 
 {
 #if _HAS_EXCEPTIONS
 	try {
 #endif
-		eastl::vector<eastl::string> array_{};
-		array_.push_back(eastl_test_array_element);
-		array_.push_back(eastl_test_array_element);
-		array_.push_back(eastl_test_array_element);
+		eastl::vector<test_array_type> array_{};
+		array_.push_back(test_array_element);
+		array_.push_back(test_array_element);
+		array_.push_back(test_array_element);
 		// use illegal index
 		// if there are no C++ exceptions
 		// EASTL does EASTL_FAIL_MSG()
-		// which boils down to debug break
-		// but only if debugger is present
-		// if it is not, I do not see anything happening?
-		// so the result bellow will provoke very bad things
-		eastl::string disaster = array_.operator[](9);
+		// which boils down to __debugbreak()
+		// __debugbreak() it seems raises the SE
+		// it debugger is not present?
+		// but in release builds nothing happens here?
+		(void)array_.operator[](9);
+		// so this should bomb
+		(array_.operator[](9)).data[13] = '!';
 
 #if _HAS_EXCEPTIONS
 	}
@@ -226,13 +212,16 @@ static bool done_that = false;
 		eastl_vector_of_strings();
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
+		// _debugbreak() it seems raises the SE
+		// if debugger is not present ?
+		// but only in debug builds
 		if ( !done_that ) {
-			DBJ_WARN("EASTL index out of range caught by SEH, on each call!");
+			DBJ_WARN("EASTL caught by SEH, on each call!");
 			done_that = true;
 		}
 	}
 }
 
-#endif // _DEBUG
+// #endif // _DEBUG
 
 
