@@ -1,22 +1,22 @@
 
-#if defined(DBJ_FWK_USES_SIMPLELOG)
-
 /// default is log to file, MT resilient, no console
 /// unless you define your combination differently that is
 /// as we did here
 #define  DBJ_LOG_DEFAULT_SETUP DBJ_LOG_DEFAULT_WITH_CONSOLE
 #include "dbj--simplelog/dbj_simple_log_host.h"
 
-#ifndef __clang__
+struct simple_log_protector final {
 
-struct simple_log_finalizer final {
-	~simple_log_finalizer() {
+	simple_log_protector() noexcept {
+		dbj_simple_log_startup(__argv[0] );
+	}
+
+	~simple_log_protector() noexcept {
 		_ASSERTE(dbj_log_finalize() == EXIT_SUCCESS);
 	}
 };
-#endif // ! __clang__
 
-#endif // ! defined(DBJ_FWK_USES_SIMPLELOG)
+static const simple_log_protector protector_;
 
 // we can NOT mix utest and ubench 
 #ifdef DBJ_USE_UBENCH
