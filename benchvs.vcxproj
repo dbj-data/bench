@@ -36,6 +36,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dbj--simplelog\dbj_simple_log_host.h" />
     <ClInclude Include="dbj-fwk\printing_macros.h" />
     <ClInclude Include="ubench\dbj_win_lib.h" />
     <ClInclude Include="ubench\ubench.h" />
@@ -116,7 +117,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -136,7 +137,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -156,7 +157,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -176,7 +177,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
