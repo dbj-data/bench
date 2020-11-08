@@ -5,19 +5,6 @@
 #define  DBJ_LOG_DEFAULT_SETUP DBJ_LOG_DEFAULT_WITH_CONSOLE
 #include "dbj--simplelog/dbj_simple_log_host.h"
 
-struct simple_log_protector final {
-
-	simple_log_protector() noexcept {
-		dbj_simple_log_startup(__argv[0] );
-	}
-
-	~simple_log_protector() noexcept {
-		_ASSERTE(dbj_log_finalize() == EXIT_SUCCESS);
-	}
-};
-
-static const simple_log_protector protector_;
-
 // we can NOT mix utest and ubench 
 #ifdef DBJ_USE_UBENCH
 #ifdef DBJ_USE_UTEST
