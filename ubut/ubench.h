@@ -1,6 +1,5 @@
 /*
-   The latest version of this library is available on GitHub;
-   https://github.com/sheredom/ubench.h
+(C) 2020 by dbj@dbj.org -- LICENSE_DBJ -- https://dbj.org/license_dbj
 */
 
 /*
@@ -30,257 +29,75 @@
    For more information, please refer to <http://unlicense.org/>
 */
 
-#ifndef SHEREDOM_UBENCH_H_INCLUDED
-#define SHEREDOM_UBENCH_H_INCLUDED
+#ifndef UBUT_UBENCH_H_INCLUDED
+#define UBUT_UBENCH_H_INCLUDED
 
-#include <stdbool.h>
+#include "top.h"
 
-// clang-cl.exe has them both defined
-// thus it is not enugh to use _MSC_VER only
-#ifdef _WIN32
-// #ifndef __clang__
-#define UBENCH_IS_WIN
-// #endif
 
-#endif
+//#if defined(UBENCH_IS_WIN)
+//#elif defined(__linux__)
+//
+///*
+//   slightly obscure include here - we need to include glibc's features.h, but
+//   we don't want to just include a header that might not be defined for other
+//   c libraries like musl. Instead we include limits.h, which we know on all
+//   glibc distributions includes features.h
+//*/
+//#include <limits.h>
+//
+//#if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
+//#include <time.h>
+//
+//#if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
+///* glibc is version 2.17 or above, so we can just use clock_gettime */
+//#define UBENCH_USE_CLOCKGETTIME
+//#else
+//#include <sys/syscall.h>
+//#include <unistd.h>
+//#endif
+//#endif
+//
+//#elif defined(__APPLE__)
+//#include <mach/mach_time.h>
+//#endif
 
-#ifdef _MSC_VER
-#ifdef __clang__
-#define UBENCH_IS_CLANG_CL
-#endif
-#endif
+//#if defined(UBENCH_IS_WIN)
+//#define UBENCH_WEAK __forceinline
+//#else
+//#define UBENCH_WEAK __attribute__((weak))
+//#endif
 
-#ifdef UBENCH_IS_WIN
+//#ifdef UBENCH_IS_WIN
 
-/*
-   Disable warning about not inlining 'inline' functions.
-   TODO: We'll fix this later by not using fprintf within our macros, and
-   instead use snprintf to a realloc'ed buffer.
-*/
-#pragma warning(disable : 4710)
 
-/*
-   Disable warning about inlining functions that are not marked 'inline'.
-   TODO: add a UBENCH_NOINLINE onto the macro generated functions to fix this.
-*/
-#pragma warning(disable : 4711)
-#pragma warning(push, 1)
-#endif
 
-#if defined(UBENCH_IS_WIN)
-typedef __int64 ubench_int64_t;
-typedef unsigned __int64 ubench_uint64_t;
-#else
-#include <stdint.h>
-typedef int64_t ubench_int64_t;
-typedef uint64_t ubench_uint64_t;
-#endif
-
-#include <math.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#if defined(UBENCH_IS_WIN)
-#pragma warning(pop)
-#endif
-
-#if defined(UBENCH_IS_WIN)
-#if defined(_M_IX86)
-#define _X86_
-#endif
-
-#if defined(_M_AMD64)
-#define _AMD64_
-#endif
-
-#pragma warning(push, 1)
-#include <windef.h>
-#include <winbase.h>
-#include <intrin.h>
-#pragma warning(pop)
-
-#elif defined(__linux__)
-
-/*
-   slightly obscure include here - we need to include glibc's features.h, but
-   we don't want to just include a header that might not be defined for other
-   c libraries like musl. Instead we include limits.h, which we know on all
-   glibc distributions includes features.h
-*/
-#include <limits.h>
-
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
-#include <time.h>
-
-#if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
-/* glibc is version 2.17 or above, so we can just use clock_gettime */
-#define UBENCH_USE_CLOCKGETTIME
-#else
-#include <sys/syscall.h>
-#include <unistd.h>
-#endif
-#endif
-
-#elif defined(__APPLE__)
-#include <mach/mach_time.h>
-#endif
-
-#if defined(__cplusplus)
-#define UBENCH_C_FUNC extern "C"
-#else
-#define UBENCH_C_FUNC
-#endif
-
-#if defined(__cplusplus) && (__cplusplus >= 201103L)
-#define UBENCH_NOEXCEPT noexcept
-#else
-#define UBENCH_NOEXCEPT
-#endif
-
-#if defined(__cplusplus) && defined(UBENCH_IS_WIN)
-#define UBENCH_NOTHROW __declspec(nothrow)
-#else
-#define UBENCH_NOTHROW
-#endif
-
-#if defined(UBENCH_IS_WIN)
-#define UBENCH_PRId64 "I64d"
-#define UBENCH_PRIu64 "I64u"
-#define UBENCH_INLINE __forceinline
-#define UBENCH_NOINLINE __declspec(noinline)
-
-#if defined(_WIN64)
-#define UBENCH_SYMBOL_PREFIX
-#else
-#define UBENCH_SYMBOL_PREFIX "_"
-#endif
-
-#pragma section(".CRT$XCU", read)
-#define UBENCH_INITIALIZER(f)                                                  \
-  static void __cdecl f(void);                                                 \
-  __pragma(comment(linker, "/include:" UBENCH_SYMBOL_PREFIX #f "_"));          \
-  UBENCH_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) =  \
-      f;                                                                       \
-  static void __cdecl f(void)
-
-// clang on win aka clang-cl.exe
-#ifdef __clang__
-#undef UBENCH_INITIALIZER
-#define UBENCH_INITIALIZER(f)                                                  \
-  static void f(void) __attribute__((constructor));                            \
-  static void f(void)
-#endif // __clang__
-
-#else
-#if defined(__linux__)
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreserved-id-macro"
-#endif
-#endif
-
-#define __STDC_FORMAT_MACROS 1
-
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic pop
-#endif
-#endif
-#endif
-
-#include <inttypes.h>
-
-#define UBENCH_PRId64 PRId64
-#define UBENCH_PRIu64 PRIu64
-#define UBENCH_INLINE inline
-#define UBENCH_NOINLINE __attribute__((noinline))
-
-#define UBENCH_INITIALIZER(f)                                                  \
-  static void f(void) __attribute__((constructor));                            \
-  static void f(void)
-#endif
-
-#if defined(__cplusplus)
-#define UBENCH_CAST(type, x) static_cast<type>(x)
-#define UBENCH_PTR_CAST(type, x) reinterpret_cast<type>(x)
-#define UBENCH_EXTERN extern "C"
-#define UBENCH_NULL NULL
-#else
-#define UBENCH_CAST(type, x) ((type)x)
-#define UBENCH_PTR_CAST(type, x) ((type)x)
-#define UBENCH_EXTERN extern
-#define UBENCH_NULL 0
-#endif
-
-#if defined(UBENCH_IS_WIN)
-#define UBENCH_WEAK __forceinline
-#else
-#define UBENCH_WEAK __attribute__((weak))
-#endif
-
-#ifdef UBENCH_IS_WIN
-
-/*
-we are checking the windows version at run time
-*/
-#include "dbj_win_lib.h"
-/*
-    io.h contains definitions for some structures with natural padding. This is
-    uninteresting, but for some reason MSVC's behaviour is to warn about
-    including this system header. That *is* interesting
-*/
-#pragma warning(disable : 4820)
-#pragma warning(push, 1)
-#include <io.h>
-#pragma warning(pop)
-
-UBENCH_C_FUNC
-inline BOOL UBENCH_COLOUR_OUTPUT(void) {
-  // this is ugly hack that results in
-  // cmd.exe being able to transform
-  // VT100 codes into colours
-  system(" ");
-  // if the Windows version is equal to or
-  // greater than 10.0.14393 then ENABLE_VIRTUAL_TERMINAL_PROCESSING is
-  // supported.
-  if (is_win_ver_or_greater(10,0,14393)) {
-      // if stdout is active 
-      // and not redirected 
-    return ((_isatty(_fileno(stdout))) ? TRUE : FALSE);
-  } else {
-    return FALSE;
-  }
-}
-
-#else
-#include <unistd.h>
-#define UBENCH_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
-#endif
+//#else
+//#include <unistd.h>
+//#define UBENCH_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
+//#endif
 
 static UBENCH_INLINE ubench_int64_t ubench_ns(void) {
-#ifdef UBENCH_IS_WIN
+//#ifdef UBENCH_IS_WIN
   LARGE_INTEGER counter;
   LARGE_INTEGER frequency;
   QueryPerformanceCounter(&counter);
   QueryPerformanceFrequency(&frequency);
   return UBENCH_CAST(ubench_int64_t,
                      (counter.QuadPart * 1000000000) / frequency.QuadPart);
-#elif defined(__linux)
-  struct timespec ts;
-  const clockid_t cid = CLOCK_REALTIME;
-#if defined(UBENCH_USE_CLOCKGETTIME)
-  clock_gettime(cid, &ts);
-#else
-  syscall(SYS_clock_gettime, cid, &ts);
-#endif
-  return UBENCH_CAST(ubench_int64_t, ts.tv_sec) * 1000 * 1000 * 1000 +
-         ts.tv_nsec;
-#elif __APPLE__
-  return UBENCH_CAST(ubench_int64_t, mach_absolute_time());
-#endif
+//#elif defined(__linux)
+//  struct timespec ts;
+//  const clockid_t cid = CLOCK_REALTIME;
+//#if defined(UBENCH_USE_CLOCKGETTIME)
+//  clock_gettime(cid, &ts);
+//#else
+//  syscall(SYS_clock_gettime, cid, &ts);
+//#endif
+//  return UBENCH_CAST(ubench_int64_t, ts.tv_sec) * 1000 * 1000 * 1000 +
+//         ts.tv_nsec;
+//#elif __APPLE__
+//  return UBENCH_CAST(ubench_int64_t, mach_absolute_time());
+//#endif
 }
 
 typedef void (*ubench_benchmark_t)(ubench_int64_t *const, const ubench_int64_t);
@@ -300,39 +117,17 @@ struct ubench_state_s {
 /* extern to the global state ubench needs to execute */
 UBENCH_EXTERN struct ubench_state_s ubench_state;
 
-#if defined(UBENCH_IS_WIN)
+//#if defined(UBENCH_IS_WIN)
 #define UBENCH_UNUSED
-#else
-#define UBENCH_UNUSED __attribute__((unused))
-#endif
+//#else
+//#define UBENCH_UNUSED __attribute__((unused))
+//#endif
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wvariadic-macros"
-#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
-#endif
-#define UBENCH_PRINTF(...)                                                     \
-  if (ubench_state.output) {                                                   \
-    fprintf(ubench_state.output, __VA_ARGS__);                                 \
-  }                                                                            \
-  printf(__VA_ARGS__)
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-
-#ifdef UBENCH_IS_WIN
-#define UBENCH_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
-#else
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wvariadic-macros"
-#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
-#endif
-#define UBENCH_SNPRINTF(...) snprintf(__VA_ARGS__)
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-#endif
+/*
+-------------------------------------------------------------------------------
+functions do begin here
+-------------------------------------------------------------------------------
+*/
 
 #define UBENCH(SET, NAME)                                                      \
   UBENCH_EXTERN struct ubench_state_s ubench_state;                            \
@@ -470,35 +265,7 @@ UBENCH_WEAK int ubench_should_filter(const char *filter,
   return 0;
 }
 
-static UBENCH_INLINE int ubench_strncmp(const char *a, const char *b,
-                                        size_t n) {
-  /* strncmp breaks on Wall / Werror on gcc/clang, so we avoid using it */
-  unsigned i;
 
-  for (i = 0; i < n; i++) {
-    if (a[i] < b[i]) {
-      return -1;
-    } else if (a[i] > b[i]) {
-      return 1;
-    }
-  }
-
-  return 0;
-}
-
-static UBENCH_INLINE FILE *ubench_fopen(const char *filename,
-                                        const char *mode) {
-#ifdef UBENCH_IS_WIN
-  FILE *file;
-  if (0 == fopen_s(&file, filename, mode)) {
-    return file;
-  } else {
-    return 0;
-  }
-#else
-  return fopen(filename, mode);
-#endif
-}
 
 // UBENCH_WEAK
 int ubench_main(int argc, const char *const argv[]);
@@ -775,10 +542,10 @@ UBENCH_C_FUNC UBENCH_NOINLINE void ubench_do_nothing(void *const);
     _ReadWriteBarrier();                                                       \
   }
 #else
-#define UBENCH_DECLARE_DO_NOTHING()                                            \
-  void ubench_do_nothing(void *ptr) {                                          \
-    asm volatile("" : : "r,m"(ptr) : "memory");                                \
-  }
+//#define UBENCH_DECLARE_DO_NOTHING()                                            \
+//  void ubench_do_nothing(void *ptr) {                                          \
+//    asm volatile("" : : "r,m"(ptr) : "memory");                                \
+//  }
 #endif
 
 /*
@@ -807,4 +574,4 @@ UBENCH_C_FUNC UBENCH_NOINLINE void ubench_do_nothing(void *const);
     return ubench_main(argc, argv);                                            \
   }
 
-#endif /* SHEREDOM_UBENCH_H_INCLUDED */
+#endif /* UBUT_UBENCH_H_INCLUDED */

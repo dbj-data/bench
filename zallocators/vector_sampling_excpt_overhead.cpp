@@ -1,7 +1,7 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include "../ubench/ubench.h"
+#include "../ubut/ubench.h"
 #include "../dbj-fwk/printing_macros.h"
 
 #include <stdexcept>

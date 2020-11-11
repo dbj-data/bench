@@ -20,7 +20,7 @@ int dbj_simple_log_setup_ = (DBJ_LOG_DEFAULT_WITH_CONSOLE);
 // we will conditionaly compile for one or the other
 
 #ifdef DBJ_USE_UBENCH
-#include "ubench/ubench.h"
+#include "ubut/ubench.h"
 UBENCH_STATE();
 #elif DBJ_USE_UTEST
 #include "utest.h/utest.h"

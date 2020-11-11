@@ -1,12 +1,15 @@
 #ifndef UBUT_TOP_INC
 #define UBUT_TOP_INC
+
 #ifdef _MSC_VER
 #pragma once
 #endif  // _MSC_VER
 
+#if defined(__clang__) 
+#pragma clang system_header
+#endif // __clang__
 /*
 -------------------------------------------------------------------------------
-#define _WIN32_WINNT_WIN10                  0x0A00 // Windows 10
 set the WINVER and _WIN32_WINNT macros to the oldest supported platform 
 #include <winsdkver.h>
 */
@@ -42,9 +45,218 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 
 #include <crtdbg.h>
 #include <errno.h>
+#include <stdbool.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+// #include <inttypes.h>
+
+/*
+we are checking the windows version at run time
+*/
+#include "dbj_win_lib.h"
+/*
+    io.h contains definitions for some structures with natural padding. This is
+    uninteresting, but for some reason MSVC's behaviour is to warn about
+    including this system header. That *is* interesting
+*/
+#pragma warning(disable : 4820)
+#pragma warning(push, 1)
+#include <io.h>
+#pragma warning(pop)
 /*
 -------------------------------------------------------------------------------
 UBUT stuff begins here
+-------------------------------------------------------------------------------
 */
 
+// clang-cl.exe has them both defined
+// thus it is not enugh to use _MSC_VER only
+#ifdef _WIN32
+#define UBENCH_IS_WIN
+#endif
+
+/* 
+clang_cl.exe is LLVM c++ compiler compiled by MSFT and included 
+with VS 2019
+*/
+#ifdef _MSC_VER
+#ifdef __clang__
+#define UBENCH_IS_CLANG_CL
+#endif // __clang__
+#endif // _MSC_VER
+
+/*
+   Disable warning about not inlining 'inline' functions.
+   TODO: We'll fix this later by not using fprintf within our macros, and
+   instead use snprintf to a realloc'ed buffer.
+*/
+#pragma warning(disable : 4710)
+
+/*
+   Disable warning about inlining functions that are not marked 'inline'.
+   TODO: add a UBENCH_NOINLINE onto the macro generated functions to fix this.
+*/
+#pragma warning(disable : 4711)
+#pragma warning(push, 1)
+
+typedef __int64 ubench_int64_t;
+typedef unsigned __int64 ubench_uint64_t;
+
+#pragma warning(pop)
+
+#if defined(__cplusplus)
+#define UBENCH_C_FUNC extern "C"
+#else
+#define UBENCH_C_FUNC
+#endif
+
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+#define UBENCH_NOEXCEPT noexcept
+#else
+#define UBENCH_NOEXCEPT
+#endif
+
+#if defined(__cplusplus) && defined(UBENCH_IS_WIN)
+#define UBENCH_NOTHROW __declspec(nothrow)
+#else
+#define UBENCH_NOTHROW
+#endif
+
+#define UBENCH_PRId64 "I64d"
+#define UBENCH_PRIu64 "I64u"
+#define UBENCH_INLINE __forceinline
+#define UBENCH_NOINLINE __declspec(noinline)
+
+#if defined(_WIN64)
+#define UBENCH_SYMBOL_PREFIX
+#else
+#define UBENCH_SYMBOL_PREFIX "_"
+#endif
+
+#pragma section(".CRT$XCU", read)
+#define UBENCH_INITIALIZER(f)                                                  \
+  static void __cdecl f(void);                                                 \
+  __pragma(comment(linker, "/include:" UBENCH_SYMBOL_PREFIX #f "_"));          \
+  UBENCH_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) =  \
+      f;                                                                       \
+  static void __cdecl f(void)
+
+// clang on win aka clang-cl.exe
+#ifdef __clang__
+#undef UBENCH_INITIALIZER
+#define UBENCH_INITIALIZER(f)                                                  \
+  static void f(void) __attribute__((constructor));                            \
+  static void f(void)
+#endif // __clang__
+
+#define __STDC_FORMAT_MACROS 1
+
+#if defined(__clang__) && defined( __has_warning )
+#if __has_warning("-Wreserved-id-macro")
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#pragma clang diagnostic pop
+#endif
+#endif // clang has warning
+
+#if defined(__cplusplus)
+#define UBENCH_CAST(type, x) static_cast<type>(x)
+#define UBENCH_PTR_CAST(type, x) reinterpret_cast<type>(x)
+#define UBENCH_EXTERN extern "C"
+#define UBENCH_NULL NULL
+#else
+#define UBENCH_CAST(type, x) ((type)x)
+#define UBENCH_PTR_CAST(type, x) ((type)x)
+#define UBENCH_EXTERN extern
+#define UBENCH_NULL 0
+#endif
+
+#define UBENCH_WEAK __forceinline
+
+
+UBENCH_C_FUNC
+inline BOOL UBENCH_COLOUR_OUTPUT(void) {
+  // this is ugly hack that results in
+  // cmd.exe being able to transform
+  // VT100 codes into colours
+  system(" ");
+  // if the Windows version is equal to or
+  // greater than 10.0.14393 then ENABLE_VIRTUAL_TERMINAL_PROCESSING is
+  // supported.
+  if (is_win_ver_or_greater(10,0,14393)) {
+      // if stdout is active 
+      // and not redirected 
+    return ((_isatty(_fileno(stdout))) ? TRUE : FALSE);
+  } else {
+    return FALSE;
+  }
+}
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wvariadic-macros"
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif
+
+#define UBENCH_PRINTF(...)                                                     \
+  if (ubench_state.output) {                                                   \
+    fprintf(ubench_state.output, __VA_ARGS__);                                 \
+  }                                                                            \
+  printf(__VA_ARGS__)
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
+#ifdef UBENCH_IS_WIN
+#define UBENCH_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
+#else
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wvariadic-macros"
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif
+#define UBENCH_SNPRINTF(...) snprintf(__VA_ARGS__)
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#endif
+
+static UBENCH_INLINE int ubench_strncmp(const char *a, const char *b,
+                                        size_t n) {
+  /* strncmp breaks on Wall / Werror on gcc/clang, so we avoid using it */
+  unsigned i;
+
+  for (i = 0; i < n; i++) {
+    if (a[i] < b[i]) {
+      return -1;
+    } else if (a[i] > b[i]) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+static UBENCH_INLINE FILE *ubench_fopen(const char *filename,
+                                        const char *mode) {
+#ifdef UBENCH_IS_WIN
+  FILE *file;
+  if (0 == fopen_s(&file, filename, mode)) {
+    return file;
+  } else {
+    return 0;
+  }
+#else
+  return fopen(filename, mode);
+#endif
+}
+/*
+-------------------------------------------------------------------------------
+EOF
+-------------------------------------------------------------------------------
+*/
 #endif // UBUT_TOP_INC
