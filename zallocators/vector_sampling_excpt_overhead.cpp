@@ -20,6 +20,14 @@ static const test_array_type test_array_element = { {'?'} };
 
 #include <atlcoll.h>
 
+#if _HAS_EXCEPTIONS == 0
+#ifdef _ATL_NO_EXCEPTIONS
+#pragma message("_HAS_EXCEPTIONS == 0 and _ATL_NO_EXCEPTIONS defined")
+#else  // ! _ATL_NO_EXCEPTIONS
+#pragma message("_HAS_EXCEPTIONS == 0, but_ATL_NO_EXCEPTIONS not defined?")
+#endif // _ATL_NO_EXCEPTIONS
+#endif // _HAS_EXCEPTIONS == 0
+
 static void atl_array() 
 {
 	using atl_arr = ATL::CAtlArray<test_array_type>;
@@ -122,11 +130,6 @@ UBENCH(bad_index_vector, atl_simple_arr)
 #endif // __has_include(<atlsimpcoll.h>)
 #endif // ! _DEBUG
 
-#ifdef _ATL_NO_EXCEPTIONS
-#pragma message("_ATL_NO_EXCEPTIONS defined")
-#else  // ! _ATL_NO_EXCEPTIONS
-#pragma message("_ATL_NO_EXCEPTIONS not defined")
-#endif // _ATL_NO_EXCEPTIONS
 ///-----------------------------------------------
 #include <vector>
 

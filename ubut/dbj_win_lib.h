@@ -17,6 +17,8 @@ copied over here from dbj-fwk
 #endif
 
 #include <io.h> // _isatty
+#include <stdio.h> 
+#include <stdlib.h> 
 #include <crtdbg.h>
 #include <errno.h>
 #undef DBJ_PERROR
@@ -190,7 +192,7 @@ Where is the font_name coming from?
 
 vs win32 immensely complex method for enumerating fonts, font names are easy to
 find, just open your cmd.exe and go to properties; or if you like to be exact
-find them here:
+find them names here:
 https://docs.microsoft.com/en-us/typography/fonts/windows_10_font_list
 
 font_height_ if 0 will not be changed, other than that it can be any number

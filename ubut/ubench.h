@@ -2,80 +2,11 @@
 (C) 2020 by dbj@dbj.org -- LICENSE_DBJ -- https://dbj.org/license_dbj
 */
 
-/*
-   This is free and unencumbered software released into the public domain.
-
-   Anyone is free to copy, modify, publish, use, compile, sell, or
-   distribute this software, either in source code form or as a compiled
-   binary, for any purpose, commercial or non-commercial, and by any
-   means.
-
-   In jurisdictions that recognize copyright laws, the author or authors
-   of this software dedicate any and all copyright interest in the
-   software to the public domain. We make this dedication for the benefit
-   of the public at large and to the detriment of our heirs and
-   successors. We intend this dedication to be an overt act of
-   relinquishment in perpetuity of all present and future rights to this
-   software under copyright law.
-
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
-
-   For more information, please refer to <http://unlicense.org/>
-*/
-
 #ifndef UBUT_UBENCH_H_INCLUDED
 #define UBUT_UBENCH_H_INCLUDED
 
-#include "top.h"
+#include "ubut_top.h"
 
-
-//#if defined(UBENCH_IS_WIN)
-//#elif defined(__linux__)
-//
-///*
-//   slightly obscure include here - we need to include glibc's features.h, but
-//   we don't want to just include a header that might not be defined for other
-//   c libraries like musl. Instead we include limits.h, which we know on all
-//   glibc distributions includes features.h
-//*/
-//#include <limits.h>
-//
-//#if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
-//#include <time.h>
-//
-//#if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
-///* glibc is version 2.17 or above, so we can just use clock_gettime */
-//#define UBENCH_USE_CLOCKGETTIME
-//#else
-//#include <sys/syscall.h>
-//#include <unistd.h>
-//#endif
-//#endif
-//
-//#elif defined(__APPLE__)
-//#include <mach/mach_time.h>
-//#endif
-
-//#if defined(UBENCH_IS_WIN)
-//#define UBENCH_WEAK __forceinline
-//#else
-//#define UBENCH_WEAK __attribute__((weak))
-//#endif
-
-//#ifdef UBENCH_IS_WIN
-
-
-
-//#else
-//#include <unistd.h>
-//#define UBENCH_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
-//#endif
 
 static UBENCH_INLINE ubench_int64_t ubench_ns(void) {
 //#ifdef UBENCH_IS_WIN
@@ -85,19 +16,6 @@ static UBENCH_INLINE ubench_int64_t ubench_ns(void) {
   QueryPerformanceFrequency(&frequency);
   return UBENCH_CAST(ubench_int64_t,
                      (counter.QuadPart * 1000000000) / frequency.QuadPart);
-//#elif defined(__linux)
-//  struct timespec ts;
-//  const clockid_t cid = CLOCK_REALTIME;
-//#if defined(UBENCH_USE_CLOCKGETTIME)
-//  clock_gettime(cid, &ts);
-//#else
-//  syscall(SYS_clock_gettime, cid, &ts);
-//#endif
-//  return UBENCH_CAST(ubench_int64_t, ts.tv_sec) * 1000 * 1000 * 1000 +
-//         ts.tv_nsec;
-//#elif __APPLE__
-//  return UBENCH_CAST(ubench_int64_t, mach_absolute_time());
-//#endif
 }
 
 typedef void (*ubench_benchmark_t)(ubench_int64_t *const, const ubench_int64_t);
@@ -117,15 +35,9 @@ struct ubench_state_s {
 /* extern to the global state ubench needs to execute */
 UBENCH_EXTERN struct ubench_state_s ubench_state;
 
-//#if defined(UBENCH_IS_WIN)
-#define UBENCH_UNUSED
-//#else
-//#define UBENCH_UNUSED __attribute__((unused))
-//#endif
-
 /*
 -------------------------------------------------------------------------------
-functions do begin here
+ubench begins here
 -------------------------------------------------------------------------------
 */
 
@@ -156,6 +68,9 @@ functions do begin here
     UBENCH_SNPRINTF(name, name_size, "%s", name_part);                         \
   }                                                                            \
   void ubench_run_##SET##_##NAME(void)
+
+#pragma region fixtures
+#if DBJ_USES_UBENCH_FIXTURE
 
 #define UBENCH_F_SETUP(FIXTURE)                                                \
   static void ubench_f_setup_##FIXTURE(struct FIXTURE *ubench_fixture)
@@ -197,8 +112,13 @@ functions do begin here
   }                                                                            \
   void ubench_run_##FIXTURE##_##NAME(struct FIXTURE *ubench_fixture)
 
+#endif // DBJ_USES_UBENCH_FIXTURE
+#pragma endregion fixtures
+
+
 UBENCH_WEAK
 int ubench_should_filter(const char *filter, const char *benchmark);
+
 UBENCH_WEAK int ubench_should_filter(const char *filter,
                                      const char *benchmark) {
   if (filter) {
@@ -265,10 +185,9 @@ UBENCH_WEAK int ubench_should_filter(const char *filter,
   return 0;
 }
 
-
-
 // UBENCH_WEAK
 int ubench_main(int argc, const char *const argv[]);
+
 inline int ubench_main(int argc, const char *const argv[]) {
   ubench_uint64_t failed = 0;
   size_t index = 0;
@@ -316,17 +235,18 @@ inline int ubench_main(int argc, const char *const argv[]) {
              "failed test. Defaults to 2.5%%\n");
       goto cleanup;
     } else if (0 == ubench_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
-      /* user wants to filter what benchmarks run! */
+      /* user wants to filter what benchmarks to run! */
       filter = argv[index] + SLEN(FILTER_STR);
     } else if (0 == ubench_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
-      ubench_state.output =
+        /* user has given rezult file name */
+        ubench_state.output =
           ubench_fopen(argv[index] + SLEN(OUTPUT_STR), FOPEN_MODE);
     } else if (0 == ubench_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
-      for (index = 0; index < ubench_state.benchmarks_length; index++) {
+        /* user wants a list of benchmarks */
+        for (index = 0; index < ubench_state.benchmarks_length; index++) {
         UBENCH_PRINTF("%s\n", ubench_state.benchmarks[index].name);
       }
-
-      /* when printing the benchmark list, don't actually run the benchmarks */
+      /* when printing the benchmark list, don't actually proceed to run the benchmarks */
       goto cleanup;
     } else if (0 == ubench_strncmp(argv[index], CONFIDENCE_STR,
                                    SLEN(CONFIDENCE_STR))) {

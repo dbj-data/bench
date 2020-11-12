@@ -1,10 +1,6 @@
 #ifndef UBUT_TOP_INC
 #define UBUT_TOP_INC
 
-#ifdef _MSC_VER
-#pragma once
-#endif  // _MSC_VER
-
 #if defined(__clang__) 
 #pragma clang system_header
 #endif // __clang__
@@ -26,13 +22,13 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 #include <windows.h>
 // #include <processenv.h>
 
-#ifdef DBJ_MINIMAX
+#ifdef NOMINMAX
 #undef  min
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
 #undef  max
 #define max(x, y) ((x) > (y) ? (x) : (y))
-#endif // DBJ_MINIMAX
+#endif // NOMINMAX
 
 /*
 -------------------------------------------------------------------------------
@@ -42,6 +38,12 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 #else
 #define _POSIX_C_SOURCE 200809L
 #endif
+
+/*
+checking the windows version at run time 
+for VT100 colours ability
+*/
+#include "dbj_win_lib.h"
 
 #include <crtdbg.h>
 #include <errno.h>
@@ -53,10 +55,7 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 #include <string.h>
 // #include <inttypes.h>
 
-/*
-we are checking the windows version at run time
-*/
-#include "dbj_win_lib.h"
+
 /*
     io.h contains definitions for some structures with natural padding. This is
     uninteresting, but for some reason MSVC's behaviour is to warn about
@@ -87,6 +86,12 @@ with VS 2019
 #define UBENCH_IS_CLANG_CL
 #endif // __clang__
 #endif // _MSC_VER
+
+#ifdef __clang__
+#define UBENCH_UNUSED __attribute__((unused))
+#else
+#define UBENCH_UNUSED
+#endif
 
 /*
    Disable warning about not inlining 'inline' functions.
@@ -119,7 +124,7 @@ typedef unsigned __int64 ubench_uint64_t;
 #define UBENCH_NOEXCEPT
 #endif
 
-#if defined(__cplusplus) && defined(UBENCH_IS_WIN)
+#ifdef UBENCH_IS_CLANG_CL
 #define UBENCH_NOTHROW __declspec(nothrow)
 #else
 #define UBENCH_NOTHROW
