@@ -1,7 +1,7 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include "../ubench/ubench.h"
+#include "../ubut/ubench.h"
 
 ///-----------------------------------------------
 constexpr auto test_array_size = 1;  // 0xFFFF;

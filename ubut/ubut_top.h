@@ -39,12 +39,6 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 #define _POSIX_C_SOURCE 200809L
 #endif
 
-/*
-checking the windows version at run time 
-for UBUT_VT colours ability
-*/
-#include "dbj_win_lib.h"
-
 #include <crtdbg.h>
 #include <errno.h>
 #include <stdbool.h>

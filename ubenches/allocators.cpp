@@ -1,20 +1,16 @@
 /// (c) 2020 by dbj.org
+#if DBJ_USE_UTEST
+#include "../ubut/utest.h"
+#endif
 
-#include "../dbj-fwk/nanoclib.h"
+#if DBJ_USE_UBENCH
+#include "../ubut/ubench.h"
+#endif
+
 #include "dbj_heap_alloc.h"
-
-#include <time.h>
-
-#ifdef DBJ_USE_UTEST
-// #include "../utest/utest.h"
-#endif
-
-#ifdef DBJ_USE_UBENCH
-#include "../ubench/ubench.h"
-#endif
+#include "../dbj-fwk/wallofmacros.h"
 
 /// ---------------------------------------------------------------------
-
 #include "kalloc/dbj_kalloc.h"
 
 #if _HAS_EXCEPTIONS
@@ -45,16 +41,11 @@ using test_array_type = double ;
 constexpr int test_array_size = 0xFFFFF; 
 
 /// ---------------------------------------------------------------------
-inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
-	//static auto _ = [] {
-	//	srand((unsigned)time(NULL));
-	//	return true;
-	//}();
-
+static inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
 	return test_array_type(rand() % max_ + min_);
 };
 /// ---------------------------------------------------------------------
-inline auto meta_driver = [](auto aloka, auto dealoka) {
+static inline auto meta_driver = [](auto aloka, auto dealoka) {
 	test_array_type *array_ = (test_array_type *)aloka(test_array_size);
 	DBJ_ASSERT(array_);
 	// for (int k = 0; k < (test_array_size / 4); ++k)

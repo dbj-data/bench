@@ -16,22 +16,22 @@ int dbj_simple_log_setup_ = (DBJ_LOG_DEFAULT_WITH_CONSOLE);
 
 
 // we can NOT mix utest and ubench 
-#ifdef DBJ_USE_UBENCH
-#ifdef DBJ_USE_UTEST
-#error Currently can not accomodate UBENCH and UTEST in the same program
-#endif 
-#endif 
+//#ifdef DBJ_USE_UBENCH
+//#ifdef DBJ_USE_UTEST
+//#error Currently can not accomodate UBENCH and UTEST in the same program
+//#endif 
+//#endif 
 
 // we will conditionaly compile for one or the other
 
 #ifdef DBJ_USE_UBENCH
 #include "ubut/ubench.h"
 UBENCH_STATE();
-#elif DBJ_USE_UTEST
-#include "utest.h/utest.h"
+#endif
+
+#ifdef DBJ_USE_UTEST
+#include "ubut/utest.h"
 UTEST_STATE();
-#else 
-#error "Neither DBJ_USE_UBENCH nor DBJ_USE_UTEST, are defined?"
 #endif
 
 bool are_we_on_required_os(void);
@@ -42,12 +42,33 @@ bool are_we_on_required_os(void);
 extern "C" int program(int argc, char** argv)
 {
 #ifdef DBJ_USE_UBENCH
-	return ubench_main(argc, argv);
-#elif DBJ_USE_UTEST
-	return utest_main(argc, argv);
-#else
-#error "Neither DBJ_USE_UBENCH nor DBJ_USE_UTEST, are defined?"
+
+	UBUT_INFO(" ");
+	UBUT_INFO("================================================================");
+	UBUT_INFO("UBENCHES");
+	UBUT_INFO("================================================================");
+	UBUT_INFO(" ");
+
+	(void)ubench_main(argc, argv);
 #endif
+
+#ifdef DBJ_USE_UTEST
+	UBUT_INFO(" ");
+	UBUT_INFO("================================================================");
+	UBUT_INFO("UTESTS");
+	UBUT_INFO("================================================================");
+	UBUT_INFO(" ");
+
+	(void)utest_main(argc, argv);
+#endif
+
+	UBUT_INFO(" ");
+	UBUT_INFO("================================================================");
+	UBUT_INFO("PROGRAM DONE");
+	UBUT_INFO("================================================================");
+	UBUT_INFO(" ");
+
+	return EXIT_SUCCESS;
 }
 /// ------------------------------------------------------------------------
 /// 

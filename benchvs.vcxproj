@@ -20,9 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="program.cpp" />
-    <ClCompile Include="zallocators\kalloc\kalloc.c" />
-    <ClCompile Include="zallocators\vector_sampling.cpp" />
-    <ClCompile Include="zallocators\vector_sampling_excpt_overhead.cpp" />
+    <ClCompile Include="ubenches\allocators.cpp" />
+    <ClCompile Include="ubenches\nedmalloc\nedmalloc.c" />
+    <ClCompile Include="ubenches\squareroot.c" />
+    <ClCompile Include="units\type_printers.c" />
+    <ClCompile Include="ubenches\kalloc\kalloc.c" />
+    <ClCompile Include="ubenches\vector_sampling.cpp" />
+    <ClCompile Include="ubenches\vector_sampling_excpt_overhead.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="dbj--simplelog\lib\dbj_simplelog.vcxproj">
@@ -42,6 +46,7 @@
     <ClInclude Include="ubench\ubench.h" />
     <ClInclude Include="ubut\ubut_top.h" />
     <ClInclude Include="ubut\ubench.h" />
+    <ClInclude Include="ubut\utest.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -119,7 +124,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -139,7 +144,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -159,7 +164,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -179,7 +184,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>

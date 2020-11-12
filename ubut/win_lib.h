@@ -20,7 +20,9 @@ copied over here from dbj-fwk
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <crtdbg.h>
+#include <stdbool.h>
 #include <errno.h>
+
 #undef DBJ_PERROR
 #define DBJ_PERROR (perror(__FILE__ " # " _CRT_STRINGIZE(__LINE__)))
 
