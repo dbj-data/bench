@@ -180,24 +180,6 @@ typedef unsigned __int64 ubench_uint64_t;
 #define UBENCH_NULL 0
 #endif
 
-UBENCH_C_FUNC
-inline BOOL UBENCH_COLOUR_OUTPUT(void) {
-  // this is ugly hack that results in
-  // cmd.exe being able to transform
-  // UBUT_VT codes into colours
-  system(" ");
-  // if the Windows version is equal to or
-  // greater than 10.0.14393 then ENABLE_VIRTUAL_TERMINAL_PROCESSING is
-  // supported.
-  if (is_win_ver_or_greater(10,0,14393)) {
-      // if stdout is active 
-      // and not redirected 
-    return ((_isatty(_fileno(stdout))) ? TRUE : FALSE);
-  } else {
-    return FALSE;
-  }
-}
-
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wvariadic-macros"
@@ -208,7 +190,6 @@ inline BOOL UBENCH_COLOUR_OUTPUT(void) {
   if (ubench_state.output) {                                                   \
     fprintf(ubench_state.output, __VA_ARGS__);                                 \
   }     
-  // printf(__VA_ARGS__)
 
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -262,10 +243,10 @@ static UBENCH_FORCEINLINE FILE *ubench_fopen(const char *filename,
 -------------------------------------------------------------------------------
 CAUTION: This is compile time. 
 
-Meaning: you compile and run on W10 all is fine.
-you run the same exe on W7, squigly bits will be shown instead of colours
+Meaning: you compile and run on W10 and all is fine.
+But, you run the same exe on W7, and squigly bits will be shown instead of colours
 
-If you check at runtime and stop if running bellow W10, in that respect we you ok.
+If you check at runtime and stop if running bellow W10, in that respect you will be ok.
 -------------------------------------------------------------------------------
 */
 
