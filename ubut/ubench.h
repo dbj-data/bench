@@ -6,9 +6,10 @@
 #define UBUT_UBENCH_H_INCLUDED
 
 #include "ubut_top.h"
+#include "ubut_print.h"
 
 
-static UBENCH_INLINE ubench_int64_t ubench_ns(void) {
+static UBENCH_FORCEINLINE ubench_int64_t ubench_ns(void) {
 //#ifdef UBENCH_IS_WIN
   LARGE_INTEGER counter;
   LARGE_INTEGER frequency;
@@ -116,10 +117,10 @@ ubench begins here
 #pragma endregion fixtures
 
 
-UBENCH_WEAK
+UBENCH_FORCEINLINE
 int ubench_should_filter(const char *filter, const char *benchmark);
 
-UBENCH_WEAK int ubench_should_filter(const char *filter,
+UBENCH_FORCEINLINE int ubench_should_filter(const char *filter,
                                      const char *benchmark) {
   if (filter) {
     const char *filter_cur = filter;
@@ -185,30 +186,6 @@ UBENCH_WEAK int ubench_should_filter(const char *filter,
   return 0;
 }
 
-// UBENCH_WEAK
-int ubench_main(int argc, const char *const argv[]);
-
-inline int ubench_main(int argc, const char *const argv[]) {
-  ubench_uint64_t failed = 0;
-  size_t index = 0;
-  size_t *failed_benchmarks = UBENCH_NULL;
-  size_t failed_benchmarks_length = 0;
-  const char *filter = UBENCH_NULL;
-  ubench_uint64_t ran_benchmarks = 0;
-
-  enum colours { RESET, GREEN, RED };
-
-  // const int use_colours = UBENCH_COLOUR_OUTPUT();
-  static char *colours[] = {(char *)"\033[0m", (char *)"\033[32m",
-                            (char *)"\033[31m"};
-
-  if (FALSE == UBENCH_COLOUR_OUTPUT()) {
-    static const char *no_colurs[] = {"", "", ""};
-    memcpy(colours, no_colurs, 3 * sizeof(char *));
-  }
-
-  static const char *const FOPEN_MODE = "w+";
-// static const char *const FOPEN_MODE = "a+";
 
 /* Informational switches */
 #define HELP_STR "--help"
@@ -216,23 +193,43 @@ inline int ubench_main(int argc, const char *const argv[]) {
 /* Benchmark config switches */
 #define FILTER_STR "--filter="
 #define OUTPUT_STR "--output="
-#define CONFIDENCE_STR "--confidence="
+#define CONFIDENCE_STR "--confidence=" 
 #define SLEN(S) (sizeof(S) - 1)
+
+#define PFX_DIVIDER "[----------]"
+#define     PFX_RUN "[ RUN      ]"
+#define  PFX_FAILED UBUT_VT_YELLOW "[  FAILED  ]" UBUT_VT_RESET
+#define  PFX_PASSED "[  PASSED  ]"
+#define      PFX_OK "[      OK  ]"
+
+UBENCH_FORCEINLINE int ubench_main(int /*argc*/, const char *const /*argv*/[]);
+UBENCH_FORCEINLINE int ubench_main(int argc, const char *const argv[]) {
+  ubench_uint64_t failed = 0;
+  size_t index = 0;
+  size_t *failed_benchmarks = UBENCH_NULL;
+  size_t failed_benchmarks_length = 0;
+  const char *filter = UBENCH_NULL;
+  ubench_uint64_t ran_benchmarks = 0;
+
+  static const char *const FOPEN_MODE = "w+";
+// static const char *const FOPEN_MODE = "a+";
 
   /* loop through all arguments looking for our options */
   for (index = 1; index < UBENCH_CAST(size_t, argc); index++) {
 
     if (0 == ubench_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
-      printf("ubench.h - the single file benchmarking solution for C/C++!\n"
-             "Command line Options:\n");
-      printf("  --help                    Show this message and exit.\n"
-             "  --filter=<filter>         Filter the benchmarks to run (EG. "
-             "MyBench*.a would run MyBenchmark.a but not MyBenchmark.b).\n"
-             "  --list-benchmarks         List benchmarks, one per line. "
-             "Output names can be passed to --filter.\n"
-             "  --output=<output>         Output a CSV file of the results.\n"
-             "  --confidence=<confidence> Change the confidence cut-off for a "
-             "failed test. Defaults to 2.5%%\n");
+
+UBUT_INFO( "ubench - the benchmarking solution" ) ;
+UBUT_INFO( "Command line Options:" ) ;
+UBUT_INFO( "  --help                   Show this message and exit." ) ;
+UBUT_INFO("  --filter=<filter>         Filter the benchmarks to run (EG.)");
+UBUT_INFO( "MyBench*.a would run MyBenchmark.a but not MyBenchmark.b)." ) ;
+UBUT_INFO("  --list-benchmarks         List benchmarks, one per line. ");
+UBUT_INFO( "Output names can be passed to --filter." ) ;
+UBUT_INFO( "  --output=<output>         Output a CSV file of the results." ) ;
+UBUT_INFO("  --confidence=<confidence> Change the confidence cut-off for a ");
+UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
+
       goto cleanup;
     } else if (0 == ubench_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
       /* user wants to filter what benchmarks to run! */
@@ -244,7 +241,7 @@ inline int ubench_main(int argc, const char *const argv[]) {
     } else if (0 == ubench_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
         /* user wants a list of benchmarks */
         for (index = 0; index < ubench_state.benchmarks_length; index++) {
-        UBENCH_PRINTF("%s\n", ubench_state.benchmarks[index].name);
+            UBUT_INFO("%s", ubench_state.benchmarks[index].name);
       }
       /* when printing the benchmark list, don't actually proceed to run the benchmarks */
       goto cleanup;
@@ -255,20 +252,13 @@ inline int ubench_main(int argc, const char *const argv[]) {
 
       /* must be between 0 and 100 */
       if ((ubench_state.confidence < 0) || (ubench_state.confidence > 100)) {
-        fprintf(stderr,
-                "Confidence must be in the range [0..100] (you specified %f)\n",
+          UBUT_ERROR(
+                "Confidence must be in the range [0..100] (you specified %f)",
                 ubench_state.confidence);
         goto cleanup;
       }
     }
   } // for()
-
-#undef HELP_STR
-#undef LIST_STR
-#undef FILTER_STR
-#undef OUTPUT_STR
-#undef CONFIDENCE_STR
-#undef SLEN
 
   for (index = 0; index < ubench_state.benchmarks_length; index++) {
     if (ubench_should_filter(filter, ubench_state.benchmarks[index].name)) {
@@ -278,14 +268,10 @@ inline int ubench_main(int argc, const char *const argv[]) {
     ran_benchmarks++;
   }
 
-  printf("%s[==========]%s Running %" UBENCH_PRIu64 " benchmarks.\n",
-         colours[GREEN], colours[RESET],
+  UBUT_INFO(PFX_DIVIDER "Running %" UBENCH_PRIu64 " benchmarks.",
          UBENCH_CAST(ubench_uint64_t, ran_benchmarks));
-
-  if (ubench_state.output) {
-    fprintf(ubench_state.output,
-            "name, mean (ns), stddev (%%), confidence (%%)\n");
-  }
+  // header for the rezult file
+  UBENCH_REZ_OUT("name, mean (ns), stddev (%%), confidence (%%)\n");
 
 #define UBENCH_MIN_ITERATIONS 10
 #define UBENCH_MAX_ITERATIONS 500
@@ -309,8 +295,7 @@ inline int ubench_main(int argc, const char *const argv[]) {
       continue;
     }
 
-    printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
-           ubench_state.benchmarks[index].name);
+    UBUT_INFO( PFX_RUN "%s", ubench_state.benchmarks[index].name);
 
     // Time once to work out the base number of iterations to use.
     ubench_state.benchmarks[index].func(ns, 1);
@@ -361,20 +346,18 @@ inline int ubench_main(int argc, const char *const argv[]) {
     }
 
     if (result) {
-      printf("confidence interval %f%% exceeds maximum permitted %f%%\n",
+        UBUT_WARN("confidence interval %f%% exceeds maximum permitted %f%%",
              best_confidence, ubench_state.confidence);
     }
 
-    if (ubench_state.output) {
-      fprintf(ubench_state.output, "%s, %" UBENCH_PRId64 ", %f, %f,\n",
+      UBENCH_REZ_OUT("%s, %" UBENCH_PRId64 ", %f, %f,\n",
               ubench_state.benchmarks[index].name, best_avg_ns, best_deviation,
               best_confidence);
-    }
 
     {
-      const char *const colour = (0 != result) ? colours[RED] : colours[GREEN];
+      // const char *const colour = (0 != result) ? colours[RED] : colours[GREEN];
       const char *const status =
-          (0 != result) ? "[  FAILED  ]" : "[       OK ]";
+          (0 != result) ? PFX_FAILED : PFX_OK ;
       const char *unit = "us";
 
       if (0 != result) {
@@ -386,8 +369,7 @@ inline int ubench_main(int argc, const char *const argv[]) {
         failed++;
       }
 
-      printf("%s%s%s %s (mean ", colour, status, colours[RESET],
-             ubench_state.benchmarks[index].name);
+      // UBUT_INFO("%s%s (mean ", status, ubench_state.benchmarks[index].name);
 
       for (mndex = 0; mndex < 2; mndex++) {
         if (best_avg_ns <= 1000000) {
@@ -408,23 +390,20 @@ inline int ubench_main(int argc, const char *const argv[]) {
         }
       }
 
-      printf("%" UBENCH_PRId64 ".%03" UBENCH_PRId64
-             "%s, confidence interval +- %f%%)\n",
+      UBUT_INFO( "%s%s (mean " "%" UBENCH_PRId64 ".%03" UBENCH_PRId64
+             "%s, confidence interval +- %f%%)",
+          status, ubench_state.benchmarks[index].name,
              best_avg_ns / 1000, best_avg_ns % 1000, unit, best_confidence);
     }
   }
 
-  printf("%s[==========]%s %" UBENCH_PRIu64 " benchmarks ran.\n",
-         colours[GREEN], colours[RESET], ran_benchmarks);
-  printf("%s[  PASSED  ]%s %" UBENCH_PRIu64 " benchmarks.\n", colours[GREEN],
-         colours[RESET], ran_benchmarks - failed);
+  UBUT_INFO(PFX_DIVIDER "%" UBENCH_PRIu64 " benchmarks ran.", ran_benchmarks);
+  UBUT_INFO(PFX_PASSED "%" UBENCH_PRIu64 " benchmarks.", ran_benchmarks - failed);
 
   if (0 != failed) {
-    printf("%s[  FAILED  ]%s %" UBENCH_PRIu64 " benchmarks, listed below:\n",
-           colours[RED], colours[RESET], failed);
+      UBUT_WARN(PFX_FAILED"%" UBENCH_PRIu64 " benchmarks, listed below:", failed);
     for (index = 0; index < failed_benchmarks_length; index++) {
-      printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
-             ubench_state.benchmarks[failed_benchmarks[index]].name);
+        UBUT_WARN(PFX_FAILED"%s", ubench_state.benchmarks[failed_benchmarks[index]].name);
     }
   }
 
@@ -442,6 +421,20 @@ cleanup:
 
   return UBENCH_CAST(int, failed);
 }
+
+#undef HELP_STR
+#undef LIST_STR
+#undef FILTER_STR
+#undef OUTPUT_STR
+#undef CONFIDENCE_STR
+#undef SLEN
+
+#undef PFX_DIVIDER
+#undef     PFX_RUN
+#undef  PFX_FAILED
+#undef  PFX_PASSED
+#undef      PFX_OK
+
 
 UBENCH_C_FUNC UBENCH_NOINLINE void ubench_do_nothing(void *const);
 

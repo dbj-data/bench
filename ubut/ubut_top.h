@@ -41,7 +41,7 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 
 /*
 checking the windows version at run time 
-for VT100 colours ability
+for UBUT_VT colours ability
 */
 #include "dbj_win_lib.h"
 
@@ -132,8 +132,9 @@ typedef unsigned __int64 ubench_uint64_t;
 
 #define UBENCH_PRId64 "I64d"
 #define UBENCH_PRIu64 "I64u"
-#define UBENCH_INLINE __forceinline
+// #define UBENCH_INLINE __forceinline
 #define UBENCH_NOINLINE __declspec(noinline)
+#define UBENCH_FORCEINLINE __forceinline
 
 #if defined(_WIN64)
 #define UBENCH_SYMBOL_PREFIX
@@ -179,14 +180,11 @@ typedef unsigned __int64 ubench_uint64_t;
 #define UBENCH_NULL 0
 #endif
 
-#define UBENCH_WEAK __forceinline
-
-
 UBENCH_C_FUNC
 inline BOOL UBENCH_COLOUR_OUTPUT(void) {
   // this is ugly hack that results in
   // cmd.exe being able to transform
-  // VT100 codes into colours
+  // UBUT_VT codes into colours
   system(" ");
   // if the Windows version is equal to or
   // greater than 10.0.14393 then ENABLE_VIRTUAL_TERMINAL_PROCESSING is
@@ -206,11 +204,11 @@ inline BOOL UBENCH_COLOUR_OUTPUT(void) {
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 
-#define UBENCH_PRINTF(...)                                                     \
+#define UBENCH_REZ_OUT(...)                                                     \
   if (ubench_state.output) {                                                   \
     fprintf(ubench_state.output, __VA_ARGS__);                                 \
-  }                                                                            \
-  printf(__VA_ARGS__)
+  }     
+  // printf(__VA_ARGS__)
 
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -230,7 +228,7 @@ inline BOOL UBENCH_COLOUR_OUTPUT(void) {
 #endif
 #endif
 
-static UBENCH_INLINE int ubench_strncmp(const char *a, const char *b,
+static UBENCH_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
                                         size_t n) {
   /* strncmp breaks on Wall / Werror on gcc/clang, so we avoid using it */
   unsigned i;
@@ -246,7 +244,7 @@ static UBENCH_INLINE int ubench_strncmp(const char *a, const char *b,
   return 0;
 }
 
-static UBENCH_INLINE FILE *ubench_fopen(const char *filename,
+static UBENCH_FORCEINLINE FILE *ubench_fopen(const char *filename,
                                         const char *mode) {
 #ifdef UBENCH_IS_WIN
   FILE *file;
@@ -259,6 +257,40 @@ static UBENCH_INLINE FILE *ubench_fopen(const char *filename,
   return fopen(filename, mode);
 #endif
 }
+
+/*
+-------------------------------------------------------------------------------
+CAUTION: This is compile time. 
+
+Meaning: you compile and run on W10 all is fine.
+you run the same exe on W7, squigly bits will be shown instead of colours
+
+If you check at runtime and stop if running bellow W10, in that respect we you ok.
+-------------------------------------------------------------------------------
+*/
+
+#if (_WIN32_WINNT == 0x0A00)
+#define UBUT_VT_ESC "\x1b["
+#define UBUT_VT_RESET UBUT_VT_ESC "0m"
+#define UBUT_VT_GRAY UBUT_VT_ESC "90m"
+#define UBUT_VT_BLUE UBUT_VT_ESC "94m"
+#define UBUT_VT_CYAN UBUT_VT_ESC "36m"
+#define UBUT_VT_YELLOW UBUT_VT_ESC "33m"
+#define UBUT_VT_GREEN UBUT_VT_ESC "32m"
+#define UBUT_VT_RED UBUT_VT_ESC "31m"
+#define UBUT_VT_MAGENTA UBUT_VT_ESC "35m"
+#else // ! WIN10
+#define UBUT_VT_ESC ""
+#define UBUT_VT_RESET UBUT_VT_ESC ""
+#define UBUT_VT_GRAY UBUT_VT_ESC ""
+#define UBUT_VT_BLUE UBUT_VT_ESC ""
+#define UBUT_VT_CYAN UBUT_VT_ESC ""
+#define UBUT_VT_YELLOW UBUT_VT_ESC ""
+#define UBUT_VT_GREEN UBUT_VT_ESC ""
+#define UBUT_VT_RED UBUT_VT_ESC ""
+#define UBUT_VT_MAGENTA UBUT_VT_ESC ""
+#endif
+
 /*
 -------------------------------------------------------------------------------
 EOF
