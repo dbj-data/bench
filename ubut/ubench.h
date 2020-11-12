@@ -189,7 +189,7 @@ UBENCH_FORCEINLINE int ubench_should_filter(const char *filter,
 
 /* Informational switches */
 #define HELP_STR "--help"
-#define LIST_STR "--list-benchmarks"
+#define LIST_STR "--list"
 /* Benchmark config switches */
 #define FILTER_STR "--filter="
 #define OUTPUT_STR "--output="
@@ -224,7 +224,7 @@ UBUT_INFO( "Command line Options:" ) ;
 UBUT_INFO( "  --help                   Show this message and exit." ) ;
 UBUT_INFO("  --filter=<filter>         Filter the benchmarks to run (EG.)");
 UBUT_INFO( "MyBench*.a would run MyBenchmark.a but not MyBenchmark.b)." ) ;
-UBUT_INFO("  --list-benchmarks         List benchmarks, one per line. ");
+UBUT_INFO("  %s         List benchmarks, one per line. ", LIST_STR );
 UBUT_INFO( "Output names can be passed to --filter." ) ;
 UBUT_INFO( "  --output=<output>         Output a CSV file of the results." ) ;
 UBUT_INFO("  --confidence=<confidence> Change the confidence cut-off for a ");
@@ -240,10 +240,16 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
           ubench_fopen(argv[index] + SLEN(OUTPUT_STR), FOPEN_MODE);
     } else if (0 == ubench_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
         /* user wants a list of benchmarks */
+        UBUT_INFO(" ");
+        UBUT_INFO("List of benchmarks");
+        UBUT_INFO(" ");
         for (index = 0; index < ubench_state.benchmarks_length; index++) {
-            UBUT_INFO("%s", ubench_state.benchmarks[index].name);
-      }
-      /* when printing the benchmark list, don't actually proceed to run the benchmarks */
+            UBUT_INFO("%-4d: %s", index, ubench_state.benchmarks[index].name);
+        }
+        UBUT_INFO(" ");
+        UBUT_INFO("To run exact benchmark or group, filtered by name, use the --filter option");
+        UBUT_INFO(" ");
+        /* after listing the benchmark list, don't actually proceed to run the benchmarks */
       goto cleanup;
     } else if (0 == ubench_strncmp(argv[index], CONFIDENCE_STR,
                                    SLEN(CONFIDENCE_STR))) {
