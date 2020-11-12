@@ -9,7 +9,7 @@
 /// the mandatory and only initialization of the dbj simplelog
 #include "dbj--simplelog/dbj_simple_log_host.h"
 #ifdef _DEBUG
-int dbj_simple_log_setup_ = ( DBJ_LOG_MT | DBJ_LOG_TESTING ) ;
+int dbj_simple_log_setup_ = ( DBJ_LOG_MT /*| DBJ_LOG_TESTING*/ ) ;
 #else // ! _DEBUG
 int dbj_simple_log_setup_ = (DBJ_LOG_DEFAULT_WITH_CONSOLE);
 #endif // _DEBUG
@@ -80,3 +80,37 @@ static bool are_we_on_required_os(void) {
 // That is: cmd is capable of handling VT100 colour codes
 	return is_win_ver_or_greater(10, 0, 14393);
 }
+
+#ifdef DBJ_AD_HOC_
+#include <malloc.h>
+/*
+MSFT "extension" _malloca() must be paired with _freea()
+*/
+// Variable Length Static ARRay
+#define VLS_ARR(T_, S_) (T_*)_alloca(S_ * sizeof(T_))
+// Variable Length Static ARRay Pointer
+#define VLS_ARP(T_) (T_)_alloca(sizeof(T_))
+
+void function(int size_)
+{
+	// no need to free + can use runtime length
+	// CAUTION! this is not immune to stack overflow
+	// see https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/resetstkoflw?view=msvc-160
+
+#ifdef __clang__
+	typedef char(*ptr_to_char_arr)[size_];
+#else //! __clang__
+	typedef char(*ptr_to_char_arr)[0xFF];
+#endif // ! __clang__
+
+	ptr_to_char_arr arrp  = VLS_ARP(ptr_to_char_arr);
+	(*arrp)[size_ / 2] = '!';
+
+	char* local_buf = VLS_ARR(char, size_);
+
+	local_buf[size_ / 2] = '!';
+
+	// _Static_assert( local_buf != NULL ) ;
+}
+
+#endif // DBJ_AD_HOC_

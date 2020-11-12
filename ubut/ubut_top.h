@@ -81,6 +81,14 @@ with VS 2019
 #endif // __clang__
 #endif // _MSC_VER
 
+#if defined(__cplusplus)
+/* if we are using c++ we can use overloaded methods (its in the language) */
+#define UBUT_OVERLOADABLE
+#elif defined(__clang__)
+/* otherwise, if we are using clang with c - use the overloadable attribute */
+#define UBUT_OVERLOADABLE __attribute__((overloadable))
+#endif
+
 #ifdef __clang__
 #define UBUT_UNUSED __attribute__((unused))
 #else
@@ -101,8 +109,8 @@ with VS 2019
 #pragma warning(disable : 4711)
 #pragma warning(push, 1)
 
-typedef __int64 ubench_int64_t;
-typedef unsigned __int64 ubench_uint64_t;
+typedef __int64 ubut_int64_t;
+typedef unsigned __int64 ubut_uint64_t;
 
 #pragma warning(pop)
 
@@ -180,31 +188,27 @@ typedef unsigned __int64 ubench_uint64_t;
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 
-#define UBUT_REZ_OUT(...)                                                     \
-  if (ubench_state.output) {                                                   \
-    fprintf(ubench_state.output, __VA_ARGS__);                                 \
-  }     
-
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
 
-#ifdef UBUT_IS_WIN
+//#ifdef UBUT_IS_WIN
 #define UBUT_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
-#else
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wvariadic-macros"
-#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
-#endif
-#define UBUT_SNPRINTF(...) snprintf(__VA_ARGS__)
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-#endif
+//#else
+//#ifdef __clang__
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wvariadic-macros"
+//#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+//#endif
+//#define UBUT_SNPRINTF(...) snprintf(__VA_ARGS__)
+//#ifdef __clang__
+//#pragma clang diagnostic pop
+//#endif
+//#endif
 
-static UBUT_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
-                                        size_t n) {
+static UBUT_FORCEINLINE int ubut_strncmp
+(const char *a, const char *b, size_t n) 
+{
   /* strncmp breaks on Wall / Werror on gcc/clang, so we avoid using it */
   unsigned i;
 
@@ -219,7 +223,7 @@ static UBUT_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
   return 0;
 }
 
-static UBUT_FORCEINLINE FILE *ubench_fopen(const char *filename,
+static UBUT_FORCEINLINE FILE * ubut_fopen(const char *filename,
                                         const char *mode) {
 #ifdef UBUT_IS_WIN
   FILE *file;
@@ -231,6 +235,17 @@ static UBUT_FORCEINLINE FILE *ubench_fopen(const char *filename,
 #else
   return fopen(filename, mode);
 #endif
+}
+
+
+static UBUT_FORCEINLINE ubut_int64_t ubut_ns(void) {
+    //#ifdef UBENCH_IS_WIN
+    LARGE_INTEGER counter;
+    LARGE_INTEGER frequency;
+    QueryPerformanceCounter(&counter);
+    QueryPerformanceFrequency(&frequency);
+    return UBUT_CAST(ubut_int64_t,
+        (counter.QuadPart * 1000000000) / frequency.QuadPart);
 }
 
 /*

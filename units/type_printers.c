@@ -47,7 +47,7 @@ UTEST(type_printers, stdc) {
 
   char expected[1024] = {0};
   size_t expected_len =
-      UTEST_SNPRINTF(expected, sizeof expected - 1, "%d%ld%lld%u%lu%llu%f%f%Lf",
+      UBUT_SNPRINTF(expected, sizeof expected - 1, "%d%ld%lld%u%lu%llu%f%f%Lf",
                      i, l, ll, u, ul, ull, f, d, ld);
   fflush(out);
   rewind(out);

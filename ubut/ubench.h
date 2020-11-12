@@ -8,18 +8,7 @@
 #include "ubut_top.h"
 #include "ubut_print.h"
 
-
-static UBUT_FORCEINLINE ubench_int64_t ubench_ns(void) {
-//#ifdef UBENCH_IS_WIN
-  LARGE_INTEGER counter;
-  LARGE_INTEGER frequency;
-  QueryPerformanceCounter(&counter);
-  QueryPerformanceFrequency(&frequency);
-  return UBUT_CAST(ubench_int64_t,
-                     (counter.QuadPart * 1000000000) / frequency.QuadPart);
-}
-
-typedef void (*ubench_benchmark_t)(ubench_int64_t *const, const ubench_int64_t);
+typedef void (*ubench_benchmark_t)(ubut_int64_t *const, const ubut_int64_t);
 
 struct ubench_benchmark_state_s {
   ubench_benchmark_t func;
@@ -36,6 +25,10 @@ struct ubench_state_s {
 /* extern to the global state ubench needs to execute */
 UBUT_EXTERN struct ubench_state_s ubench_state;
 
+#define UBENCH_REZ_OUT(...)                                                     \
+  if (ubench_state.output) {                                                   \
+    fprintf(ubench_state.output, __VA_ARGS__);                                 \
+  }   
 /*
 -------------------------------------------------------------------------------
 ubench begins here
@@ -45,13 +38,13 @@ ubench begins here
 #define UBENCH(SET, NAME)                                                      \
   UBUT_EXTERN struct ubench_state_s ubench_state;                            \
   static void ubench_run_##SET##_##NAME(void);                                 \
-  static void ubench_##SET##_##NAME(ubench_int64_t *const ns,                  \
-                                    const ubench_int64_t size) {               \
-    ubench_int64_t i = 0;                                                      \
+  static void ubench_##SET##_##NAME(ubut_int64_t *const ns,                  \
+                                    const ubut_int64_t size) {               \
+    ubut_int64_t i = 0;                                                      \
     for (i = 0; i < size; i++) {                                               \
-      ns[i] = ubench_ns();                                                     \
+      ns[i] = ubut_ns();                                                     \
       ubench_run_##SET##_##NAME();                                             \
-      ns[i] = ubench_ns() - ns[i];                                             \
+      ns[i] = ubut_ns() - ns[i];                                             \
     }                                                                          \
   }                                                                            \
   UBUT_INITIALIZER(ubench_register_##SET##_##NAME) {                         \
@@ -157,12 +150,12 @@ UBUT_FORCEINLINE int ubench_should_filter(const char *filter,
 
 UBUT_FORCEINLINE int ubench_main(int /*argc*/, const char *const /*argv*/[]);
 UBUT_FORCEINLINE int ubench_main(int argc, const char *const argv[]) {
-  ubench_uint64_t failed = 0;
+  ubut_uint64_t failed = 0;
   size_t index = 0;
   size_t *failed_benchmarks = UBUT_NULL;
   size_t failed_benchmarks_length = 0;
   const char *filter = UBUT_NULL;
-  ubench_uint64_t ran_benchmarks = 0;
+  ubut_uint64_t ran_benchmarks = 0;
 
   static const char *const FOPEN_MODE = "w+";
 // static const char *const FOPEN_MODE = "a+";
@@ -170,7 +163,7 @@ UBUT_FORCEINLINE int ubench_main(int argc, const char *const argv[]) {
   /* loop through all arguments looking for our options */
   for (index = 1; index < UBUT_CAST(size_t, argc); index++) {
 
-    if (0 == ubench_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
+    if (0 == ubut_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
 
 UBUT_INFO( "ubench - the benchmarking solution" ) ;
 UBUT_INFO( "Command line Options:" ) ;
@@ -184,14 +177,14 @@ UBUT_INFO("  --confidence=<confidence> Change the confidence cut-off for a ");
 UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
 
       goto cleanup;
-    } else if (0 == ubench_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
+    } else if (0 == ubut_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
       /* user wants to filter what benchmarks to run! */
       filter = argv[index] + SLEN(FILTER_STR);
-    } else if (0 == ubench_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
+    } else if (0 == ubut_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
         /* user has given rezult file name */
         ubench_state.output =
-          ubench_fopen(argv[index] + SLEN(OUTPUT_STR), FOPEN_MODE);
-    } else if (0 == ubench_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
+          ubut_fopen(argv[index] + SLEN(OUTPUT_STR), FOPEN_MODE);
+    } else if (0 == ubut_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
         /* user wants a list of benchmarks */
         UBUT_INFO(" ");
         UBUT_INFO("List of benchmarks");
@@ -204,7 +197,7 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
         UBUT_INFO(" ");
         /* after listing the benchmark list, don't actually proceed to run the benchmarks */
       goto cleanup;
-    } else if (0 == ubench_strncmp(argv[index], CONFIDENCE_STR,
+    } else if (0 == ubut_strncmp(argv[index], CONFIDENCE_STR,
                                    SLEN(CONFIDENCE_STR))) {
       /* user wants to specify a different confidence */
       ubench_state.confidence = atof(argv[index] + SLEN(CONFIDENCE_STR));
@@ -228,24 +221,24 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
   }
 
   UBUT_INFO(PFX_DIVIDER "Running %" UBUT_PRIu64 " benchmarks.",
-         UBUT_CAST(ubench_uint64_t, ran_benchmarks));
+         UBUT_CAST(ubut_uint64_t, ran_benchmarks));
   // header for the rezult file
-  UBUT_REZ_OUT("name, mean (ns), stddev (%%), confidence (%%)\n");
+  UBENCH_REZ_OUT("name, mean (ns), stddev (%%), confidence (%%)\n");
 
 #define UBENCH_MIN_ITERATIONS 10
 #define UBENCH_MAX_ITERATIONS 500
-  static const ubench_int64_t max_iterations = UBENCH_MAX_ITERATIONS;
-  static const ubench_int64_t min_iterations = UBENCH_MIN_ITERATIONS;
+  static const ubut_int64_t max_iterations = UBENCH_MAX_ITERATIONS;
+  static const ubut_int64_t min_iterations = UBENCH_MIN_ITERATIONS;
 
   for (index = 0; index < ubench_state.benchmarks_length; index++) {
     int result = 1;
     size_t mndex = 0;
-    ubench_int64_t best_avg_ns = 0;
+    ubut_int64_t best_avg_ns = 0;
     double best_deviation = 0;
     double best_confidence = 101.0;
 
-    ubench_int64_t iterations = 10;
-    ubench_int64_t ns[UBENCH_MAX_ITERATIONS] = {0};
+    ubut_int64_t iterations = 10;
+    ubut_int64_t ns[UBENCH_MAX_ITERATIONS] = {0};
 
 #undef UBENCH_MAX_ITERATIONS
 #undef UBENCH_MIN_ITERATIONS
@@ -264,12 +257,12 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
     iterations = iterations > max_iterations ? max_iterations : iterations;
 
     for (mndex = 0; (mndex < 100) && (result != 0); mndex++) {
-      ubench_int64_t kndex = 0;
-      ubench_int64_t avg_ns = 0;
+      ubut_int64_t kndex = 0;
+      ubut_int64_t avg_ns = 0;
       double deviation = 0;
       double confidence = 0;
 
-      iterations = iterations * (UBUT_CAST(ubench_int64_t, mndex) + 1);
+      iterations = iterations * (UBUT_CAST(ubut_int64_t, mndex) + 1);
       iterations = iterations > max_iterations ? max_iterations : iterations;
 
       ubench_state.benchmarks[index].func(ns, iterations);
@@ -309,7 +302,7 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
              best_confidence, ubench_state.confidence);
     }
 
-      UBUT_REZ_OUT("%s, %" UBUT_PRId64 ", %f, %f,\n",
+      UBENCH_REZ_OUT("%s, %" UBUT_PRId64 ", %f, %f,\n",
               ubench_state.benchmarks[index].name, best_avg_ns, best_deviation,
               best_confidence);
 
@@ -439,11 +432,12 @@ UBUT_C_FUNC UBUT_NOINLINE void ubench_do_nothing(void *const);
    their own main() function and manually call ubench_main. The user must, in
    exactly one source file, use the UBENCH_STATE macro to declare a global
    struct variable that ubench requires.
-*/
-#define UBENCH_MAIN()                                                          \
+
+ #define UBENCH_MAIN()                                                          \
   UBENCH_STATE();                                                              \
   int main(int argc, const char *const argv[]) {                               \
     return ubench_main(argc, argv);                                            \
   }
+  */
 
 #endif /* UBUT_UBENCH_H_INCLUDED */
