@@ -9,13 +9,13 @@
 #include "ubut_print.h"
 
 
-static UBENCH_FORCEINLINE ubench_int64_t ubench_ns(void) {
+static UBUT_FORCEINLINE ubench_int64_t ubench_ns(void) {
 //#ifdef UBENCH_IS_WIN
   LARGE_INTEGER counter;
   LARGE_INTEGER frequency;
   QueryPerformanceCounter(&counter);
   QueryPerformanceFrequency(&frequency);
-  return UBENCH_CAST(ubench_int64_t,
+  return UBUT_CAST(ubench_int64_t,
                      (counter.QuadPart * 1000000000) / frequency.QuadPart);
 }
 
@@ -34,7 +34,7 @@ struct ubench_state_s {
 };
 
 /* extern to the global state ubench needs to execute */
-UBENCH_EXTERN struct ubench_state_s ubench_state;
+UBUT_EXTERN struct ubench_state_s ubench_state;
 
 /*
 -------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ ubench begins here
 */
 
 #define UBENCH(SET, NAME)                                                      \
-  UBENCH_EXTERN struct ubench_state_s ubench_state;                            \
+  UBUT_EXTERN struct ubench_state_s ubench_state;                            \
   static void ubench_run_##SET##_##NAME(void);                                 \
   static void ubench_##SET##_##NAME(ubench_int64_t *const ns,                  \
                                     const ubench_int64_t size) {               \
@@ -54,78 +54,31 @@ ubench begins here
       ns[i] = ubench_ns() - ns[i];                                             \
     }                                                                          \
   }                                                                            \
-  UBENCH_INITIALIZER(ubench_register_##SET##_##NAME) {                         \
+  UBUT_INITIALIZER(ubench_register_##SET##_##NAME) {                         \
     const size_t index = ubench_state.benchmarks_length++;                     \
     const char *name_part = #SET "." #NAME;                                    \
     const size_t name_size = strlen(name_part) + 1;                            \
-    char *name = UBENCH_PTR_CAST(char *, malloc(name_size));                   \
-    ubench_state.benchmarks = UBENCH_PTR_CAST(                                 \
+    char *name = UBUT_PTR_CAST(char *, malloc(name_size));                   \
+    ubench_state.benchmarks = UBUT_PTR_CAST(                                 \
         struct ubench_benchmark_state_s *,                                     \
-        realloc(UBENCH_PTR_CAST(void *, ubench_state.benchmarks),              \
+        realloc(UBUT_PTR_CAST(void *, ubench_state.benchmarks),              \
                 sizeof(struct ubench_benchmark_state_s) *                      \
                     ubench_state.benchmarks_length));                          \
     ubench_state.benchmarks[index].func = &ubench_##SET##_##NAME;              \
     ubench_state.benchmarks[index].name = name;                                \
-    UBENCH_SNPRINTF(name, name_size, "%s", name_part);                         \
+    UBUT_SNPRINTF(name, name_size, "%s", name_part);                         \
   }                                                                            \
   void ubench_run_##SET##_##NAME(void)
 
-#pragma region fixtures
-#if DBJ_USES_UBENCH_FIXTURE
-
-#define UBENCH_F_SETUP(FIXTURE)                                                \
-  static void ubench_f_setup_##FIXTURE(struct FIXTURE *ubench_fixture)
-
-#define UBENCH_F_TEARDOWN(FIXTURE)                                             \
-  static void ubench_f_teardown_##FIXTURE(struct FIXTURE *ubench_fixture)
-
-#define UBENCH_F(FIXTURE, NAME)                                                \
-  UBENCH_EXTERN struct ubench_state_s ubench_state;                            \
-  static void ubench_f_setup_##FIXTURE(struct FIXTURE *);                      \
-  static void ubench_f_teardown_##FIXTURE(struct FIXTURE *);                   \
-  static void ubench_run_##FIXTURE##_##NAME(struct FIXTURE *);                 \
-  static void ubench_f_##FIXTURE##_##NAME(ubench_int64_t *const ns,            \
-                                          const ubench_int64_t size) {         \
-    ubench_int64_t i = 0;                                                      \
-    struct FIXTURE fixture;                                                    \
-    memset(&fixture, 0, sizeof(fixture));                                      \
-    ubench_f_setup_##FIXTURE(&fixture);                                        \
-    for (i = 0; i < size; i++) {                                               \
-      ns[i] = ubench_ns();                                                     \
-      ubench_run_##FIXTURE##_##NAME(&fixture);                                 \
-      ns[i] = ubench_ns() - ns[i];                                             \
-    }                                                                          \
-    ubench_f_teardown_##FIXTURE(&fixture);                                     \
-  }                                                                            \
-  UBENCH_INITIALIZER(ubench_register_##FIXTURE##_##NAME) {                     \
-    const size_t index = ubench_state.benchmarks_length++;                     \
-    const char *name_part = #FIXTURE "." #NAME;                                \
-    const size_t name_size = strlen(name_part) + 1;                            \
-    char *name = UBENCH_PTR_CAST(char *, malloc(name_size));                   \
-    ubench_state.benchmarks = UBENCH_PTR_CAST(                                 \
-        struct ubench_benchmark_state_s *,                                     \
-        realloc(UBENCH_PTR_CAST(void *, ubench_state.benchmarks),              \
-                sizeof(struct ubench_benchmark_state_s) *                      \
-                    ubench_state.benchmarks_length));                          \
-    ubench_state.benchmarks[index].func = &ubench_f_##FIXTURE##_##NAME;        \
-    ubench_state.benchmarks[index].name = name;                                \
-    UBENCH_SNPRINTF(name, name_size, "%s", name_part);                         \
-  }                                                                            \
-  void ubench_run_##FIXTURE##_##NAME(struct FIXTURE *ubench_fixture)
-
-#endif // DBJ_USES_UBENCH_FIXTURE
-#pragma endregion fixtures
-
-
-UBENCH_FORCEINLINE
+UBUT_FORCEINLINE
 int ubench_should_filter(const char *filter, const char *benchmark);
 
-UBENCH_FORCEINLINE int ubench_should_filter(const char *filter,
+UBUT_FORCEINLINE int ubench_should_filter(const char *filter,
                                      const char *benchmark) {
   if (filter) {
     const char *filter_cur = filter;
     const char *benchmark_cur = benchmark;
-    const char *filter_wildcard = UBENCH_NULL;
+    const char *filter_wildcard = UBUT_NULL;
 
     while (('\0' != *filter_cur) && ('\0' != *benchmark_cur)) {
       if ('*' == *filter_cur) {
@@ -202,20 +155,20 @@ UBENCH_FORCEINLINE int ubench_should_filter(const char *filter,
 #define  PFX_PASSED "[  PASSED  ]"
 #define      PFX_OK "[      OK  ]"
 
-UBENCH_FORCEINLINE int ubench_main(int /*argc*/, const char *const /*argv*/[]);
-UBENCH_FORCEINLINE int ubench_main(int argc, const char *const argv[]) {
+UBUT_FORCEINLINE int ubench_main(int /*argc*/, const char *const /*argv*/[]);
+UBUT_FORCEINLINE int ubench_main(int argc, const char *const argv[]) {
   ubench_uint64_t failed = 0;
   size_t index = 0;
-  size_t *failed_benchmarks = UBENCH_NULL;
+  size_t *failed_benchmarks = UBUT_NULL;
   size_t failed_benchmarks_length = 0;
-  const char *filter = UBENCH_NULL;
+  const char *filter = UBUT_NULL;
   ubench_uint64_t ran_benchmarks = 0;
 
   static const char *const FOPEN_MODE = "w+";
 // static const char *const FOPEN_MODE = "a+";
 
   /* loop through all arguments looking for our options */
-  for (index = 1; index < UBENCH_CAST(size_t, argc); index++) {
+  for (index = 1; index < UBUT_CAST(size_t, argc); index++) {
 
     if (0 == ubench_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
 
@@ -274,10 +227,10 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
     ran_benchmarks++;
   }
 
-  UBUT_INFO(PFX_DIVIDER "Running %" UBENCH_PRIu64 " benchmarks.",
-         UBENCH_CAST(ubench_uint64_t, ran_benchmarks));
+  UBUT_INFO(PFX_DIVIDER "Running %" UBUT_PRIu64 " benchmarks.",
+         UBUT_CAST(ubench_uint64_t, ran_benchmarks));
   // header for the rezult file
-  UBENCH_REZ_OUT("name, mean (ns), stddev (%%), confidence (%%)\n");
+  UBUT_REZ_OUT("name, mean (ns), stddev (%%), confidence (%%)\n");
 
 #define UBENCH_MIN_ITERATIONS 10
 #define UBENCH_MAX_ITERATIONS 500
@@ -316,7 +269,7 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
       double deviation = 0;
       double confidence = 0;
 
-      iterations = iterations * (UBENCH_CAST(ubench_int64_t, mndex) + 1);
+      iterations = iterations * (UBUT_CAST(ubench_int64_t, mndex) + 1);
       iterations = iterations > max_iterations ? max_iterations : iterations;
 
       ubench_state.benchmarks[index].func(ns, iterations);
@@ -328,14 +281,14 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
       avg_ns /= iterations;
 
       for (kndex = 0; kndex < iterations; kndex++) {
-        const double v = UBENCH_CAST(double, ns[kndex] - avg_ns);
+        const double v = UBUT_CAST(double, ns[kndex] - avg_ns);
         deviation += v * v;
       }
 
       deviation = sqrt(deviation / iterations);
 
       // Confidence is the 99% confidence index - whose magic value is 2.576.
-      confidence = 2.576 * deviation / sqrt(UBENCH_CAST(double, iterations));
+      confidence = 2.576 * deviation / sqrt(UBUT_CAST(double, iterations));
       confidence = (confidence / avg_ns) * 100;
 
       deviation = (deviation / avg_ns) * 100;
@@ -356,7 +309,7 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
              best_confidence, ubench_state.confidence);
     }
 
-      UBENCH_REZ_OUT("%s, %" UBENCH_PRId64 ", %f, %f,\n",
+      UBUT_REZ_OUT("%s, %" UBUT_PRId64 ", %f, %f,\n",
               ubench_state.benchmarks[index].name, best_avg_ns, best_deviation,
               best_confidence);
 
@@ -368,8 +321,8 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
 
       if (0 != result) {
         const size_t failed_benchmark_index = failed_benchmarks_length++;
-        failed_benchmarks = UBENCH_PTR_CAST(
-            size_t *, realloc(UBENCH_PTR_CAST(void *, failed_benchmarks),
+        failed_benchmarks = UBUT_PTR_CAST(
+            size_t *, realloc(UBUT_PTR_CAST(void *, failed_benchmarks),
                               sizeof(size_t) * failed_benchmarks_length));
         failed_benchmarks[failed_benchmark_index] = index;
         failed++;
@@ -396,18 +349,18 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
         }
       }
 
-      UBUT_INFO( "%s%s (mean " "%" UBENCH_PRId64 ".%03" UBENCH_PRId64
+      UBUT_INFO( "%s%s (mean " "%" UBUT_PRId64 ".%03" UBUT_PRId64
              "%s, confidence interval +- %f%%)",
           status, ubench_state.benchmarks[index].name,
              best_avg_ns / 1000, best_avg_ns % 1000, unit, best_confidence);
     }
   }
 
-  UBUT_INFO(PFX_DIVIDER "%" UBENCH_PRIu64 " benchmarks ran.", ran_benchmarks);
-  UBUT_INFO(PFX_PASSED "%" UBENCH_PRIu64 " benchmarks.", ran_benchmarks - failed);
+  UBUT_INFO(PFX_DIVIDER "%" UBUT_PRIu64 " benchmarks ran.", ran_benchmarks);
+  UBUT_INFO(PFX_PASSED "%" UBUT_PRIu64 " benchmarks.", ran_benchmarks - failed);
 
   if (0 != failed) {
-      UBUT_WARN(PFX_FAILED"%" UBENCH_PRIu64 " benchmarks, listed below:", failed);
+      UBUT_WARN(PFX_FAILED"%" UBUT_PRIu64 " benchmarks, listed below:", failed);
     for (index = 0; index < failed_benchmarks_length; index++) {
         UBUT_WARN(PFX_FAILED"%s", ubench_state.benchmarks[failed_benchmarks[index]].name);
     }
@@ -415,17 +368,17 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
 
 cleanup:
   for (index = 0; index < ubench_state.benchmarks_length; index++) {
-    free(UBENCH_PTR_CAST(void *, ubench_state.benchmarks[index].name));
+    free(UBUT_PTR_CAST(void *, ubench_state.benchmarks[index].name));
   }
 
-  free(UBENCH_PTR_CAST(void *, failed_benchmarks));
-  free(UBENCH_PTR_CAST(void *, ubench_state.benchmarks));
+  free(UBUT_PTR_CAST(void *, failed_benchmarks));
+  free(UBUT_PTR_CAST(void *, ubench_state.benchmarks));
 
   if (ubench_state.output) {
     fclose(ubench_state.output);
   }
 
-  return UBENCH_CAST(int, failed);
+  return UBUT_CAST(int, failed);
 }
 
 #undef HELP_STR
@@ -442,7 +395,7 @@ cleanup:
 #undef      PFX_OK
 
 
-UBENCH_C_FUNC UBENCH_NOINLINE void ubench_do_nothing(void *const);
+UBUT_C_FUNC UBUT_NOINLINE void ubench_do_nothing(void *const);
 
 #define UBENCH_DO_NOTHING(x) ubench_do_nothing(x)
 

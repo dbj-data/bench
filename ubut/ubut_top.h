@@ -74,7 +74,7 @@ UBUT stuff begins here
 // clang-cl.exe has them both defined
 // thus it is not enugh to use _MSC_VER only
 #ifdef _WIN32
-#define UBENCH_IS_WIN
+#define UBUT_IS_WIN
 #endif
 
 /* 
@@ -83,14 +83,14 @@ with VS 2019
 */
 #ifdef _MSC_VER
 #ifdef __clang__
-#define UBENCH_IS_CLANG_CL
+#define UBUT_IS_CLANG_CL
 #endif // __clang__
 #endif // _MSC_VER
 
 #ifdef __clang__
-#define UBENCH_UNUSED __attribute__((unused))
+#define UBUT_UNUSED __attribute__((unused))
 #else
-#define UBENCH_UNUSED
+#define UBUT_UNUSED
 #endif
 
 /*
@@ -102,7 +102,7 @@ with VS 2019
 
 /*
    Disable warning about inlining functions that are not marked 'inline'.
-   TODO: add a UBENCH_NOINLINE onto the macro generated functions to fix this.
+   TODO: add a UBUT_NOINLINE onto the macro generated functions to fix this.
 */
 #pragma warning(disable : 4711)
 #pragma warning(push, 1)
@@ -113,47 +113,47 @@ typedef unsigned __int64 ubench_uint64_t;
 #pragma warning(pop)
 
 #if defined(__cplusplus)
-#define UBENCH_C_FUNC extern "C"
+#define UBUT_C_FUNC extern "C"
 #else
-#define UBENCH_C_FUNC
+#define UBUT_C_FUNC
 #endif
 
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
-#define UBENCH_NOEXCEPT noexcept
+#define UBUT_NOEXCEPT noexcept
 #else
-#define UBENCH_NOEXCEPT
+#define UBUT_NOEXCEPT
 #endif
 
-#ifdef UBENCH_IS_CLANG_CL
-#define UBENCH_NOTHROW __declspec(nothrow)
+#ifdef UBUT_IS_CLANG_CL
+#define UBUT_NOTHROW __declspec(nothrow)
 #else
-#define UBENCH_NOTHROW
+#define UBUT_NOTHROW
 #endif
 
-#define UBENCH_PRId64 "I64d"
-#define UBENCH_PRIu64 "I64u"
-// #define UBENCH_INLINE __forceinline
-#define UBENCH_NOINLINE __declspec(noinline)
-#define UBENCH_FORCEINLINE __forceinline
+#define UBUT_PRId64 "I64d"
+#define UBUT_PRIu64 "I64u"
+// #define UBUT_INLINE __forceinline
+#define UBUT_NOINLINE __declspec(noinline)
+#define UBUT_FORCEINLINE __forceinline
 
 #if defined(_WIN64)
-#define UBENCH_SYMBOL_PREFIX
+#define UBUT_SYMBOL_PREFIX
 #else
-#define UBENCH_SYMBOL_PREFIX "_"
+#define UBUT_SYMBOL_PREFIX "_"
 #endif
 
 #pragma section(".CRT$XCU", read)
-#define UBENCH_INITIALIZER(f)                                                  \
+#define UBUT_INITIALIZER(f)                                                  \
   static void __cdecl f(void);                                                 \
-  __pragma(comment(linker, "/include:" UBENCH_SYMBOL_PREFIX #f "_"));          \
-  UBENCH_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) =  \
+  __pragma(comment(linker, "/include:" UBUT_SYMBOL_PREFIX #f "_"));          \
+  UBUT_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) =  \
       f;                                                                       \
   static void __cdecl f(void)
 
 // clang on win aka clang-cl.exe
 #ifdef __clang__
-#undef UBENCH_INITIALIZER
-#define UBENCH_INITIALIZER(f)                                                  \
+#undef UBUT_INITIALIZER
+#define UBUT_INITIALIZER(f)                                                  \
   static void f(void) __attribute__((constructor));                            \
   static void f(void)
 #endif // __clang__
@@ -169,15 +169,15 @@ typedef unsigned __int64 ubench_uint64_t;
 #endif // clang has warning
 
 #if defined(__cplusplus)
-#define UBENCH_CAST(type, x) static_cast<type>(x)
-#define UBENCH_PTR_CAST(type, x) reinterpret_cast<type>(x)
-#define UBENCH_EXTERN extern "C"
-#define UBENCH_NULL NULL
+#define UBUT_CAST(type, x) static_cast<type>(x)
+#define UBUT_PTR_CAST(type, x) reinterpret_cast<type>(x)
+#define UBUT_EXTERN extern "C"
+#define UBUT_NULL NULL
 #else
-#define UBENCH_CAST(type, x) ((type)x)
-#define UBENCH_PTR_CAST(type, x) ((type)x)
-#define UBENCH_EXTERN extern
-#define UBENCH_NULL 0
+#define UBUT_CAST(type, x) ((type)x)
+#define UBUT_PTR_CAST(type, x) ((type)x)
+#define UBUT_EXTERN extern
+#define UBUT_NULL 0
 #endif
 
 #ifdef __clang__
@@ -186,7 +186,7 @@ typedef unsigned __int64 ubench_uint64_t;
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 
-#define UBENCH_REZ_OUT(...)                                                     \
+#define UBUT_REZ_OUT(...)                                                     \
   if (ubench_state.output) {                                                   \
     fprintf(ubench_state.output, __VA_ARGS__);                                 \
   }     
@@ -195,21 +195,21 @@ typedef unsigned __int64 ubench_uint64_t;
 #pragma clang diagnostic pop
 #endif
 
-#ifdef UBENCH_IS_WIN
-#define UBENCH_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
+#ifdef UBUT_IS_WIN
+#define UBUT_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
 #else
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wvariadic-macros"
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
-#define UBENCH_SNPRINTF(...) snprintf(__VA_ARGS__)
+#define UBUT_SNPRINTF(...) snprintf(__VA_ARGS__)
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
 #endif
 
-static UBENCH_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
+static UBUT_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
                                         size_t n) {
   /* strncmp breaks on Wall / Werror on gcc/clang, so we avoid using it */
   unsigned i;
@@ -225,9 +225,9 @@ static UBENCH_FORCEINLINE int ubench_strncmp(const char *a, const char *b,
   return 0;
 }
 
-static UBENCH_FORCEINLINE FILE *ubench_fopen(const char *filename,
+static UBUT_FORCEINLINE FILE *ubench_fopen(const char *filename,
                                         const char *mode) {
-#ifdef UBENCH_IS_WIN
+#ifdef UBUT_IS_WIN
   FILE *file;
   if (0 == fopen_s(&file, filename, mode)) {
     return file;
