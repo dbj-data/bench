@@ -1,4 +1,7 @@
-#include "../ubench.h/ubench.h"
+
+#if DBJ_USE_UBENCH
+#include "../ubut/ubench.h"
+#endif
 
 static long count_ones_1 (long n) {
   long i = 0, j = 1;
