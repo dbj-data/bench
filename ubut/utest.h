@@ -578,9 +578,16 @@ UBUT_INFO("specified in <output>.") ;
                ubut_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
       utest_state.output = ubut_fopen(argv[index] + SLEN(OUTPUT_STR), "w+");
     } else if (0 == ubut_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
+        // user want to list the tests and leave
+        UBUT_INFO(" ");
+        UBUT_INFO("List of tests");
+        UBUT_INFO(" ");
       for (index = 0; index < utest_state.tests_length; index++) {
-          UBUT_INFO("%s", utest_state.tests[index].name);
+          UBUT_INFO("%-4d: %s", index, utest_state.tests[index].name);
       }
+      UBUT_INFO(" ");
+      UBUT_INFO("To run exact test or group, filtered by name, use the --filter option");
+      UBUT_INFO(" ");
       /* when printing the test list, don't actually run the tests */
       return 0;
     }
