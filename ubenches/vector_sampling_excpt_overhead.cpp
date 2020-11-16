@@ -5,6 +5,7 @@
 #include "../dbj-fwk/printing_macros.h"
 
 #include <stdexcept>
+#include <minwinbase.h>
 
 ///-----------------------------------------------
 struct buffer_type { char data[0xFF]; };

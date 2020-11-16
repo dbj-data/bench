@@ -28,67 +28,70 @@
 #endif
 #endif
 
-typedef void (*utest_testcase_t)(int *, size_t);
+typedef void (*utest_testcase_t)(int*, size_t);
 
 struct utest_test_state_s {
-  utest_testcase_t func;
-  size_t index;
-  char *name;
+	utest_testcase_t func;
+	size_t index;
+	char* name;
 };
 
 struct utest_state_s {
-  struct utest_test_state_s *tests;
-  size_t tests_length;
-  FILE *output;
+	struct utest_test_state_s* tests;
+	size_t tests_length;
+	FILE* output;
 };
 
 /* extern to the global state utest needs to execute */
 UBUT_EXTERN struct utest_state_s utest_state;
 
-#define UTEST_REZ_OUT(...)                                                     \
+#define UTEST_XML_OUT(...)    do {                                            \
   if (utest_state.output) {                                                   \
     fprintf(utest_state.output, __VA_ARGS__);                                 \
-  }   
+  }   \
+} while(0)
+
+#define UTEST_REZ_OUT(...)    do {                                            \
+  if (utest_state.output) {                                                   \
+    fprintf(utest_state.output, __VA_ARGS__);                                 \
+  }   \
+UBUT_INFO( __VA_ARGS__ ) ; \
+} while(0)
+
+#ifdef UTEST_HAVING_TYPE_PRINTERS
 
 #if defined(UBUT_OVERLOADABLE)
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(float f);
+
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(float f) {
-  UTEST_REZ_OUT("%f", UBUT_CAST(double, f));
+	UTEST_REZ_OUT("%f", UBUT_CAST(double, f));
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(double d);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(double d) {
-  UTEST_REZ_OUT("%f", d);
+	UTEST_REZ_OUT("%f", d);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long double d);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long double d) {
-  UTEST_REZ_OUT("%Lf", d);
+	UTEST_REZ_OUT("%Lf", d);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(int i) {
-  UTEST_REZ_OUT("%d", i);
+	UTEST_REZ_OUT("%d", i);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(unsigned int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(unsigned int i) {
-  UTEST_REZ_OUT("%u", i);
+	UTEST_REZ_OUT("%u", i);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long int i) {
-  UTEST_REZ_OUT("%ld", i);
+	UTEST_REZ_OUT("%ld", i);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long unsigned int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long unsigned int i) {
-  UTEST_REZ_OUT("%lu", i);
+	UTEST_REZ_OUT("%lu", i);
 }
 
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(const void *p);
-UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(const void *p) {
-  UTEST_REZ_OUT("%p", p);
+UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(const void* p) {
+	UTEST_REZ_OUT("%p", p);
 }
 
 /*
@@ -104,13 +107,13 @@ UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(const void *p) {
 
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long long int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long long int i) {
-  UTEST_REZ_OUT("%lld", i);
+	UTEST_REZ_OUT("%lld", i);
 }
 
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(long long unsigned int i);
 UBUT_FORCEINLINE UBUT_OVERLOADABLE void
 utest_type_printer(long long unsigned int i) {
-  UTEST_REZ_OUT("%llu", i);
+	UTEST_REZ_OUT("%llu", i);
 }
 
 #ifdef __clang__
@@ -166,6 +169,8 @@ utest_type_printer(long long unsigned int i) {
 #define UTEST_AUTO(x) typeof(x + 0)
 #endif
 
+#endif // UTEST_HAVING_TYPE_PRINTERS
+
 #if defined(__clang__)
 #define UTEST_STRNCMP(x, y, size)                                              \
   _Pragma("clang diagnostic push")                                             \
@@ -196,7 +201,9 @@ utest_type_printer(long long unsigned int i) {
       *utest_result = 1;                                                       \
     }                                                                          \
   } 
-#else
+
+#else // ! __clang__
+
 #define UTEST_EXPECT(x, y, cond)                                               \
   {                                                                            \
     if (!((x)cond(y))) {                                                       \
@@ -204,7 +211,8 @@ utest_type_printer(long long unsigned int i) {
       *utest_result = 1;                                                       \
     }                                                                          \
   }
-#endif
+
+#endif // ! __clang__
 
 #define EXPECT_TRUE(x)                                                         \
   if (!(x)) {                                                                  \
@@ -283,7 +291,7 @@ utest_type_printer(long long unsigned int i) {
       return;                                                                  \
     }                                                                          \
   }
-#else
+#else // ! __clang__ 
 #define UTEST_ASSERT(x, y, cond)                                               \
   {                                                                            \
     if (!((x)cond(y))) {                                                       \
@@ -292,7 +300,8 @@ utest_type_printer(long long unsigned int i) {
       return;                                                                  \
     }                                                                          \
   }
-#endif
+
+#endif // ! __clang__
 
 #define ASSERT_TRUE(x)                                                         \
   if (!(x)) {                                                                  \
@@ -377,6 +386,8 @@ utest_type_printer(long long unsigned int i) {
     UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
   void utest_run_##SET##_##NAME(int *utest_result)
+
+#ifdef UTEST_HAVING_FIXTURES 
 
 #define UTEST_F_SETUP(FIXTURE)                                                 \
   static void utest_f_setup_##FIXTURE(int *utest_result,                       \
@@ -465,72 +476,76 @@ utest_type_printer(long long unsigned int i) {
   void utest_run_##FIXTURE##_##NAME##_##INDEX(int *utest_result,               \
                                               struct FIXTURE *utest_fixture)
 
-UBUT_FORCEINLINE
-int utest_should_filter_test(const char *filter, const char *testcase);
-UBUT_FORCEINLINE int utest_should_filter_test(const char *filter,
-                                        const char *testcase) {
-  if (filter) {
-    const char *filter_cur = filter;
-    const char *testcase_cur = testcase;
-    const char *filter_wildcard = UBUT_NULL;
+#endif // UTEST_HAVING_FIXTURES 
 
-    while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
-      if ('*' == *filter_cur) {
-        /* store the position of the wildcard */
-        filter_wildcard = filter_cur;
+UBUT_FORCEINLINE int utest_should_filter_test(const char* filter, const char* testcase);
+UBUT_FORCEINLINE int utest_should_filter_test(const char* filter,
+	const char* testcase) {
+	if (filter) {
+		const char* filter_cur = filter;
+		const char* testcase_cur = testcase;
+		const char* filter_wildcard = UBUT_NULL;
 
-        /* skip the wildcard character */
-        filter_cur++;
+		while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
+			if ('*' == *filter_cur) {
+				/* store the position of the wildcard */
+				filter_wildcard = filter_cur;
 
-        while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
-          if ('*' == *filter_cur) {
-            /*
-               we found another wildcard (filter is something like *foo*) so we
-               exit the current loop, and return to the parent loop to handle
-               the wildcard case
-            */
-            break;
-          } else if (*filter_cur != *testcase_cur) {
-            /* otherwise our filter didn't match, so reset it */
-            filter_cur = filter_wildcard;
-          }
+				/* skip the wildcard character */
+				filter_cur++;
 
-          /* move testcase along */
-          testcase_cur++;
+				while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
+					if ('*' == *filter_cur) {
+						/*
+						   we found another wildcard (filter is something like *foo*) so we
+						   exit the current loop, and return to the parent loop to handle
+						   the wildcard case
+						*/
+						break;
+					}
+					else if (*filter_cur != *testcase_cur) {
+						/* otherwise our filter didn't match, so reset it */
+						filter_cur = filter_wildcard;
+					}
 
-          /* move filter along */
-          filter_cur++;
-        }
+					/* move testcase along */
+					testcase_cur++;
 
-        if (('\0' == *filter_cur) && ('\0' == *testcase_cur)) {
-          return 0;
-        }
+					/* move filter along */
+					filter_cur++;
+				}
 
-        /* if the testcase has been exhausted, we don't have a match! */
-        if ('\0' == *testcase_cur) {
-          return 1;
-        }
-      } else {
-        if (*testcase_cur != *filter_cur) {
-          /* test case doesn't match filter */
-          return 1;
-        } else {
-          /* move our filter and testcase forward */
-          testcase_cur++;
-          filter_cur++;
-        }
-      }
-    }
+				if (('\0' == *filter_cur) && ('\0' == *testcase_cur)) {
+					return 0;
+				}
 
-    if (('\0' != *filter_cur) ||
-        (('\0' != *testcase_cur) &&
-         ((filter == filter_cur) || ('*' != filter_cur[-1])))) {
-      /* we have a mismatch! */
-      return 1;
-    }
-  }
+				/* if the testcase has been exhausted, we don't have a match! */
+				if ('\0' == *testcase_cur) {
+					return 1;
+				}
+			}
+			else {
+				if (*testcase_cur != *filter_cur) {
+					/* test case doesn't match filter */
+					return 1;
+				}
+				else {
+					/* move our filter and testcase forward */
+					testcase_cur++;
+					filter_cur++;
+				}
+			}
+		}
 
-  return 0;
+		if (('\0' != *filter_cur) ||
+			(('\0' != *testcase_cur) &&
+				((filter == filter_cur) || ('*' != filter_cur[-1])))) {
+			/* we have a mismatch! */
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 /* Informational switches */
@@ -547,123 +562,127 @@ UBUT_FORCEINLINE int utest_should_filter_test(const char *filter,
 #define  PFX_PASSED "[  PASSED  ]"
 #define      PFX_OK "[      OK  ]"
 
-UBUT_FORCEINLINE int utest_main(int argc, const char *const argv[]);
-UBUT_FORCEINLINE int utest_main(int argc, const char *const argv[]) {
-  ubut_uint64_t failed = 0;
-  size_t index = 0;
-  size_t *failed_testcases = UBUT_NULL;
-  size_t failed_testcases_length = 0;
-  const char *filter = UBUT_NULL;
-  ubut_uint64_t ran_tests = 0;
+UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]);
+UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
+	ubut_uint64_t failed = 0;
+	size_t index = 0;
+	size_t* failed_testcases = UBUT_NULL;
+	size_t failed_testcases_length = 0;
+	const char* filter = UBUT_NULL;
+	ubut_uint64_t ran_tests = 0;
 
-  /* loop through all arguments looking for our options */
-  for (index = 1; index < UBUT_CAST(size_t, argc); index++) {
+	/* loop through all arguments looking for our options */
+	for (index = 1; index < UBUT_CAST(size_t, argc); index++) {
 
-    if (0 == ubut_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
-UBUT_INFO("utest - the testing solution") ;
-UBUT_INFO("Command line Options:") ;
-UBUT_INFO("  --help            Show this message and exit.") ;
-UBUT_INFO("  --filter=<filter> Filter the test cases to run (EG. MyTest*.a ");
-UBUT_INFO("would run MyTestCase.a but not MyTestCase.b).") ;
-UBUT_INFO("  %s      List testnames, one per line. Output names ", LIST_STR);
-UBUT_INFO("can be passed to --filter.") ;
-UBUT_INFO("  --output=<output> Output an xunit XML file to the file ");
-UBUT_INFO("specified in <output>.") ;
-      goto cleanup;
-    } else if (0 ==
-               ubut_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
-      /* user wants to filter what test cases run! */
-      filter = argv[index] + SLEN(FILTER_STR);
-    } else if (0 ==
-               ubut_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
-      utest_state.output = ubut_fopen(argv[index] + SLEN(OUTPUT_STR), "w+");
-    } else if (0 == ubut_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
-        // user want to list the tests and leave
-        UBUT_INFO(" ");
-        UBUT_INFO("List of tests");
-        UBUT_INFO(" ");
-      for (index = 0; index < utest_state.tests_length; index++) {
-          UBUT_INFO("%-4d: %s", index, utest_state.tests[index].name);
-      }
-      UBUT_INFO(" ");
-      UBUT_INFO("To run exact test or group, filtered by name, use the --filter option");
-      UBUT_INFO(" ");
-      /* when printing the test list, don't actually run the tests */
-      return 0;
-    }
-  }
+		if (0 == ubut_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
+			UBUT_INFO("utest - the testing solution");
+			UBUT_INFO("Command line Options:");
+			UBUT_INFO("  --help            Show this message and exit.");
+			UBUT_INFO("  --filter=<filter> Filter the test cases to run (EG. MyTest*.a ");
+			UBUT_INFO("would run MyTestCase.a but not MyTestCase.b).");
+			UBUT_INFO("  %s      List testnames, one per line. Output names ", LIST_STR);
+			UBUT_INFO("can be passed to --filter.");
+			UBUT_INFO("  --output=<output> Output an xunit XML file to the file ");
+			UBUT_INFO("specified in <output>.");
+			goto cleanup;
+		}
+		else if (0 ==
+			ubut_strncmp(argv[index], FILTER_STR, SLEN(FILTER_STR))) {
+			/* user wants to filter what test cases run! */
+			filter = argv[index] + SLEN(FILTER_STR);
+		}
+		else if (0 ==
+			ubut_strncmp(argv[index], OUTPUT_STR, SLEN(OUTPUT_STR))) {
+			utest_state.output = ubut_fopen(argv[index] + SLEN(OUTPUT_STR), "w+");
+		}
+		else if (0 == ubut_strncmp(argv[index], LIST_STR, SLEN(LIST_STR))) {
+			// user want to list the tests and leave
+			UBUT_INFO(" ");
+			UBUT_INFO("List of tests");
+			UBUT_INFO(" ");
+			for (index = 0; index < utest_state.tests_length; index++) {
+				UBUT_INFO("%-4d: %s", index, utest_state.tests[index].name);
+			}
+			UBUT_INFO(" ");
+			UBUT_INFO("To run exact test or group, filtered by name, use the --filter option");
+			UBUT_INFO(" ");
+			/* when printing the test list, don't actually run the tests */
+			return 0;
+		}
+	}
 
-  for (index = 0; index < utest_state.tests_length; index++) {
-    if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
-      continue;
-    }
+	for (index = 0; index < utest_state.tests_length; index++) {
+		if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
+			continue;
+		}
 
-    ran_tests++;
-  }
+		ran_tests++;
+	}
 
-  UBUT_INFO(PFX_DIVIDER "Running %" UBUT_PRIu64 " test cases.",
-      UBUT_CAST(ubut_uint64_t, ran_tests));
+    UTEST_REZ_OUT(PFX_DIVIDER "Running %" UBUT_PRIu64 " test cases.",
+		UBUT_CAST(ubut_uint64_t, ran_tests));
 
-      UTEST_REZ_OUT("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-      UTEST_REZ_OUT("<testsuites tests=\"%" UBUT_PRIu64 "\" name=\"All\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
-      UTEST_REZ_OUT("<testsuite name=\"Tests\" tests=\"%" UBUT_PRIu64 "\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
+	UTEST_XML_OUT("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    UTEST_XML_OUT("<testsuites tests=\"%" UBUT_PRIu64 "\" name=\"All\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
+    UTEST_XML_OUT("<testsuite name=\"Tests\" tests=\"%" UBUT_PRIu64 "\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
 
-  for (index = 0; index < utest_state.tests_length; index++) {
-    int result = 0;
-    ubut_int64_t ns = 0;
+	for (index = 0; index < utest_state.tests_length; index++) {
+		int result = 0;
+		ubut_int64_t ns = 0;
 
-    if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
-      continue;
-    }
+		if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
+			continue;
+		}
 
-    UBUT_INFO(PFX_RUN "%s", utest_state.tests[index].name);
+        UTEST_REZ_OUT(PFX_RUN "%s", utest_state.tests[index].name);
 
-    UTEST_REZ_OUT("<testcase name=\"%s\">", utest_state.tests[index].name);
+        UTEST_XML_OUT("<testcase name=\"%s\">", utest_state.tests[index].name);
 
-    ns = ubut_ns();
-    utest_state.tests[index].func(&result, utest_state.tests[index].index);
-    ns = ubut_ns() - ns;
+		ns = ubut_ns();
+		utest_state.tests[index].func(&result, utest_state.tests[index].index);
+		ns = ubut_ns() - ns;
 
-    UTEST_REZ_OUT("</testcase>\n");
+        UTEST_XML_OUT("</testcase>\n");
 
-    if (0 != result) {
-      const size_t failed_testcase_index = failed_testcases_length++;
-      failed_testcases = UBUT_PTR_CAST(
-          size_t *, realloc(UBUT_PTR_CAST(void *, failed_testcases),
-                            sizeof(size_t) * failed_testcases_length));
-      failed_testcases[failed_testcase_index] = index;
-      failed++;
-      UBUT_WARN(PFX_FAILED "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
-    } else {
-        UBUT_INFO(PFX_OK "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
-    }
-  }
+		if (0 != result) {
+			const size_t failed_testcase_index = failed_testcases_length++;
+			failed_testcases = UBUT_PTR_CAST(
+				size_t*, realloc(UBUT_PTR_CAST(void*, failed_testcases),
+					sizeof(size_t) * failed_testcases_length));
+			failed_testcases[failed_testcase_index] = index;
+			failed++;
+			UTEST_REZ_OUT(PFX_FAILED "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
+		}
+		else {
+            UTEST_REZ_OUT(PFX_OK "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
+		}
+	}
 
-  UBUT_INFO(PFX_DIVIDER "%" UBUT_PRIu64 " test cases ran.", ran_tests);
-  UBUT_INFO(PFX_PASSED "%" UBUT_PRIu64 " tests.", ran_tests - failed);
+    UTEST_REZ_OUT(PFX_DIVIDER "%" UBUT_PRIu64 " test cases ran.", ran_tests);
+    UTEST_REZ_OUT(PFX_PASSED "%" UBUT_PRIu64 " tests.", ran_tests - failed);
 
-  if (0 != failed) {
-      UBUT_WARN(PFX_FAILED "%" UBUT_PRIu64 " tests, listed below:",failed);
-    for (index = 0; index < failed_testcases_length; index++) {
-        UBUT_WARN(PFX_FAILED "%s", utest_state.tests[failed_testcases[index]].name);
-    }
-  }
+	if (0 != failed) {
+		UBUT_WARN(PFX_FAILED "%" UBUT_PRIu64 " tests, listed below:", failed);
+		for (index = 0; index < failed_testcases_length; index++) {
+			UBUT_WARN(PFX_FAILED "%s", utest_state.tests[failed_testcases[index]].name);
+		}
+	}
 
-  UTEST_REZ_OUT("</testsuite>\n</testsuites>\n");
+    UTEST_XML_OUT("</testsuite>\n</testsuites>\n");
 
 cleanup:
-  for (index = 0; index < utest_state.tests_length; index++) {
-    free(UBUT_PTR_CAST(void *, utest_state.tests[index].name));
-  }
+	for (index = 0; index < utest_state.tests_length; index++) {
+		free(UBUT_PTR_CAST(void*, utest_state.tests[index].name));
+	}
 
-  free(UBUT_PTR_CAST(void *, failed_testcases));
-  free(UBUT_PTR_CAST(void *, utest_state.tests));
+	free(UBUT_PTR_CAST(void*, failed_testcases));
+	free(UBUT_PTR_CAST(void*, utest_state.tests));
 
-  if (utest_state.output) {
-    fclose(utest_state.output);
-  }
+	if (utest_state.output) {
+		fclose(utest_state.output);
+	}
 
-  return UBUT_CAST(int, failed);
+	return UBUT_CAST(int, failed);
 } // utest_main
 
 #undef HELP_STR
@@ -697,7 +716,7 @@ cleanup:
 #define UTEST_MAIN()                                                           \
   UTEST_STATE();                                                               \
   int main(int argc, const char *const argv[]) {                               \
-    return utest_main(argc, argv);                                             \
+	return utest_main(argc, argv);                                             \
   }
 */
 #endif /* SHEREDOM_UTEST_H_INCLUDED */

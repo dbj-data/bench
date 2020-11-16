@@ -75,9 +75,10 @@ UBUT stuff begins here
 clang_cl.exe is LLVM c++ compiler compiled by MSFT and included 
 with VS 2019
 */
+#undef UBUT_IS_CLANG_CL
 #ifdef _MSC_VER
 #ifdef __clang__
-#define UBUT_IS_CLANG_CL
+#define UBUT_IS_CLANG_CL 1
 #endif // __clang__
 #endif // _MSC_VER
 

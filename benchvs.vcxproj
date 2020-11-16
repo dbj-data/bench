@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="adhoc\dbj_vla.cpp" />
     <ClCompile Include="ubenches\compare_make_unique.cpp" />
     <ClCompile Include="ubenches\count_ones.c" />
     <ClCompile Include="program.cpp" />
