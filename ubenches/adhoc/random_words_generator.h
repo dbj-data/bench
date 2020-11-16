@@ -1,3 +1,4 @@
+// https://godbolt.org/z/6s77f8
 #pragma once
 #include <array>
 #include <algorithm>
@@ -19,15 +20,18 @@ namespace dbj_adhoc
 	using namespace std;
 	using namespace std::string_view_literals;
 
-	int random_in_range( int min_, int max_ )
+	int random_in_range(int min_, int max_)
 	{
 		random_device dev;
 		mt19937 rng(dev());
-		uniform_int_distribution<std::mt19937::result_type> 
+		uniform_int_distribution<std::mt19937::result_type>
 			dist_(min_, max_); // distribution in range [min, max]
 		return dist_(rng);
 	}
 
+	/*
+	polymorph with no inheritance
+	*/
 	template <typename CT> struct meta_data final { };
 
 	template < > struct meta_data<char> final
@@ -45,13 +49,13 @@ namespace dbj_adhoc
 	};
 
 	// needs to be transformable to/from char
-	struct zulu final { 
-		using char_type = char; 
-		char_type char_ ; 
+	struct zulu final {
+		using char_type = char;
+		char_type char_;
 		zulu() : char_('?') {}
 		zulu(char_type new_char_) : char_(new_char_) {}
-		operator const char () const { return char_; }
-		operator char () { return char_; }
+		operator const char() const { return char_; }
+		operator char() { return char_; }
 	};
 
 	template < > struct meta_data<zulu> final
@@ -61,40 +65,32 @@ namespace dbj_adhoc
 		constexpr static auto vowels{ "aeiou"sv };
 	};
 
-
 	template<typename SEQ>
 	constexpr size_t top_index(SEQ const& sv_) { return sv_.size() - 1U; }
 
 	constexpr inline size_t size_one = size_t(1U);
 
 	template <typename CT>
-	inline  CT random_digit () noexcept
+	inline  CT random_digit() noexcept
 	{
-		static auto & digits_ = meta_data<CT>::digits;
+		static auto& digits_ = meta_data<CT>::digits;
 		static size_t top_idx_ = top_index(digits_);
-		return digits_[random_in_range( 0, top_idx_ )];
+		return digits_[random_in_range(0, top_idx_)];
 	}
 
 	template <typename CT>
-	 inline  CT random_alpha () noexcept
+	inline  CT random_alpha() noexcept
 	{
-#ifdef _DEBUG
-		 const char* typename_ = typeid(CT).name();
-#endif
 		static auto& alpha_ = meta_data<CT>::alpha;
 		static size_t top_idx_ = top_index(alpha_);
 		return alpha_[random_in_range(0, top_idx_)];
 	}
 
 	template <typename CT>
-	 inline  CT random_vowel () noexcept
+	inline  CT random_vowel() noexcept
 	{
 		static auto& vowels_ = meta_data<CT>::vowels;
 		static size_t top_idx_ = top_index(vowels_);
-
-#ifdef _DEBUG
-		_ASSERTE(top_idx_ ==  (vowels_.size() -1));
-#endif // _DEBUG
 		return vowels_[random_in_range(0, top_idx_)];
 	};
 
@@ -110,19 +106,11 @@ namespace dbj_adhoc
 
 	/*
 		make random words of the "kind" enum above allows
-		default is leters and vowels
-		to make things simple and fast
-		use std::array as return type
-		*/
+	*/
 	template <typename T, size_t L>
-	inline array<T, L> &
+	inline array<T, L>&
 		random_word(array<T, L>& carr, kind which_ = kind::alpha_vowels)
 	{
-		//static_assert (
-		//	std::is_same_v<T, char> || std::is_same_v<T, wchar_t>
-		//	, "only non reference and non const, char or wchar_t allowed"
-		//);
-
 		std::size_t N = L - 1;
 
 		switch (which_)
@@ -161,7 +149,7 @@ namespace dbj_adhoc
 				if (k > N)	break;
 				carr[k] = random_alpha <T>();
 			}
-		break;
+			break;
 		};
 		carr[N] = T('\0');
 		return carr;
@@ -172,13 +160,26 @@ namespace dbj_adhoc
 		static int do_it_n_times = 0xF;
 		static int done_it_n_times = 0;
 
-		constexpr auto word_length = 8 ;
+		constexpr auto word_length = 8;
 		std::array<zulu, word_length>  word;
 
-			const auto rword = random_word(word ).data();
-			// using dbj--simplelog
-			if (done_it_n_times++ < do_it_n_times)
+		const zulu * rword = random_word(word).data();
+		// using dbj--simplelog
+		if (done_it_n_times++ < do_it_n_times)
 			UBUT_INFO(" %3d: Random Word: '%s'", done_it_n_times, rword);
+		// fascinating point is:
+		// the above works perfectly and "Automagically"
+		// transforming zulu * to char *
+		// that is zulu [] to char array [], it seems?
+
+		//// array of zulu's
+		//const zulu zuly_1[] {'a', 'b', 'c', 'd' };
+		//// and another one
+		//const zulu * zuly_2 = reinterpret_cast<const zulu *>("efgh") ;
+
+		//printf("%s", zuly_1); // this prints because 
+		//// this works
+		//const char * charly = reinterpret_cast<const char*>(zuly_1) ;
 	}
 
 } // namespace dbj_adhoc
