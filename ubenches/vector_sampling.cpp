@@ -2,6 +2,7 @@
 /// https://github.com/attractivechaos/benchmarks
 
 #include "../ubut/ubench.h"
+#include <vcruntime.h>
 
 ///-----------------------------------------------
 constexpr auto test_array_size = 1;  // 0xFFFF;

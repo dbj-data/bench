@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="adhoc\dbj_vla.cpp" />
     <ClCompile Include="ubenches\compare_make_unique.cpp" />
     <ClCompile Include="ubenches\count_ones.c" />
     <ClCompile Include="program.cpp" />
-    <ClCompile Include="ubenches\allocators.cpp" />
-    <ClCompile Include="ubenches\nedmalloc\nedmalloc.c" />
+    <ClCompile Include="ubenches\allocators\allocators.cpp" />
+    <ClCompile Include="ubenches\allocators\nedmalloc\nedmalloc.c" />
+    <ClCompile Include="ubenches\adhoc.cpp" />
     <ClCompile Include="ubenches\squareroot.c" />
     <ClCompile Include="units\type_printers.c" />
-    <ClCompile Include="ubenches\kalloc\kalloc.c" />
+    <ClCompile Include="ubenches\allocators\kalloc\kalloc.c" />
     <ClCompile Include="ubenches\vector_sampling.cpp" />
     <ClCompile Include="ubenches\vector_sampling_excpt_overhead.cpp" />
   </ItemGroup>
@@ -45,6 +45,7 @@
   <ItemGroup>
     <ClInclude Include="dbj--simplelog\dbj_simple_log_host.h" />
     <ClInclude Include="dbj-fwk\printing_macros.h" />
+    <ClInclude Include="ubenches\adhoc\random_words_generator.h" />
     <ClInclude Include="ubench\dbj_win_lib.h" />
     <ClInclude Include="ubench\ubench.h" />
     <ClInclude Include="ubut\ubut_top.h" />

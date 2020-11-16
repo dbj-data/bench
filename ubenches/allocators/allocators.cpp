@@ -1,14 +1,14 @@
 /// (c) 2020 by dbj.org
 #if DBJ_USE_UTEST
-#include "../ubut/utest.h"
+#include "../../ubut/utest.h"
 #endif
 
 #if DBJ_USE_UBENCH
-#include "../ubut/ubench.h"
+#include "../../ubut/ubench.h"
 #endif
 
 #include "dbj_heap_alloc.h"
-#include "../dbj-fwk/wallofmacros.h"
+#include "../../dbj-fwk/wallofmacros.h"
 
 /// ---------------------------------------------------------------------
 #include "kalloc/dbj_kalloc.h"
