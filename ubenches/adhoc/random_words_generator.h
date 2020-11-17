@@ -11,6 +11,9 @@
 #include <typeinfo>       // operator typeid
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4267 )
+
 namespace dbj_adhoc
 {
 	/*
@@ -83,7 +86,7 @@ namespace dbj_adhoc
 	{
 		static auto& alpha_ = meta_data<CT>::alpha;
 		static size_t top_idx_ = top_index(alpha_);
-		return alpha_[random_in_range(0, top_idx_)];
+		return CT( alpha_[random_in_range(0, top_idx_)] );
 	}
 
 	template <typename CT>
@@ -183,3 +186,5 @@ namespace dbj_adhoc
 	}
 
 } // namespace dbj_adhoc
+
+#pragma warning( pop )

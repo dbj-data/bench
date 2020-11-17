@@ -314,9 +314,16 @@ UBUT_INFO( "failed test. Defaults to 2.5%%" ) ;
 
       if (0 != result) {
         const size_t failed_benchmark_index = failed_benchmarks_length++;
+
+#pragma warning( push )
+#pragma warning( disable : 6308 )
+
         failed_benchmarks = UBUT_PTR_CAST(
             size_t *, realloc(UBUT_PTR_CAST(void *, failed_benchmarks),
                               sizeof(size_t) * failed_benchmarks_length));
+
+#pragma warning( pop )
+
         failed_benchmarks[failed_benchmark_index] = index;
         failed++;
       }
@@ -392,7 +399,7 @@ UBUT_C_FUNC UBUT_NOINLINE void ubench_do_nothing(void *const);
 
 #define UBENCH_DO_NOTHING(x) ubench_do_nothing(x)
 
-#if defined(__clang__)
+#ifdef  __clang__
 #define UBENCH_DECLARE_DO_NOTHING()                                            \
   void ubench_do_nothing(void *ptr) {                                          \
     _Pragma("clang diagnostic push")                                           \
@@ -400,17 +407,18 @@ UBUT_C_FUNC UBUT_NOINLINE void ubench_do_nothing(void *const);
     asm volatile("" : : "r,m"(ptr) : "memory");                                \
     _Pragma("clang diagnostic pop");                                           \
   }
-#elif defined(UBENCH_IS_WIN)
+
+#else //UBENCH_IS_WIN
+
+// https://github.com/MicrosoftDocs/cpp-docs/issues/2601#issue-744464977
+// see also the top of the ubut_top.h
+// 
 #define UBENCH_DECLARE_DO_NOTHING()                                            \
   void ubench_do_nothing(void *ptr) {                                          \
     (void)ptr;                                                                 \
-    _ReadWriteBarrier();                                                       \
+    _Compiler_barrier();                                                       \
   }
-#else
-//#define UBENCH_DECLARE_DO_NOTHING()                                            \
-//  void ubench_do_nothing(void *ptr) {                                          \
-//    asm volatile("" : : "r,m"(ptr) : "memory");                                \
-//  }
+
 #endif
 
 /*
@@ -422,8 +430,8 @@ UBUT_C_FUNC UBUT_NOINLINE void ubench_do_nothing(void *const);
    We also use this to define the 'do nothing' method that lets us keep data
    that the compiler would normally deem is dead for the purposes of timing.
 */
-#define UBENCH_STATE()                                                         \
-  UBENCH_DECLARE_DO_NOTHING()                                                  \
+#define UBENCH_STATE                                                         \
+  UBENCH_DECLARE_DO_NOTHING() ;                                                 \
   struct ubench_state_s ubench_state = {0, 0, 0, 2.5}
 
 /*

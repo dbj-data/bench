@@ -1,12 +1,13 @@
 /*
 compare EASTL, STD and DBJ make_unique on native arrays
 */
-#if DBJ_USE_UBENCH
 #include "../ubut/ubench.h"
-#endif
 
 #include <memory>
 #include <EASTL/unique_ptr.h>
+
+#pragma warning( push )
+#pragma warning( disable : 4267 )
 
 // cheating, but EASTL is still almost as fast
 namespace dbj {
@@ -99,4 +100,6 @@ UBENCH(unique_ptr, eastl) {
 }
 
 
+// #pragma warning( disable : 4267 )
+#pragma warning( pop )
 

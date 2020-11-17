@@ -8,6 +8,10 @@
 #include "../ubut/ubench.h"
 #endif
 
+// warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+#pragma warning( push )
+#pragma warning( disable : 4244 )
+
 // https://stackoverflow.com/a/27958565/10870835
 // faster vs hand made implementations in here 
 // but **sometimes** ridiculously slow when compared to math.h sqrt
@@ -90,3 +94,4 @@ UBENCH(sqrt_algo, sqrt_newton) { sqrt_newton(data_); }
 
 /* ---------------------------------------------------------- */
 
+#pragma warning( pop )

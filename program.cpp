@@ -7,10 +7,13 @@
 #include "dbj-fwk/win/win_cli_args.h"
 
 #include "ubut/ubench.h"
-UBENCH_STATE();
+
+UBENCH_STATE ;
+
 
 #include "ubut/utest.h"
-UTEST_STATE();
+
+UTEST_STATE ;
 
 // user code start here
 // this is called from framework

@@ -4,6 +4,45 @@
 #if defined(__clang__) 
 #pragma clang system_header
 #endif // __clang__
+
+/*
+-------------------------------------------------------------------------------
+nicked from <yvals_core.h>
+this is used in the MS STL source whenever they use what they do 
+advise customers not to use ;)
+*/
+
+// clang-format off
+#ifndef _STL_DISABLE_DEPRECATED_WARNING
+#ifdef __clang__
+#define _STL_DISABLE_DEPRECATED_WARNING \
+    _Pragma("clang diagnostic push")    \
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+#else // __clang__
+#define _STL_DISABLE_DEPRECATED_WARNING \
+    __pragma(warning(push))             \
+    __pragma(warning(disable : 4996)) // was declared deprecated
+#endif // __clang__
+#endif // _STL_DISABLE_DEPRECATED_WARNING
+// clang-format on
+
+#ifndef _STL_RESTORE_DEPRECATED_WARNING
+#ifdef __clang__
+#define _STL_RESTORE_DEPRECATED_WARNING _Pragma("clang diagnostic pop")
+#else // __clang__
+#define _STL_RESTORE_DEPRECATED_WARNING __pragma(warning(pop))
+#endif // __clang__
+#endif // _STL_RESTORE_DEPRECATED_WARNING
+
+// instead of including the whole <atomic> because of line 32
+#ifndef _Compiler_barrier
+#define _Compiler_barrier() _STL_DISABLE_DEPRECATED_WARNING _ReadWriteBarrier() _STL_RESTORE_DEPRECATED_WARNING
+#endif
+/*
+official advice is not to use _ReadWriteBarrier, but then there is a lot of _Compiler_barrier() all arround the 
+<atomic> et all in the MS STL code
+*/
+
 /*
 -------------------------------------------------------------------------------
 set the WINVER and _WIN32_WINNT macros to the oldest supported platform 
@@ -21,14 +60,6 @@ set the WINVER and _WIN32_WINNT macros to the oldest supported platform
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 // #include <processenv.h>
-
-#ifdef NOMINMAX
-#undef  min
-#define min(x, y) ((x) < (y) ? (x) : (y))
-
-#undef  max
-#define max(x, y) ((x) > (y) ? (x) : (y))
-#endif // NOMINMAX
 
 /*
 -------------------------------------------------------------------------------
@@ -69,7 +100,11 @@ UBUT stuff begins here
 // thus it is not enugh to use _MSC_VER only
 #ifdef _WIN32
 #define UBUT_IS_WIN
+#else
+/* but then ... */
+#error This is WIN32 only, for OS agnostic experience please use sheredom/ubench from GitHub
 #endif
+
 
 /* 
 clang_cl.exe is LLVM c++ compiler compiled by MSFT and included 

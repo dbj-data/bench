@@ -646,10 +646,17 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 
 		if (0 != result) {
 			const size_t failed_testcase_index = failed_testcases_length++;
+
+#pragma warning( push )
+#pragma warning( disable : 6308 )
+
 			failed_testcases = UBUT_PTR_CAST(
 				size_t*, realloc(UBUT_PTR_CAST(void*, failed_testcases),
 					sizeof(size_t) * failed_testcases_length));
-			failed_testcases[failed_testcase_index] = index;
+
+#pragma warning( pop )
+
+            failed_testcases[failed_testcase_index] = index;
 			failed++;
 			UTEST_REZ_OUT(PFX_FAILED "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
 		}
@@ -703,8 +710,15 @@ cleanup:
    the data we need to run utest. This macro allows the user to declare the
    data without having to use the UTEST_MAIN macro, thus allowing them to write
    their own main() function.
+
+   DBJ warning: 
+
+   had a persistent "function not declared" from cl.exe when using UTEST_STATE()
+   removed `()`
+   UTEST_STATE ... no warnings
+
 */
-#define UTEST_STATE() struct utest_state_s utest_state = {0, 0, 0}
+#define UTEST_STATE struct utest_state_s utest_state = {0, 0, 0}
 
 /*
    define a main() function to call into utest.h and start executing tests! A
