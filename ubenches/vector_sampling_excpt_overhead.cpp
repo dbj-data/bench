@@ -138,8 +138,8 @@ UBENCH(bad_index_vector, atl_simple_arr)
 //mixed in one function
 static void mst_stl_bad_index_vector () {
 #if _HAS_EXCEPTIONS
+	static bool done_that = false;
 	try {
-		static bool done_that = false;
 #endif
 		std::vector<test_array_type> array_{};
 		array_.push_back(test_array_element);

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="r_and_d\dbj_vla.cpp" />
+    <ClCompile Include="ubenches\allocators\nvwa\mem_pool_base.cpp" />
+    <ClCompile Include="ubenches\allocators\nvwa\static_mem_pool.cpp" />
     <ClCompile Include="ubenches\compare_make_unique.cpp" />
     <ClCompile Include="ubenches\count_ones.c" />
     <ClCompile Include="program.cpp" />
@@ -128,7 +131,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -148,7 +151,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -168,7 +171,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -188,7 +191,7 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0  /DDBJ_USE_UBENCH /DDBJ_FWK_USES_SIMPLELOG /DDBJ_USE_UTEST</AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>Sync</ExceptionHandling>
