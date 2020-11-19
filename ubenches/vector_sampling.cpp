@@ -114,28 +114,3 @@ namespace EASTL_sampling {
 } // namespace EASTL_sampling
 
 #endif // __has_include(EASTL/vector.h)
-
-///-----------------------------------------------
-#if __has_include( "../REASTL2020/include/EASTL/vector.h")
-	/// REAL EASTL2020 
-#include   "../REASTL2020/include/EASTL/vector.h"
-#include   "../REASTL2020/include/EASTL/string.h"
-namespace EASTL_sampling {
-
-	UBENCH(vector_255, REASTL )
-	{
-		hammer_of_thor<eastl::vector<eastl::string> >(
-			[](auto& array_)
-			{
-				// remove the one from the middle
-				// no checks whatsoever 
-				array_.erase(array_.begin() + (array_.size() / 2));
-			}
-			, eastl::string{ buffer }
-				, vector_size
-				);
-	}
-
-} // namespace EASTL_sampling
-
-#endif // __has_include(EASTL/vector.h)

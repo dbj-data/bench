@@ -20,13 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="r_and_d\dbj_vla.cpp" />
-    <ClCompile Include="ubenches\allocators\nvwa\mem_pool_base.cpp" />
-    <ClCompile Include="ubenches\allocators\nvwa\static_mem_pool.cpp" />
     <ClCompile Include="ubenches\compare_make_unique.cpp" />
     <ClCompile Include="ubenches\count_ones.c" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="ubenches\allocators\allocators.cpp" />
-    <ClCompile Include="ubenches\allocators\nedmalloc\nedmalloc.c" />
     <ClCompile Include="ubenches\adhoc.cpp" />
     <ClCompile Include="ubenches\squareroot.c" />
     <ClCompile Include="units\type_printers.c" />
@@ -43,9 +40,6 @@
     </ProjectReference>
     <ProjectReference Include="EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj">
       <Project>{12049086-1403-4d93-ba0d-45c93fd22f89}</Project>
-    </ProjectReference>
-    <ProjectReference Include="REASTL2020\reastl2020.vcxproj">
-      <Project>{2922e4bb-4e96-4734-a145-46cd7f5f97af}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
