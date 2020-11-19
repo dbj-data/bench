@@ -1,12 +1,6 @@
 #include <assert.h>
 
-#if DBJ_USE_UTEST
-#include "../ubut/utest.h"
-#endif
-
-#if DBJ_USE_UBENCH
 #include "../ubut/ubench.h"
-#endif
 
 // warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
 #pragma warning( push )
@@ -78,19 +72,13 @@ static double sqrt_newton(double x) {
   return guess;
 }
 /* ---------------------------------------------------------- */
-#if DBJ_USE_UBENCH
-static double data_ = 0;
+static double data_ = 0xFFF ;
 
-void construct(void);
-UBUT_INITIALIZER(construct) { data_ = 0xFFF ; }
-
-UBENCH(sqrt_algo, sqrt_int) { sqrt_int(data_); }
+UBENCH(sqrt_algo, sqrt_int) { sqrt_int((int)data_); }
 
 UBENCH(sqrt_algo, crt_sqrt) { (void)sqrt(data_); }
 
 UBENCH(sqrt_algo, sqrt_newton) { sqrt_newton(data_); }
-
-#endif // DBJ_USE_UBENCH
 
 /* ---------------------------------------------------------- */
 
