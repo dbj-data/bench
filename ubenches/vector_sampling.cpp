@@ -4,8 +4,8 @@
 #include "../ubut/ubench.h"
 // #include <vcruntime.h>
 
-constexpr static int vector_size = 0xFF;
-
+constexpr static int vector_size = 0xFF ;
+static char buffer[0xFF] = { '?' };
 ///-----------------------------------------------
 /// driver driving vector types instance from bellow
 /// for a good hammering we pass and return by value
@@ -14,31 +14,24 @@ constexpr static int vector_size = 0xFF;
 /// minimal N must be vector_size
 template<
 	typename VectorType_,
-	typename VectorElementType_, size_t N,
+	typename VectorElementType_,
 	typename middleman_remover >
 	static VectorType_
 	hammer_of_thor
-	(middleman_remover remover_)
+	(middleman_remover remover_, VectorElementType_ const& default_element, size_t N)
 {
-	static_assert(N >= vector_size);
+	_ASSERTE(N >= vector_size);
 
 	VectorType_ vector_;
-
-	VectorElementType_ native_arr_[N] = {};
-
-	for (auto&& element_ : native_arr_)
-	{
-		vector_.push_back(element_);
-	}
-
+	for (int k = 0; k < N; ++k)
+		vector_.push_back(default_element);
 	for (int k = 0; k < N / 4; ++k)
 		remover_(vector_);
-
 	return vector_;
 }
 ///-----------------------------------------------
  // USING_VECTORS_WITH_STD_INTERFACE
-#if 0
+#if NOT_USING_VECTORS_WITH_STD_INTERFACE
 
 #if __has_include(<atlcoll.h>)
 
@@ -82,34 +75,65 @@ namespace ms_stl_sampling {
 	using std::vector;
 	using std::string;
 
-	UBENCH(vectors, ms_stl)
+	UBENCH(vector_255, ms_stl)
 	{
-// remove the one from the middle
-// no checks whatsoever is deliberate
-		hammer_of_thor<std::vector<std::string>, std::string, vector_size>(
+		hammer_of_thor< std::vector<std::string> >(
 			[](auto& array_)
 			{
+				// remove the one from the middle
+				// no checks whatsoever 
 				array_.erase(array_.begin() + (array_.size() / 2));
 			}
-		);
+			, std::string{ buffer }
+				, vector_size
+				);
 	}
 } // namespace ms_stl_sampling 
 
 ///-----------------------------------------------
 #if __has_include(<EASTL/vector.h>)
-	/// EASTL2020 CORE
+	/// EASTL2020 DBJ version with "better" allocator design
 #include   <EASTL/vector.h>
 #include   <EASTL/string.h>
 namespace EASTL_sampling {
 
-	UBENCH(vectors, eastl)
+	UBENCH(vector_255, eastl)
 	{
-		hammer_of_thor<eastl::vector<eastl::string>, eastl::string, vector_size>(
+		hammer_of_thor<eastl::vector<eastl::string> >(
 			[](auto& array_)
 			{
+				// remove the one from the middle
+				// no checks whatsoever 
 				array_.erase(array_.begin() + (array_.size() / 2));
 			}
-		);
+			, eastl::string{ buffer }
+				, vector_size
+				);
+	}
+
+} // namespace EASTL_sampling
+
+#endif // __has_include(EASTL/vector.h)
+
+///-----------------------------------------------
+#if __has_include( "../REASTL2020/include/EASTL/vector.h")
+	/// REAL EASTL2020 
+#include   "../REASTL2020/include/EASTL/vector.h"
+#include   "../REASTL2020/include/EASTL/string.h"
+namespace EASTL_sampling {
+
+	UBENCH(vector_255, REASTL )
+	{
+		hammer_of_thor<eastl::vector<eastl::string> >(
+			[](auto& array_)
+			{
+				// remove the one from the middle
+				// no checks whatsoever 
+				array_.erase(array_.begin() + (array_.size() / 2));
+			}
+			, eastl::string{ buffer }
+				, vector_size
+				);
 	}
 
 } // namespace EASTL_sampling

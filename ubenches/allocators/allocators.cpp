@@ -8,11 +8,12 @@
 /// ---------------------------------------------------------------------
 #include "kalloc/dbj_kalloc.h"
 
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 // nvwa is a law obiding c++ citizen
 #include "nvwa/fixed_mem_pool.h"
 #include "nvwa/static_mem_pool.h"
-#endif // _HAS_EXCEPTIONS
+
+#endif // _CPPUNWIND
 
 //#include "shoshnikov_pool_allocator/shoshnikov_pool_allocator.h"
 // #include "dbj_pool_allocator/dbj_shoshnikov_pool_allocator.h"
@@ -21,7 +22,7 @@
 /// nedmalloc primary purpose is multithreaded applications
 /// it is also notoriously difficult to use in its raw form
 ///
-#define DBJ_USES_NEDMALLOC
+// #define DBJ_USES_NEDMALLOC
 #ifdef DBJ_USES_NEDMALLOC
 #define NEDMALLOC_DEBUG 0
 #undef ENABLE_LOGGING /* 0xffffffff  */
@@ -36,9 +37,9 @@ using test_array_type = double ;
 constexpr int test_array_size = 0xFFFFF; 
 
 /// ---------------------------------------------------------------------
-static inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
-	return test_array_type(rand() % max_ + min_);
-};
+//static inline auto randomizer = [](int max_ = 0xFF, int min_ = 1) -> test_array_type {
+//	return test_array_type(rand() % max_ + min_);
+//};
 /// ---------------------------------------------------------------------
 static inline auto meta_driver = [](auto aloka, auto dealoka) {
 	test_array_type *array_ = (test_array_type *)aloka(test_array_size);
@@ -64,7 +65,8 @@ UBENCH(allocators, kmem)
 		[&](test_array_type *array_) { DBJ_KFREE(array_); });
 }
 
-#if _HAS_EXCEPTIONS
+// ----------------------------------------------------------
+#if _CPPUNWIND
 // ----------------------------------------------------------
 UBENCH(allocators, static_nvwa_pool)
 {
@@ -75,21 +77,33 @@ UBENCH(allocators, static_nvwa_pool)
 		[&](test_array_type *array_) { nvwa_pool::instance_known().deallocate(array_); });
 }
 // ----------------------------------------------------------
-UBENCH(allocators, fixed_mem_pool)
-{
+namespace {
 	using nvwa_pool = nvwa::fixed_mem_pool<test_array_type>;
 	static nvwa_pool nvwa;
-	nvwa_pool::initialize(test_array_size);
-	_ASSERTE(true == nvwa.is_initialized());
 
-	meta_driver(
-		[&](size_t sze_) { return (test_array_type *)nvwa.allocate(); },
-		[&](test_array_type *array_) { nvwa.deallocate(array_); });
-	nvwa_pool::deinitialize();
+	struct guardian final {
+		guardian() {
+			nvwa_pool::initialize(test_array_size);
+			_ASSERTE(true == nvwa.is_initialized());
+		}
+		~guardian() {
+			if(nvwa.is_initialized())
+				nvwa_pool::deinitialize();
+		}
+	};
+	struct guardian on_off_ ;
+
+	UBENCH(allocators, fixed_mem_pool)
+	{
+		meta_driver(
+			[&](size_t sze_) { return (test_array_type*)nvwa.allocate(); },
+			[&](test_array_type* array_) { nvwa.deallocate(array_); });
+	}
 }
-#endif // _HAS_EXCEPTIONS                                            \
-	   // ---------------------------------------------------------- \
-	   // mental note: take this out of nanolib !
+// ---------------------------------------------------------- 
+#endif // _CPPUNWIND
+// ---------------------------------------------------------- 
+	// mental note: take this out of nanolib !
 #if 0		
 		/*
 		this allocator does not free memory taken from OS.

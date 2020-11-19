@@ -18,11 +18,14 @@ MSFT "extension" _malloca() must be paired with _freea(), thus it is a no go
 #define DBJ_VLS_ARR(T_, S_) (T_*)_alloca(S_ * sizeof(T_))
 
 
-#ifdef __clang__
 extern "C" void dbj_vla_user(int size_)
 {
+#ifdef __clang__
 /*here is how one uses VLA typedef in case of clang*/
 	typedef char(*ptr_to_char_arr)[size_];
+#else  // ! clang
+	typedef char(*ptr_to_char_arr)[0xFF];
+#endif // ! clang
 
     // stack based pointer to array
 	ptr_to_char_arr arrp = (ptr_to_char_arr)_alloca(sizeof(ptr_to_char_arr));
@@ -35,4 +38,3 @@ extern "C" void dbj_vla_user(int size_)
 	// no freeing here is necessary
 }
 
-#endif // ! clang

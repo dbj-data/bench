@@ -44,10 +44,14 @@
     <ProjectReference Include="EASTL2020CORE\eastl2020dbj\eastl2020dbj.vcxproj">
       <Project>{12049086-1403-4d93-ba0d-45c93fd22f89}</Project>
     </ProjectReference>
+    <ProjectReference Include="REASTL2020\reastl2020.vcxproj">
+      <Project>{2922e4bb-4e96-4734-a145-46cd7f5f97af}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dbj--simplelog\dbj_simple_log_host.h" />
     <ClInclude Include="dbj-fwk\printing_macros.h" />
+    <ClInclude Include="r_and_d\dbj_un_likely.h" />
     <ClInclude Include="ubenches\adhoc\random_words_generator.h" />
     <ClInclude Include="ubench\dbj_win_lib.h" />
     <ClInclude Include="ubench\ubench.h" />
@@ -131,10 +135,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
+      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,10 +155,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
+      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,10 +175,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
+      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,10 +195,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=1 </AdditionalOptions>
+      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
