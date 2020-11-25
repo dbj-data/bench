@@ -8,8 +8,6 @@
 /// ---------------------------------------------------------------------
 #include "kalloc/dbj_kalloc.h"
 
-/// ---------------------------------------------------------------------
-
 using test_array_type = double;
 constexpr int test_array_size = 0xFFFFF;
 
@@ -20,7 +18,7 @@ static inline auto meta_driver = [](auto aloka, auto dealoka) {
 	dealoka(array_);
 };
 
-/// compare memory mechatronics
+/// compare allocators, mechatronics for
 
 // ----------------------------------------------------------
 /*
@@ -33,49 +31,6 @@ UBENCH(allocators, kmem)
 		[&](size_t sze_) { return DBJ_KALLOC(test_array_type, test_array_size); },
 		[&](test_array_type* array_) { DBJ_KFREE(array_); });
 }
-
-// ----------------------------------------------------------
-#if DBJ_USES_NVWA
-
-// nvwa is a law obiding c++ citizen
-#include "nvwa/fixed_mem_pool.h"
-#include "nvwa/static_mem_pool.h"
-
-// ----------------------------------------------------------
-UBENCH(allocators, static_nvwa_pool)
-{
-	using nvwa_pool = nvwa::static_mem_pool<test_array_size>;
-
-	meta_driver(
-		[&](size_t sze_) { return (test_array_type*)nvwa_pool::instance_known().allocate(); },
-		[&](test_array_type* array_) { nvwa_pool::instance_known().deallocate(array_); });
-}
-// ----------------------------------------------------------
-namespace {
-	using nvwa_pool = nvwa::fixed_mem_pool<test_array_type>;
-	static nvwa_pool nvwa;
-
-	struct guardian final {
-		guardian() {
-			nvwa_pool::initialize(test_array_size);
-			_ASSERTE(true == nvwa.is_initialized());
-		}
-		~guardian() {
-			if (nvwa.is_initialized())
-				nvwa_pool::deinitialize();
-		}
-	};
-	struct guardian on_off_;
-
-	UBENCH(allocators, fixed_mem_pool)
-	{
-		meta_driver(
-			[&](size_t sze_) { return (test_array_type*)nvwa.allocate(); },
-			[&](test_array_type* array_) { nvwa.deallocate(array_); });
-	}
-}
-// ---------------------------------------------------------- 
-#endif // DBJ_USES_NVWA
 
 // ----------------------------------------------------------
 UBENCH(allocators, straight_calloc_free)
@@ -119,60 +74,3 @@ UBENCH(allocators, ned_14)
 		[&](test_array_type* array_) { ::nedfree((void*)array_); });
 }
 #endif // DBJ_USES_NEDMALLOC
-// ----------------------------------------------------------
-#ifdef DBJ_TESTING_NED_POOL
-dbj::collector coll_ned_14_pool("NED14 Pool");
-// currently, I probably have no clue
-// what are the good values here
-{
-	static nedpool* pool_ = nedcreatepool(2 * test_array_size, 0);
-
-	meta_driver(
-		coll_ned_14_pool,
-		[&](size_t sze_) { return (int*)::nedpcalloc(pool_, test_array_size, sizeof(int)); },
-		[&](int* array_) { ::nedpfree(pool_, (void*)array_); });
-
-	neddestroypool(pool_);
-	// also not sure if this is necessary
-	neddisablethreadcache(0);
-}
-#endif
-
-// ---------------------------------------------------------- 
-	// mental note: take this out of nanolib !
-#if 0		
-//#include "shoshnikov_pool_allocator/shoshnikov_pool_allocator.h"
-// #include "dbj_pool_allocator/dbj_shoshnikov_pool_allocator.h"
-// #include "dbj_pool_allocator/pool_allocator_sampling.h"
-
-		/*
-		this allocator does not free memory taken from OS.
-		in this scenario it will allocate a block size = 4 * test_array_size
-		4 * 40 * 1000000 = just above 15MB
-		which is a lot of heap reserved by one function
-		That makes it kind-of-a difficult for other to cohabit with it ...
-
-		I have changed it only to use HeapAlloc / HeapFree
-		*/
-{
-	static dbj::nanolib::PoolAllocator  tpa(4 /* chunks per block */);
-
-	meta_driver(
-		[&](size_t sze_) { return  (int*)tpa.allocate(test_array_size); },
-		[&](int* array_) { tpa.deallocate((void*)array_); }
-	);
-}
-
-UBENCH(allocators, dbj_pool_allocator)
-{
-	static dbj::shohnikov::dbj_pool_allocator  dbj_pool(
-		dbj::shohnikov::legal_block_size::_4
-		, test_array_size
-	);
-
-	meta_driver(
-		[&](size_t sze_) { return  (int*)dbj_pool.allocate(); },
-		[&](int* array_) { dbj_pool.deallocate((void*)array_); }
-	);
-}
-#endif // 0
