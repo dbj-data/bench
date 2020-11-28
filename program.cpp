@@ -1,39 +1,84 @@
 
-/// default is log to file, MT resilient, no console
-/// unless you define your combination differently that is
-/// as we did here
-#define  DBJ_LOG_DEFAULT_SETUP DBJ_LOG_DEFAULT_WITH_CONSOLE
-#include "dbj--simplelog/dbj_simple_log_host.h"
+/// ------------------------------------------------------------------------
+/// this goes to DBJ+FWK main.cpp
+/// since it knows is it on gui or console windows app
+/// 
+#include "dbj-fwk/meta.h"
+#include "dbj-fwk/win/win_cli_args.h"
 
-// we can NOT mix utest and ubench 
-#ifdef DBJ_USE_UBENCH
-#ifdef DBJ_USE_UTEST
-#error Currently can not accomodate UBENCH and UTEST in the same program
-#endif 
-#endif 
+#include "ubut/ubench.h"
 
-// we will conditionaly compile for one or the other
+UBENCH_STATE ;
 
-#ifdef DBJ_USE_UBENCH
-#include "ubench/ubench.h"
-UBENCH_STATE();
-#elif DBJ_USE_UTEST
-#include "utest.h/utest.h"
-UTEST_STATE();
-#else 
-#error "Neither DBJ_USE_UBENCH nor DBJ_USE_UTEST, are defined?"
-#endif
+
+#include "ubut/utest.h"
+
+UTEST_STATE ;
 
 // user code start here
 // this is called from framework
-// framework is where SE handling is implemented
+// framework is where SEH is managed
 extern "C" int program(int argc, char** argv)
 {
-#ifdef DBJ_USE_UBENCH
-	return ubench_main(argc, argv);
-#elif DBJ_USE_UTEST
-	return utest_main(argc, argv);
-#else
-#error "Neither DBJ_USE_UBENCH nor DBJ_USE_UTEST, are defined?"
-#endif
+	if(!app_args_callback_(DBJ_CL_ARG_IGNORE_UBENCH, nullptr ))
+	{
+		UBUT_INFO(" ");
+		UBUT_INFO("================================================================");
+		UBUT_INFO("UBENCHES");
+		UBUT_INFO("================================================================");
+		UBUT_INFO(" ");
+
+		(void)ubench_main(argc, argv);
+	}
+
+	if (!app_args_callback_(DBJ_CL_ARG_IGNORE_UTEST, nullptr))
+	{
+		UBUT_INFO(" ");
+		UBUT_INFO("================================================================");
+		UBUT_INFO("UTESTS");
+		UBUT_INFO("================================================================");
+		UBUT_INFO(" ");
+
+		(void)utest_main(argc, argv);
+	}
+
+	UBUT_INFO(" ");
+	UBUT_INFO("================================================================");
+	UBUT_INFO("PROGRAM DONE");
+	UBUT_INFO("================================================================");
+	UBUT_INFO(" ");
+
+	return EXIT_SUCCESS;
+} // program
+
+// this is used from DBJ+FWK if we compile it that way
+// EASTL specific
+#ifdef DBJ_FWK_EASTL_DIRECT_DEPENDANCY
+
+#include <EABase/config/eacompiler.h>
+#include <EASTL/internal/config.h>
+
+extern "C" void show_eastl_compile_time_defines( void ) {
+
+	DBJ_INFO(": ");
+
+#if EA_COMPILER_NO_UNWIND
+	DBJ_INFO(": EA_COMPILER_NO_UNWIND  == %d ", (EA_COMPILER_NO_UNWIND == 1));
+#endif //! EA_COMPILER_NO_UNWIND 
+
+#if EA_COMPILER_NO_EXCEPTIONS
+	DBJ_INFO(": EA_COMPILER_NO_EXCEPTIONS  == %d ", (EA_COMPILER_NO_EXCEPTIONS == 1));
+#endif //! EA_COMPILER_NO_EXCEPTIONS 
+
+#ifdef EASTL_EXCEPTIONS_ENABLED
+	DBJ_INFO(": EASTL_EXCEPTIONS_ENABLED  == %d ", (EASTL_EXCEPTIONS_ENABLED == 1));
+#endif //! EASTL_EXCEPTIONS_ENABLED 
+
+#ifdef EASTL_RTTI_ENABLED
+	DBJ_INFO(": EASTL_RTTI_ENABLED  == %d ", (EASTL_RTTI_ENABLED == 1));
+#endif //! EASTL_RTTI_ENABLED 
+
+	DBJ_INFO(": ");
 }
+
+#endif // DBJ_FWK_EASTL_DIRECT_DEPENDANCY

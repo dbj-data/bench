@@ -1,12 +1,10 @@
 #include <assert.h>
 
-#if DBJ_USE_UTEST
-// #include "../utest/utest.h"
-#endif
+#include "../ubut/ubench.h"
 
-#if DBJ_USE_UBENCH
-#include "../ubench/ubench.h"
-#endif
+// warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+#pragma warning( push )
+#pragma warning( disable : 4244 )
 
 // https://stackoverflow.com/a/27958565/10870835
 // faster vs hand made implementations in here 
@@ -74,28 +72,14 @@ static double sqrt_newton(double x) {
   return guess;
 }
 /* ---------------------------------------------------------- */
-#if DBJ_USE_UBENCH
-static double data_ = 0;
+static double data_ = 0xFFF ;
 
-void construct(void);
-UBENCH_INITIALIZER(construct) { data_ = 0xFFF ; }
+UBENCH(sqrt_algo, sqrt_int) { sqrt_int((int)data_); }
 
-UBENCH(dbj, sqrt_int) { sqrt_int(data_); }
+UBENCH(sqrt_algo, crt_sqrt) { (void)sqrt(data_); }
 
-UBENCH(clib, sqrt) { (void)sqrt(data_); }
-
-UBENCH(dbj, sqrt_newton) { sqrt_newton(data_); }
-
-#ifdef __clang__
-// it seems this will be visited only
-// if we link with the static runtime lib
-void destruct(void) __attribute__((destructor));
-static void destruct(void) { data_ = 0; }
-#endif // __clang__
-
-#endif // DBJ_USE_UBENCH
+UBENCH(sqrt_algo, sqrt_newton) { sqrt_newton(data_); }
 
 /* ---------------------------------------------------------- */
-#if DBJ_USE_UTEST
- UTEST(dbj, utest) { UTEST_EXPECT(sqrt_int(9), 3, ==); }
-#endif
+
+#pragma warning( pop )

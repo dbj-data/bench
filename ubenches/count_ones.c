@@ -1,4 +1,5 @@
-#include "../ubench.h/ubench.h"
+
+#include "../ubut/ubench.h"
 
 static long count_ones_1 (long n) {
   long i = 0, j = 1;

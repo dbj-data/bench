@@ -1,10 +1,11 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include "../ubench/ubench.h"
+#include "../ubut/ubench.h"
 #include "../dbj-fwk/printing_macros.h"
 
 #include <stdexcept>
+#include <minwinbase.h>
 
 ///-----------------------------------------------
 struct buffer_type { char data[0xFF]; };
@@ -18,15 +19,21 @@ static const test_array_type test_array_element = { {'?'} };
 #ifndef _DEBUG
 #if __has_include(<atlsimpcoll.h>)
 
+// simply the opposite
+#define _ATL_NO_EXCEPTIONS (0 == _CPPUNWIND)
 #include <atlcoll.h>
+
+#if (_CPPUNWIND == 0) && ( _ATL_NO_EXCEPTIONS == 0 )
+#pragma message("_CPPUNWIND == 0 and _ATL_NO_EXCEPTIONS is not defined")
+#endif // _CPPUNWIND == 0
 
 static void atl_array() 
 {
 	using atl_arr = ATL::CAtlArray<test_array_type>;
 	// _ATL_NO_EXCEPTIONS ?
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	try {
-#endif // _HAS_EXCEPTIONS
+#endif // _CPPUNWIND
 		atl_arr array_;
 		// add 3 elements
 		array_.Add(test_array_element);
@@ -34,11 +41,11 @@ static void atl_array()
 		array_.Add(test_array_element);
 		// use illegal index
 		(void)array_.operator[](9);
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	}
 	catch (...) {
 	}
-#endif // _HAS_EXCEPTIONS
+#endif // _CPPUNWIND
 
 }
 
@@ -76,9 +83,9 @@ static void atl_simple_array() {
 
 	using atl_vec = ATL::CSimpleArray<test_array_type>;
 
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	try {
-#endif // _HAS_EXCEPTIONS
+#endif // _CPPUNWIND
 		atl_vec array_;
 		// add 3 elements
 		array_.Add(test_array_element);
@@ -87,11 +94,11 @@ static void atl_simple_array() {
 		// use illegal index
 		(void)array_.operator[](9);
 
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	}
 	catch ( ...) {
     }
-#endif // _HAS_EXCEPTIONS
+#endif // _CPPUNWIND
 
 }
 
@@ -121,15 +128,16 @@ UBENCH(bad_index_vector, atl_simple_arr)
 }
 #endif // __has_include(<atlsimpcoll.h>)
 #endif // ! _DEBUG
+
 ///-----------------------------------------------
 #include <vector>
 
 // SEH and C++ exceptions can not be 
 //mixed in one function
 static void mst_stl_bad_index_vector () {
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
+	static bool done_that = false;
 	try {
-		static bool done_that = false;
 #endif
 		std::vector<test_array_type> array_{};
 		array_.push_back(test_array_element);
@@ -137,7 +145,7 @@ static void mst_stl_bad_index_vector () {
 		array_.push_back(test_array_element);
 		// use illegal index
 		(void)array_.at(9);
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	} catch (std::out_of_range & x ) {
 		if (!done_that) {
 			DBJ_WARN("MS STL C++ exception: '%s' ,caught on each call!", x.what() );
@@ -176,7 +184,7 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 
 static void eastl_vector_of_strings() 
 {
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	try {
 #endif
 		eastl::vector<test_array_type> array_{};
@@ -194,7 +202,7 @@ static void eastl_vector_of_strings()
 		// so this should bomb
 		(array_.operator[](9)).data[13] = '!';
 
-#if _HAS_EXCEPTIONS
+#if _CPPUNWIND
 	}
 	catch (std::out_of_range& x)
 	{

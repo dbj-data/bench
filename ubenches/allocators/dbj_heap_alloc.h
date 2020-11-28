@@ -12,13 +12,6 @@
 #endif
 
 #define NOMINMAX
-
-#undef  min
-#define min(x, y) ((x) < (y) ? (x) : (y))
-
-#undef  max
-#define max(x, y) ((x) > (y) ? (x) : (y))
-
 #define STRICT 1
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -26,10 +19,13 @@
  Now here is the secret sauce secret ingredient:
  On windows machine these are faster vs crt malloc/free. Proven and measured.
  PPL.H -- Disclaimer: yes I know about parrallel maloc and free.
+ I also know about:  https://stackoverflow.com/a/34326909
 */
 
+// char * buf = DBJ_CALLOC(0xFF, char)
 #define DBJ_CALLOC(S_,T_) HeapAlloc(GetProcessHeap(), 0, S_ * sizeof(T_))
 
+// char * buf = (char*)DBJ_MALLOC(0xFF)
 #define DBJ_MALLOC( S_) HeapAlloc(GetProcessHeap(), 0, S_)
 
 #define DBJ_FREE(P_) HeapFree(GetProcessHeap(), 0, (void*)P_)
@@ -37,7 +33,7 @@
 #else // ! WIN32
 
 /// standard allocation
-/// be advised clang can sometimes do some serious magic 
+/// be advised clang can do some serious magic 
 /// while optimizing these calls
 
 #define DBJ_CALLOC(S_,T_) calloc( S_ , sizeof(T_))
