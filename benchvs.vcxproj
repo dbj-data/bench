@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="r_and_d\dbj_vla.cpp" />
-    <ClCompile Include="ubenches\allocators\nvwa\mem_pool_base.cpp" />
     <ClCompile Include="ubenches\allocators\nvwa\static_mem_pool.cpp" />
     <ClCompile Include="ubenches\allocators\pullocators.cpp" />
     <ClCompile Include="ubenches\compare_make_unique.cpp" />
@@ -51,6 +50,7 @@
     <ClInclude Include="r_and_d\dbj_un_likely.h" />
     <ClInclude Include="ubenches\adhoc\random_words_generator.h" />
     <ClInclude Include="ubenches\allocators\Kenwright\kenwright_mempool.h" />
+    <ClInclude Include="ubenches\allocators\nvwa\dbj_win_alloc.h" />
     <ClInclude Include="ubench\dbj_win_lib.h" />
     <ClInclude Include="ubench\ubench.h" />
     <ClInclude Include="ubut\ubut_top.h" />
@@ -133,10 +133,11 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,10 +154,11 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,10 +175,11 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,10 +196,11 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D_KERNEL_MODE</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

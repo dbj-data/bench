@@ -91,7 +91,7 @@ namespace {
 	struct guardian final {
 
 		using nvwa_pool = nvwa::fixed_mem_pool<test_array_type>;
-		static nvwa_pool nvwa;
+		inline static nvwa_pool nvwa;
 
 		guardian() {
 			nvwa_pool::initialize(test_array_size);

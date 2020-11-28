@@ -17,7 +17,9 @@ MSFT "extension" _malloca() must be paired with _freea(), thus it is a no go
 // Variable Length Static ARRay
 #define DBJ_VLS_ARR(T_, S_) (T_*)_alloca(S_ * sizeof(T_))
 
-
+/// @brief testing the dbj vla helpers
+/// @param size_ of the memory allocated on the stack
+/// @return void
 extern "C" void dbj_vla_user(int size_)
 {
 #ifdef __clang__
