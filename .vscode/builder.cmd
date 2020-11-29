@@ -42,9 +42,11 @@
 :: ADVICE: do not even think changing batch scripts without using https://ss64.com
 ::
 
-@echo off&title="dbj builder (c) 2020 by dbj@dbj.org -- https://dbj.org/license_dbj"
+@echo on&title="dbj builder (c) 2020 by dbj@dbj.org -- https://dbj.org/license_dbj"
 @cls
 @Setlocal EnableDelayedExpansion
+:: set prompt to '-> ' for debugging 
+@prompt -$G 
 
 if [%1] == [] (
     @echo.
@@ -67,7 +69,10 @@ if [%2] == [] (
 @set "cl_exe=cl.exe"
 
 :: this is 32 bit clang-cl.exe full path on this machine
-@set clang_cl="D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
+:: on me WS01 
+:: @set clang_cl="D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
+:: on me laptop
+@set clang_cl="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
 :: thus it has to be given the x64 target as mandatory since we said the hard requirement
 :: is to use this on WIN10 x64
 @set clang_arch=" --target=x86_64-pc-windows-msvc"
@@ -83,12 +88,12 @@ if [%2] == [] (
 @set "args=%args% /D_WIN32_WINNT=0x0A00" 
 
 if [%3] == [CL] (
-@set "compiler=%cl_exe%"
+@set compiler="%cl_exe%"
 goto decide_on_exceptions
 )
 
 if [%3] == [CLANG] (
-@set "compiler=%clang_cl%"
+@set compiler=%clang_cl%
 @set "args=%clang_arch% %args%"
 goto decide_on_exceptions
 )
