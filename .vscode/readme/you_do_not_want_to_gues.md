@@ -9,7 +9,7 @@ Your code is C++ and you are delivering Windows solutions. Good. You need to mak
       3. More important: with less bugs than previous release. Regardless of standards conformance.
       4. If you can prove to your team there is a better compiler for your product, please do use that one.
 2. [C++ exception](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0709r4.pdf) or not C++ exceptions
-3. [SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160). It is always there. Use that or do not use that Windows builds, fact.
+3. [SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160). It is always there. Use that or do not use that fact of Windows builds.
 4. Debug or Release build. 
    1. Testing needs Debug builds
    2. Benchmarking needs Release build
