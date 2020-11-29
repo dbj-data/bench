@@ -3,10 +3,12 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_64bit_SEH_RELEASE_BATCH_BUILD",
+            "label": "CLANG_NO_EXCEPTIONS_RELEASE",
             "command": "start ${workspaceFolder}\\.vscode\\builder.cmd",
-            "args": ["clang_x64_seh", "${workspaceFolder}", "bench_clang_x64_seh"],
-            "detail": "developing builder.bat"
+            "args": [ "${workspaceFolder}", "bench_clang_seh_release", "CLANG", "CXX_OFF", "RELEASE" ],
+            "group": "build",
+            "detail": "calling builder.bat",
+            "problemMatcher": [ "$msCompile" ]
         },
         {
             "type": "shell",
