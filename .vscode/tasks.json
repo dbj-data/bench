@@ -4,11 +4,19 @@
         {
             "type": "shell",
             "label": "CLANG_NO_EXCEPTIONS_RELEASE",
-            "command": "start ${workspaceFolder}\\.vscode\\builder.cmd",
+            "command": "${workspaceFolder}\\.vscode\\builder.cmd",
             "args": [ "${workspaceFolder}", "bench_clang_seh_release", "CLANG", "CXX_OFF", "RELEASE" ],
             "group": "build",
             "detail": "calling builder.bat",
-            "problemMatcher": [ "$msCompile" ]
+            "problemMatcher": [ "$msCompile" ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
         },
         {
             "type": "shell",

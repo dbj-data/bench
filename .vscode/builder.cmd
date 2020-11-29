@@ -1,181 +1,187 @@
-::
-:: (c) 2020 dbj@dbj.org -- https://dbj.org/license_dbj
-::
-:: poor, windows dev, build script
-::
-:: args are positional, unnamed and mandatory
-::
-:: %1 -- workspace folder full path -- aka the root folder of this project
-:: %2 -- exe base name without the ".exe" 
-:: %3 -- CL or CLANG -- local Visual Studio 2019 installation has to include both
-::                      you must run this script from VS x64 command prompt
-::                      which anyway is implied as you will be running it from inside VS Code
-::                      clang-cl.exe is x86 variery and its path is hard coded here, see bellow
-:: %4 -- CXX_ON or CXX_OFF or KERNEL -- c++ exceptions on or off
-::                            if off or KERNEL , try/throw/catch are forbidden in the language, by the compiler
-::                            if off or KERNEL, RTTI is off to
-::                            SEH is always here and intrinsic to cl.exe
-::                            SEH code uses __try/__except/__finally
-:: %5 -- RELEASE or DEBUG --  guess what is this for
-::
-:: each build attributes are
-::
-:: - build platform: win10 pro x64
-:: - UNICODE
-:: - static runtime lib 
-:: 
-:: as you might have noticed this is best called from VSCode tasks.json
-::
-:: {
-::    "version": "2.0.0",
-::    "tasks": [
-::        {
-::            "type": "shell",
-::            "label": "CLANG_NO_EXCEPTIONS_RELEASE",
-::            "command": "start ${workspaceFolder}\\.vscode\\builder.cmd",
-::            "args": [ "${workspaceFolder}", "bench_clang_seh_release", "CLANG", "CXX_OFF", "RELEASE" ],
-::            "detail": "calling builder.bat"
-::        }
-::    ]
-:: }
-::
-:: ADVICE: do not even think changing batch scripts without using https://ss64.com
-::
-
-@echo on&title="dbj builder (c) 2020 by dbj@dbj.org -- https://dbj.org/license_dbj"
-@cls
+@ECHO OFF&TITLE="dbj builder (c) 2020 by dbj@dbj.org -- https://dbj.org/license_dbj"
+@CLS
 @Setlocal EnableDelayedExpansion
-:: set prompt to '-> ' for debugging 
-@prompt -$G 
+@REM SET prompt to '-> ' for debugging 
+@PROMPT -$G 
 
-if [%1] == [] (
-    @echo.
-    @echo First argument has to be a workspace folder full path
-    @echo.
+@REM
+@REM (c) 2020 dbj@dbj.org -- https://dbj.org/license_dbj
+@REM
+@REM poor, windows dev, build script
+@REM
+@REM args are positional, unnamed and mandatory
+@REM
+@REM %1 -- workspace folder full path -- aka the root folder of this project
+@REM %2 -- exe base name without the ".exe" 
+@REM %3 -- CL or CLANG -- local Visual Studio 2019 installation has to include both
+@REM                      you must run this script from VS x64 command prompt
+@REM                      which anyway is implied as you will be running it from inside VS Code
+@REM                      clang-cl.exe is x86 variery and its path is hard coded here, see bellow
+@REM %4 -- CXX_ON or CXX_OFF or KERNEL -- c++ exceptions on or off
+@REM                            IF off or KERNEL , try/throw/catch are forbidden in the language, by the compiler
+@REM                            IF off or KERNEL, RTTI is off to
+@REM                            SEH is always here and intrinsic to cl.exe
+@REM                            SEH code uses __try/__except/__finally
+@REM %5 -- RELEASE or DEBUG --  guess what is this for
+@REM
+@REM each build attributes are
+@REM
+@REM - build platform: win10 pro x64
+@REM - UNICODE
+@REM - static runtime lib 
+@REM 
+@REM as you might have noticed this is best called from VSCode tasks.json
+@REM
+@REM {
+@REM    "version": "2.0.0",
+@REM    "tasks": [
+@REM        {
+@REM            "type": "shell",
+@REM            "label": "CLANG_NO_EXCEPTIONS_RELEASE",
+@REM            "command": "start ${workspaceFolder}\\.vscode\\builder.cmd",
+@REM            "args": [ "${workspaceFolder}", "bench_clang_seh_release", "CLANG", "CXX_OFF", "RELEASE" ],
+@REM            "detail": "calling builder.bat"
+@REM        }
+@REM    ]
+@REM }
+@REM
+@REM ADVICE: do not even think changing batch scripts without using https://ss64.com
+@REM
+
+IF [%1] EQU [] (
+    @ECHO.
+    @ECHO First argument has to be a workspace folder full path
+    @ECHO.
     exit /b
 )
-set "workspaceFolder=%1"
+SET "workspaceFolder=%1"
 
-if [%2] == [] (
-    @echo.
-    @echo Second argument has to be exe name, without the '.exe'
-    @echo.
+IF [%2] EQU [] (
+    @ECHO.
+    @ECHO Second argument has to be exe name, without the '.exe'
+    @ECHO.
     exit /b
 )
-@set "exename=%2"
+SET "exename=%2"
 
-:: core requirement: building on WIN10 x64
-:: must use from VS x64 command prompt
-@set cl_exe=cl.exe
+@REM core requirement: building on WIN10 x64
+@REM must use from VS x64 command prompt
+SET cl_exe=cl.exe
 
-:: this is 32 bit clang-cl.exe full path on this machine
-:: on me WS01 
-:: @set clang_cl="D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
-:: on me laptop
-@set clang_cl="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
-:: thus it has to be given the x64 target as mandatory since we said the hard requirement
-:: is to use this on WIN10 x64
-@set clang_arch=--target=x86_64-pc-windows-msvc
+@REM this is 32 bit clang-cl.exe full path on this machine
+@REM on me WS01 
+SET clang_cl="D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
+@REM on me laptop
+: @SET clang_cl="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
+@REM thus it has to be given the x64 target as mandatory since we said the hard requirement
+@REM is to use this on WIN10 x64
+SET clang_arch=--target=x86_64-pc-windows-msvc
 
-:: common for any build
-@set args= /nologo 
-@set args=%args% /Zc:wchar_t 
-@set args=%args% /std:c++17 
-@set args=%args% /DUNICODE 
-@set args=%args% /D_UNICODE 
-:: build platform is WIN10
-@set args=%args% /DWINVER=0x0A00 
-@set args=%args% /D_WIN32_WINNT=0x0A00 
+@REM common for any build
+@REM build platform is WIN10
+SET args= /nologo /Zc:wchar_t /std:c++17 /DUNICODE /D_UNICODE /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 
 
-if [%3] == [CL] (
-@set compiler=%cl_exe%
-goto decide_on_exceptions
+IF [%3] EQU [CL] (
+SET compiler=%cl_exe%
+GOTO decide_on_exceptions
 )
 
-if [%3] == [CLANG] (
-@set compiler=%clang_cl%
-@set args=%clang_arch% %args%
-goto decide_on_exceptions
+IF [%3] EQU [CLANG] (
+SET compiler=%clang_cl%
+SET args=%clang_arch% %args%
+GOTO decide_on_exceptions
 )
 
-@echo.
-@echo Third argument has to be CL or CLANG
-@echo.
+@ECHO.
+@ECHO Third argument has to be CL or CLANG
+@ECHO.
 @exit /b
 
 :decide_on_exceptions
-:: %4 -- CXX_ON or CXX_OFF -- c++ exceptions on or off
-if [%4] == [CXX_ON] (
-@set args=%args% /GR 
-@set args=%args% /D_HAS_EXCEPTIONS=1      
-@set args=%args% /EHsc      
-goto :decide_on_debug_or_release
+@REM %4 -- CXX_ON or CXX_OFF -- c++ exceptions on or off
+IF [%4] EQU [CXX_ON] (
+SET args=%args% /GR /D_HAS_EXCEPTIONS=1 /EHsc      
+GOTO decide_on_debug_or_release
 )
 
-if [%4] == [CXX_OFF] (
-:: no RTTI
-@set args=%args% /GR- 
-@set args=%args% /D_HAS_EXCEPTIONS=0
-:: do we need to use /kernel      
-goto :decide_on_debug_or_release
+@REM /GR- means no RTTI
+IF [%4] EQU [CXX_OFF] (
+SET args=%args% /GR- /D_HAS_EXCEPTIONS=0
+GOTO decide_on_debug_or_release
 )
-:: some users want to use the /kernel switch
-if [%4] == [KERNEL] (
-:: no RTTI
-@set args=%args% /GR- 
-:: vcruntime.h does _HAS_EXCEPTIONS=0 if this is used
-@set args=%args% /kernel
-goto :decide_on_debug_or_release
+@REM some users want to use the /kernel switch
+IF [%4] EQU [KERNEL] (
+SET args=%args% /GR- /kernel
+GOTO decide_on_debug_or_release
 )
 
-@echo.
-@echo Fourth argument must be CXX_ON or CXX_OFF or KERNEL
-@echo.
+@ECHO.
+@ECHO Fourth argument must be CXX_ON or CXX_OFF or KERNEL
+@ECHO.
 @exit /b
 
 :decide_on_debug_or_release
 
-if [%5] == [DEBUG] (
-:: yes this is standard symbol for release builds 
-@set args=%args% /DDEBUG
-:: _DEBUG is intrinsic for Windows debug builds 
-@set args=%args% /_DEBUG 
-:: runtime lib is static debug
-@set args=%args% /MTd
-goto :build_the_thing
+@REM _DEBUG is intrinsic for Windows debug builds 
+IF [%5] EQU [DEBUG] (
+SET args=%args% /DDEBUG /_DEBUG /MTd
+GOTO build_the_thing
 )
 
-if [%5] == [RELEASE] (
-:: yes this is standard symbol for release builds 
-@set "args=%args% /DNDEBUG" 
-:: runtime lib is static no-debug
-@set "args=%args% /MT"
-goto :build_the_thing
+@REM NDEBUG is standard symbol for release builds 
+IF [%5] EQU [RELEASE] (
+SET args=%args% /DNDEBUG /MT
+GOTO build_the_thing
 )
  
-@echo.
-@echo Fifth argument must be DEBUG or RELEASE
-@echo.
+@ECHO.
+@ECHO Fifth argument must be DEBUG or RELEASE
+@ECHO.
 @exit /b
 
-:: -----------------------------------------------------------------------------
+@REM -----------------------------------------------------------------------------
 :build_the_thing
 
-:: location of EASTL
-@set args=%args% "/I%workspaceFolder%\EASTL2020CORE\include"
-::
-@set args=%args% "/Fe%workspaceFolder%/%exename%.exe" 
-::  in each build in this project
-@set files="%workspaceFolder%\program.cpp" 
-::  
-@set "files=%files% %workspaceFolder%\ubenches\*.cpp" 
-@set "files=%files% %workspaceFolder%\ubenches\*.c" 
-@set "files=%files% %workspaceFolder%\ubenches\allocators\*.cpp" 
-@set "files=%files% %workspaceFolder%\ubenches\allocators\kalloc\*.c" 
-@set "files=%files% %workspaceFolder%\ubenches\allocators\nvwa\*.cpp"
-:: simply add the libs to the list of files
-@set "files=%files% %workspaceFolder%\x64\release\*.lib"
-::
-@echo on
-%compiler% %args% %files%
-@echo off
+@REM linker switches
+@REM here we are building console apps 
+SET "linker=/link /SUBSYSTEM:CONSOLE"
+
+@REM location of EASTL
+SET args=%args% /I"%workspaceFolder%\EASTL2020CORE\include"
+@REM
+SET args=%args% /Fe"%workspaceFolder%\%exename%.exe" 
+@REM  in each build in this project
+SET files="%workspaceFolder%\program.cpp" 
+@REM  
+SET "files=%files% %workspaceFolder%\ubenches\*.cpp" 
+SET "files=%files% %workspaceFolder%\ubenches\*.c" 
+SET "files=%files% %workspaceFolder%\ubenches\allocators\*.cpp" 
+SET "files=%files% %workspaceFolder%\ubenches\allocators\kalloc\*.c" 
+SET "files=%files% %workspaceFolder%\ubenches\allocators\nvwa\*.cpp"
+@REM simply add the libs to the list of files
+SET "files=%files% %workspaceFolder%\x64\release\*.lib"
+
+@REM GOTO DEBUG_DISPLAY
+
+@ECHO on
+%compiler% %args% %files% %linker%
+@ECHO off
+GOTO:EOF
+
+:DEBUG_DISPLAY
+@REM
+@REM for debug just show what is composed to be used
+@ECHO.
+@ECHO compiler :  %compiler%
+@ECHO.
+@ECHO args :  %args%
+@ECHO.
+@ECHO files :  %files%
+@ECHO.
+@ECHO linker :  %linker%
+@ECHO.
+GOTO:EOF
+
+@ECHO.
+@ECHO Done :  %workspaceFolder%\%exename%.exe
+@ECHO.
