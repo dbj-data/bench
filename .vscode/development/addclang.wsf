@@ -1,6 +1,6 @@
 <job>
 <script language="VBScript">
-Set wshShell = WSH.Shell ' CreateObject( "WScript.Shell" )
+Set wshShell = CreateObject( "WScript.Shell" )
 WScript.Echo Left( "Expanded" & Space( 12 ), 12 ) & wshShell.ExpandEnvironmentStrings( "TEMP=%TEMP%" )
 arrEnvironments = Array( "PROCESS", "SYSTEM", "USER", "VOLATILE" )
 For Each strEnv In arrEnvironments

@@ -66,7 +66,7 @@ if [%2] == [] (
 
 :: core requirement: building on WIN10 x64
 :: must use from VS x64 command prompt
-@set "cl_exe=cl.exe"
+@set cl_exe=cl.exe
 
 :: this is 32 bit clang-cl.exe full path on this machine
 :: on me WS01 
@@ -75,26 +75,26 @@ if [%2] == [] (
 @set clang_cl="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
 :: thus it has to be given the x64 target as mandatory since we said the hard requirement
 :: is to use this on WIN10 x64
-@set clang_arch=" --target=x86_64-pc-windows-msvc"
+@set clang_arch=--target=x86_64-pc-windows-msvc
 
 :: common for any build
-@set "args= /nologo" 
-@set "args=%args% /Zc:wchar_t" 
-@set "args=%args% /std:c++17" 
-@set "args=%args% /DUNICODE" 
-@set "args=%args% /D_UNICODE" 
+@set args= /nologo 
+@set args=%args% /Zc:wchar_t 
+@set args=%args% /std:c++17 
+@set args=%args% /DUNICODE 
+@set args=%args% /D_UNICODE 
 :: build platform is WIN10
-@set "args=%args% /DWINVER=0x0A00" 
-@set "args=%args% /D_WIN32_WINNT=0x0A00" 
+@set args=%args% /DWINVER=0x0A00 
+@set args=%args% /D_WIN32_WINNT=0x0A00 
 
 if [%3] == [CL] (
-@set compiler="%cl_exe%"
+@set compiler=%cl_exe%
 goto decide_on_exceptions
 )
 
 if [%3] == [CLANG] (
 @set compiler=%clang_cl%
-@set "args=%clang_arch% %args%"
+@set args=%clang_arch% %args%
 goto decide_on_exceptions
 )
 
@@ -106,25 +106,25 @@ goto decide_on_exceptions
 :decide_on_exceptions
 :: %4 -- CXX_ON or CXX_OFF -- c++ exceptions on or off
 if [%4] == [CXX_ON] (
-@set "args=%args% /GR" 
-@set "args=%args% /D_HAS_EXCEPTIONS=1"      
-@set "args=%args% /EHsc"      
+@set args=%args% /GR 
+@set args=%args% /D_HAS_EXCEPTIONS=1      
+@set args=%args% /EHsc      
 goto :decide_on_debug_or_release
 )
 
 if [%4] == [CXX_OFF] (
 :: no RTTI
-@set "args=%args% /GR-" 
-@set "args=%args% /D_HAS_EXCEPTIONS=0"
+@set args=%args% /GR- 
+@set args=%args% /D_HAS_EXCEPTIONS=0
 :: do we need to use /kernel      
 goto :decide_on_debug_or_release
 )
 :: some users want to use the /kernel switch
 if [%4] == [KERNEL] (
 :: no RTTI
-@set "args=%args% /GR-" 
+@set args=%args% /GR- 
 :: vcruntime.h does _HAS_EXCEPTIONS=0 if this is used
-@set "args=%args% /kernel"
+@set args=%args% /kernel
 goto :decide_on_debug_or_release
 )
 
@@ -137,11 +137,11 @@ goto :decide_on_debug_or_release
 
 if [%5] == [DEBUG] (
 :: yes this is standard symbol for release builds 
-@set "args=%args% /DDEBUG"
+@set args=%args% /DDEBUG
 :: _DEBUG is intrinsic for Windows debug builds 
-@set "args=%args% /_DEBUG" 
+@set args=%args% /_DEBUG 
 :: runtime lib is static debug
-@set "args=%args% /MTd"
+@set args=%args% /MTd
 goto :build_the_thing
 )
 
@@ -162,9 +162,9 @@ goto :build_the_thing
 :build_the_thing
 
 :: location of EASTL
-@set "args=%args% /I%workspaceFolder%\EASTL2020CORE\include"
+@set args=%args% "/I%workspaceFolder%\EASTL2020CORE\include"
 ::
-@set "args=%args% /Fe%workspaceFolder%/%exename%.exe" 
+@set args=%args% "/Fe%workspaceFolder%/%exename%.exe" 
 ::  in each build in this project
 @set files="%workspaceFolder%\program.cpp" 
 ::  
