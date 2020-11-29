@@ -9,7 +9,7 @@ Your code is C++ and you are delivering Windows solutions. Good. You need to mak
       3. More important: with less bugs than previous release. Regardless of standards conformance.
       4. If you can prove to your team there is a better compiler for your product, please do use that one.
 2. [C++ exception](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0709r4.pdf) or not C++ exceptions
-3. [SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160). It is always there. Use that or do not use that Windows builds, fact.
+3. [SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160). It is always there. Use that or do not use that fact of Windows builds.
 4. Debug or Release build. 
    1. Testing needs Debug builds
    2. Benchmarking needs Release build
@@ -27,7 +27,7 @@ Your code is C++ and you are delivering Windows solutions. Good. You need to mak
 12 builds. 6 for testing and 6 for benchmarking.
 
 - No C++ exceptions and no SEH use is a valid build too
-  - that is where "fail fast" is used usually
+  - that is where ["fail fast" is used](https://docs.microsoft.com/en-us/cpp/intrinsics/fastfail?view=msvc-160#:~:text=The%20__fastfail%20intrinsic%20provides,to%20request%20immediate%20process%20termination.&text=After%20a%20fast%20fail%20request,then%20takes%20the%20appropriate%20action.)
 - What about the cl [/kernel switch](https://docs.microsoft.com/en-us/cpp/build/reference/kernel-create-kernel-mode-binary?view=msvc-160)?
   - If you use that cl.exe swtich, that means: no C++ exceptions and no [RTTI](https://docs.microsoft.com/en-us/cpp/cpp/run-time-type-information?view=msvc-160). 
   - But you need to switch of the RTTI manually.
