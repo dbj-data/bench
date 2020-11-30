@@ -69,7 +69,8 @@ SET "exename=%2"
 SET cl_exe=cl.exe
 
 @REM this is 32 bit clang-cl.exe full path on this machine
-@REM on me WS01 
+@REM on the WS01 
+@REM 32 bit
 SET clang_cl="D:\PROD\programs\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"
 @REM on me laptop
 : @SET clang_cl="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe"

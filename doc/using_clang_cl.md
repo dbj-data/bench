@@ -5,6 +5,7 @@
 - [3. Trouble shooting](#3-trouble-shooting)
 - [4. Moral of the story](#4-moral-of-the-story)
   - [4.1. Post Scriptum](#41-post-scriptum)
+  - [4.2. Ultimately](#42-ultimately)
 
 You want (or need) to use VS Code to build your C/C++ projects on your machine using clang that comes packaged with Visual Stidio 2019. You have installed all the required extensions. And now you are ready to use clang and compile away. The key extension is: [C/C++ for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools). 
 
@@ -211,15 +212,15 @@ In case cl can not be found, close the VS. Click again on one of those icons and
 
 ## 4. Moral of the story
 
-The right path is not always the difficult one.
+> The right path is not always the difficult one.
 
 ### 4.1. Post Scriptum
 
-In case you have free time to waste please use ["Rapid Environment Editor"](https://www.rapidee.com/en/about) to study what is going on as a result of running `vcvarsall.bat`. The most ridiculuous and beautiful batch file to be found in the depths of the Visual Studio 2019 installation.
+In case you have free time to waste please use ["Rapid Environment Editor"](https://www.rapidee.com/en/about) to study what is going on as a result of running `vcvarsall.bat`. The most ridiculous and beautiful batch file to be found in the depths of the Visual Studio 2019 installation. There is a lot of "ridiculous and beautiful" things in here.
 
-My [settings.json](../settings.json), is just above this folder and you can look it up too.
+### 4.2. Ultimately 
 
-Ultimately someone has to make a single cmd file that will setup the path to the required clang-cl.exe, by looking into 
+Someone has to make a single cmd file that will setup the path to the required clang-cl.exe, by looking into these env vars:
 
 ```
 VSCMD_ARG_app_plat=Desktop
@@ -227,4 +228,4 @@ VSCMD_ARG_HOST_ARCH=x86
 VSCMD_ARG_TGT_ARCH=x86
 ```
 
-envvars avialable, after vcvarsall.cmd has done its job.
+Avialable, after vcvarsall.cmd has done its job.

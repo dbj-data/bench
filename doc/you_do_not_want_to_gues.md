@@ -32,10 +32,10 @@ Your code is C++ and you are delivering Windows solutions. Good. You need to mak
   - If you use that cl.exe swtich, that means: no C++ exceptions and no [RTTI](https://docs.microsoft.com/en-us/cpp/cpp/run-time-type-information?view=msvc-160). 
   - But you need to switch of the RTTI manually.
 
-## Testing == Debug build
+## Testing == Debug builds
 
 
-|   | ...            | Build A | Build B | Build C | Build D | Build E | Build F
+|   | Attribute      | Build 01| Build 02| Build 03| Build 04| Build 05| Build 06
 |---|----------------|-------- |---------|---------|---------|---------|---------|
 | 1 | cl.exe         | Y       | Y       | Y       |         |         |         |
 | 2 | clang-cl.exe   |         |         |         |  Y      | Y       | Y       |
@@ -43,10 +43,10 @@ Your code is C++ and you are delivering Windows solutions. Good. You need to mak
 | 4 | use SEH        | Y       | Y       |         |  Y      | Y       |         |
 
 
-## Benchmarking == Release build
+## Benchmarking == Release builds
 
 
-|   | ...            | Build A | Build B | Build C | Build D | Build E | Build F
+|   |  Attribute     | Build 07| Build 08| Build 09| Build 10| Build 11| Build 12
 |---|----------------|-------- |---------|---------|---------|---------|---------|
 | 1 | cl.exe         | Y       | Y       | Y       |         |         |         |
 | 2 | clang-cl.exe   |         |         |         |  Y      | Y       | Y       |
@@ -63,19 +63,21 @@ Benchmarking are the best use cases to clarify why do we use 12 builds. For exam
   - each build will produce benchmarking results inside one build
 - next you compare builds by taking into account their key attributes
 
-For example :  
+Examples :  
 
 - which compiler produces faster builds?
-  - Release "Build B" and "Build E" are different only by the compiler used. 
+  - Release "Build 07" and "Build 10" are different only by the compiler used. 
   - what is the difference in benchmarking results comparing these two builds?
 - are C++ exception builds slower?
-  - you compare (release builds) "Build A" with "Build B"
+  - you could compare "Build 10" with "Build 11"
 - are C++ exception builds slower or faster by using different compilers?
-   - compare the "Build A" and "Build D" results
-- How wast are SEH builds vs C++ exception builds?
-  - compare builds A and B , or E and B
+   - compare the "Build 10" and "Build 07" results
+- How fast are SEH builds vs C++ exception builds?
+  - compare builds 07 and 08 , or 10 and 11
+- What about fail fast builds?
+  - compare 10 and 12, or 07 and 09
 
-In any case you have different builds to give more facets to the art of benchmarking.
+In any case you have different builds to give yet another dimension, to make your benchmarks less of a guess and more of a measurement outcome.
 
 ### Testing
 

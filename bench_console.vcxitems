@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{129dad01-6617-456d-b46f-6c890c73405b}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\adhoc\random_words_generator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\dbj_heap_alloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\kalloc\dbj_atl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\kalloc\dbj_kalloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\kalloc\kalloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\kalloc\kvec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\Kenwright\kenwright_mempool.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\c++_features.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\class_level_lock.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\cont_ptr_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\dbj_win_alloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\fast_mutex.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\fixed_mem_pool.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\mem_pool_base.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\static_mem_pool.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\_nvwa.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)program.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\adhoc.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\allocators\allocators.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\allocators\kalloc\kalloc.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\allocators\nvwa\static_mem_pool.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\allocators\pullocators.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\compare_make_unique.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\count_ones.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\squareroot.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\vector_sampling.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ubenches\vector_sampling_excpt_overhead.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)units\type_printers.c" />
+  </ItemGroup>
+</Project>
