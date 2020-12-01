@@ -5,7 +5,7 @@ Visual Studio does not help
 <h1>You do not want to guess</h1>
 
 - [Let me make it clearer for you, if I can.](#let-me-make-it-clearer-for-you-if-i-can)
-- [2 builds. 6 for testing and 6 for benchmarking](#2-builds-6-for-testing-and-6-for-benchmarking)
+- [12 builds. 6 for testing and 6 for benchmarking](#12-builds-6-for-testing-and-6-for-benchmarking)
 - [Testing == 6 Debug builds](#testing--6-debug-builds)
 - [Benchmarking == 6 Release builds](#benchmarking--6-release-builds)
 - [Common build flags](#common-build-flags)
@@ -47,7 +47,7 @@ Here are the key attributes of any standard c++, standard Windows build.
 - building platform : WIN 10 x64
 - running  platform : WIN 10 x64
 
-## 2 builds. 6 for testing and 6 for benchmarking
+## 12 builds. 6 for testing and 6 for benchmarking
 
 - No C++ exceptions and no SEH use is a valid build too
   - that is where ["fail fast" is used](https://docs.microsoft.com/en-us/cpp/intrinsics/fastfail?view=msvc-160#:~:text=The%20__fastfail%20intrinsic%20provides,to%20request%20immediate%20process%20termination.&text=After%20a%20fast%20fail%20request,then%20takes%20the%20appropriate%20action.)
