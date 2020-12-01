@@ -11,6 +11,7 @@ Visual Studio does not help
 - [Common build flags](#common-build-flags)
 - [What about libraries?](#what-about-libraries)
 - [What about platform?](#what-about-platform)
+  - [Run-time is](#run-time-is)
 - [So how do you make an measurement?](#so-how-do-you-make-an-measurement)
   - [Testing](#testing)
   - [Benchmarking](#benchmarking)
@@ -52,8 +53,8 @@ Here are the key attributes of any standard c++, standard Windows build.
 - No C++ exceptions and no SEH use is a valid build too
   - that is where ["fail fast" is used](https://docs.microsoft.com/en-us/cpp/intrinsics/fastfail?view=msvc-160#:~:text=The%20__fastfail%20intrinsic%20provides,to%20request%20immediate%20process%20termination.&text=After%20a%20fast%20fail%20request,then%20takes%20the%20appropriate%20action.)
 - What about the cl [/kernel switch](https://docs.microsoft.com/en-us/cpp/build/reference/kernel-create-kernel-mode-binary?view=msvc-160)?
-  - If you use that cl.exe swtich, that means: no C++ exceptions and no [RTTI](https://docs.microsoft.com/en-us/cpp/cpp/run-time-type-information?view=msvc-160). 
-  - But you need to switch of the RTTI manually.
+  - If you use that cl.exe swtich, that means: no C++ keyords for them and no C++ exceptions and no [RTTI](https://docs.microsoft.com/en-us/cpp/cpp/run-time-type-information?view=msvc-160). 
+  - You need to switch of the RTTI manually, with `/GR-`
 
 Here are the builds tabulated:
 
@@ -80,10 +81,10 @@ Here are the builds tabulated:
 
 ## Common build flags
 
-(Almost an) Copy paste from [[Craig](#craig)]
+(Almost an) Copy paste from [[Craig](#references)]
 
 The compiler and flags are the same for 32-bit and 64-bit builds, except that the 32-bit linker uses /machine:x86 and the 64-bit linker uses /machine:x64
-/d2FH4 is a critical flag for these benchmarks. Without it, the results are drastically different. See [MoFH4] for a description of this flag.
+/d2FH4 is a critical flag for these benchmarks. Without it, the results are drastically different. Google "MoFH4" for a description of this flag.
 
 - Compiler marketing version: Visual Studio 2019
 - We use whatever is the fully up to date and latest
@@ -95,7 +96,7 @@ Compiler codegen flags (no exceptions):
 /GR- /Gy /Gw /O2 /MT /d2FH4 /std:c++latest /permissive- /DNDEBUG /kernel
 ```
 
-Vs [[Craig](#Craig)], we also add the `/kernel` switch. That also sets the `_HAS_EXCEPTIONS=0`. MS STL depends on that symbol being `0` so that is is compiled in fully SEH conformant mode.
+Vs [[Craig](#references)], we also add the `/kernel` switch. That also sets the `_HAS_EXCEPTIONS=0`. MS STL depends on that symbol being `0` so that is is compiled in fully SEH conformant mode.
 
 Compiler codegen flags (with exceptions): 
 ```
@@ -121,22 +122,24 @@ Following the Visual Studio nomenklature, platforms are:
 - ARM
 - ARM64
 
-One might consider the platform as one of the key attributes of the build. That will increase the number of possible builds considerably.
+One might consider the platform as one of the key attributes of the build. That will increase the number of required builds considerably.
 
 Instead, we consider the platform as the attribute of the run-time environment.
 
-Run-time is:
+### Run-time is
 
 - Windows 10 x64
 - Intel x64 CPU 
-- C++16
+- C++17
 - C18
 
-## So how do you make an measurement?
+That is a hard requirement.
+
+# So how do you make measurements?
 
 The key piece of logic behind this text is: you do want to go beyond guessing when deciding what to use and how to build it, while coding in C++. 
 
-### Testing
+## Testing
 
 In the context of testing, different testing debug builds will tell you if your code can be built in all 6 varieties. 
 
@@ -144,7 +147,7 @@ And if it can be built, will it fail at runtime.
 
 By no means first test then measure.
 
-### Benchmarking
+## Benchmarking
 
 Benchmarking are the best use cases to clarify why do we useall these builds. For example you write the code comparing the speed of `std::vector` and `stl::vector`. You have your own or using some well known benchmarking framework. (I use mine, very closely related to [ubench](https://github.com/sheredom/ubench.h)/[utest](https://github.com/sheredom/utest.h).)
 
