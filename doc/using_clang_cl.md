@@ -1,4 +1,4 @@
-<h1> clang + VS Code, on Windows 10</h1>
+<h1> How to setup building with clang and VS Code, on Windows 10</h1>
 
 - [1. Difficult path](#1-difficult-path)
 - [2. The right path](#2-the-right-path)
@@ -17,7 +17,7 @@ From Visual Studio, clang build "just works". But you want to use VS Code becaus
 
 Now [as you have been instructed](https://code.visualstudio.com/docs/cpp/config-msvc) by [C/C++ for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools), you use one of the VStudio installed "Command Prompt" icons on your start menu to open the cmd.exe and execute the `vcvarsall.bat` in a proper way. All done for you.
 
-![vs cli icons](vs2019_start_the_cli.jpg)
+![vs cli icons](media/vs2019_start_the_cli.jpg)
 
 And now you are in the command prompt from which you can execute the `code` and proceed to your C++ folder. 
 
@@ -75,7 +75,7 @@ Admitedly a message from hell. Perhaps translated into human it might be: "Back 
 
 Step One. Click on that unavoidable VStudio command line icon again: 
 
-![vs cli icons](vs2019_start_the_cli.jpg)
+![vs cli icons](media/vs2019_start_the_cli.jpg)
 
 
 Now, goto the clang bin directory. Execute `clang-cl --version`. (On my `W10` machine that displays:)
@@ -142,7 +142,7 @@ Now, after a long "`devl` night", it is a sunny morning, and first shoot of caff
 
 This morning, you spot the `x64` and you spot the `bin` under it. 
 
-![clang vstudio location](clang_tree.jpg)
+![clang vstudio location](media/clang_tree.jpg)
 
 Yes! That is where the clang-cl for 64 bit builds is. 
 
