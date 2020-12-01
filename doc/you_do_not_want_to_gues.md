@@ -8,11 +8,13 @@ Visual Studio does not help
 - [2 builds. 6 for testing and 6 for benchmarking](#2-builds-6-for-testing-and-6-for-benchmarking)
 - [Testing == 6 Debug builds](#testing--6-debug-builds)
 - [Benchmarking == 6 Release builds](#benchmarking--6-release-builds)
+- [Common build flags](#common-build-flags)
 - [What about libraries?](#what-about-libraries)
 - [What about platform?](#what-about-platform)
 - [So how do you make an measurement?](#so-how-do-you-make-an-measurement)
   - [Testing](#testing)
   - [Benchmarking](#benchmarking)
+- [References](#references)
 
 As far as I know there is no suitable "build system" for one man "C++ naut". Visual Studio is very comfortable. To a certain point.
 
@@ -76,6 +78,35 @@ Here are the builds tabulated:
 | 3 | c++ exceptions | Y       |         |         |  Y      |         |         |
 | 4 | use SEH        | Y       | Y       |         |  Y      | Y       |         |
 
+## Common build flags
+
+(Almost an) Copy paste from [[Craig](#craig)]
+
+The compiler and flags are the same for 32-bit and 64-bit builds, except that the 32-bit linker uses /machine:x86 and the 64-bit linker uses /machine:x64
+/d2FH4 is a critical flag for these benchmarks. Without it, the results are drastically different. See [MoFH4] for a description of this flag.
+
+- Compiler marketing version: Visual Studio 2019
+- We use whatever is the fully up to date and latest
+cl.exe
+- clang-cl.exe is 10.0.0 as packaged with VS 2019
+
+Compiler codegen flags (no exceptions): 
+```
+/GR- /Gy /Gw /O2 /MT /d2FH4 /std:c++latest /permissive- /DNDEBUG /kernel
+```
+
+Vs [[Craig](#Craig)], we also add the `/kernel` switch. That also sets the `_HAS_EXCEPTIONS=0`. MS STL depends on that symbol being `0` so that is is compiled in fully SEH conformant mode.
+
+Compiler codegen flags (with exceptions): 
+```
+/EHsc /GR /Gy /Gw /O2 /MT /d2FH4 /std:c++latest /permissive- /DNDEBUG
+```
+
+Linker flags: 
+```
+/OPT:REF /release /subsystem:CONSOLE /incremental:no /OPT:ICF /NXCOMPAT /DYNAMICBASE *.obj
+```
+
 ## What about libraries?
 
 Library is a kind of a executable. Each library has to match the build attributes of the host executable. That means, each library will have to be built in 12 builds too.
@@ -138,6 +169,10 @@ Examples :
   - Take your pick. You have 6 builds to choose from.
 
 In any case you have different builds to give one more dimension in order t increase the value of your measurements results. To make your benchmarks less of a guess and more of a engineering measurement approach.
+
+## References
+
+[<a id="Craig">Craig</a>] Ben Craig: [Error Speed Benchmarking](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1886r0.html#msvc)
 
 ---
 &copy; 2020 by dbj@dbj.org , [LICENSE_DBJ](https://dbj.org/license_dbj)
