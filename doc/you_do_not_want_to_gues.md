@@ -81,7 +81,7 @@ Here are the builds tabulated:
 
 ## Common build flags
 
-(Almost an) Copy paste from [[Craig](#references)]
+(Almost) Copy paste from [[Craig](#references)]
 
 The compiler and flags are the same for 32-bit and 64-bit builds, except that the 32-bit linker uses /machine:x86 and the 64-bit linker uses /machine:x64
 /d2FH4 is a critical flag for these benchmarks. Without it, the results are drastically different. Google "MoFH4" for a description of this flag.
