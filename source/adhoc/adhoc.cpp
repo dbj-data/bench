@@ -1,6 +1,6 @@
 
 #include "../ubut/ubench.h"
-#include "adhoc/random_words_generator.h"
+#include "random_words_generator.h"
 
 
 UBENCH(adhoc,random_words) 

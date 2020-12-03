@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{129dad01-6617-456d-b46f-6c890c73405b}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\adhoc\adhoc.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\adhoc\dbj_vla.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\allocators.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\kalloc\kalloc.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\pullocators.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\compare_make_unique.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\count_ones.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\squareroot.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling_excpt_overhead.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\program.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\tests\type_printers.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />
+  </ItemGroup>
+</Project>
