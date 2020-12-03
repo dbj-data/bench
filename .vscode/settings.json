@@ -15,7 +15,7 @@
     "cppx_on" : "/GR /D_HAS_EXCEPTIONS=1 /EHsc",
     /* GR- for no RTTI */
     "cppx_off" : "/GR- /D_HAS_EXCEPTIONS=0 ",
-    /* sets the _HAS_EXCEPTIONS=0 */
+    /* sets the _HAS_EXCEPTIONS=0 , clang does not take this switch */
     "kernel_on" : "/GR- /kernel ",
     /*
     MTd for debug static runtime lib
