@@ -48,9 +48,8 @@ namespace kenwright {
 			uint numOfBlocks)
 		{
 			m_numOfBlocks = numOfBlocks;
-			m_sizeOfEachBlock = sizeOfEachBlock;
-			m_memStart = new uchar[m_sizeOfEachBlock *
-				m_numOfBlocks];
+			m_sizeOfEachBlock = uint(sizeOfEachBlock);
+			m_memStart = new uchar[size_t( m_sizeOfEachBlock ) * m_numOfBlocks ];
 			m_numFreeBlocks = numOfBlocks;
 			m_next = m_memStart;
 		}
@@ -63,7 +62,7 @@ namespace kenwright {
 		
 		uchar* AddrFromIndex(uint i) const
 		{
-			return m_memStart + (i * m_sizeOfEachBlock);
+			return m_memStart + (i * size_t(m_sizeOfEachBlock));
 		}
 		
 		uint IndexFromAddr(const uchar* p) const
