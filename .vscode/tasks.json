@@ -3,191 +3,24 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "CLANG_NO_EXCEPTIONS_RELEASE",
-            "command": "${workspaceFolder}\\.vscode\\builder.cmd",
-            "args": [ "${workspaceFolder}", "bench_clang_seh_release", "CLANG", "CXX_OFF", "RELEASE" ],
+            "label": "CLANG_RELEASE_BUILD",
+            "command": "${config:dbj.cl_exe} ${config:dbj.for_every_build} ${config:dbj.eastl_location} ${config:dbj.release} ${config:dbj.cppx_on} /Fe${workspaceFolder}/build/bench_clang_rel.exe ${config:dbj.files_bench}  ${config:dbj.files_simplelog} ${config:dbj.files_fwk}  ${config:dbj.files_eastl} ${config:dbj.linker_console}",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
             "group": "build",
-            "detail": "calling builder.bat",
-            "problemMatcher": [ "$msCompile" ],
+            "detail": "C++ Exceptions and RTTI",
             "presentation": {
-                "echo": true,
+                "echo": false,
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
                 "showReuseMessage": true,
                 "clear": true
             }
-        },
-        {
-            "type": "shell",
-            "label": "CLANG_64bit_RELEASE_BUILD",
-            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
-            "args": [
-                "--target=x86_64-pc-windows-msvc",
-                "/I${workspaceFolder}\\EASTL2020CORE\\include",
-                "/nologo",
-                "/Zc:wchar_t",
-                "/std:c++17",
-                "/GR",
-                "/EHsc",
-                "/D_HAS_EXCEPTIONS=1",
-                "/DUNICODE",
-                "/D_UNICODE",
-                "/DDBJ_USE_UBENCH",
-                "/DNDEBUG",
-                "/DDBJ_FWK_DISPLAY_INFO",
-                "/DWINVER=0x0A00",
-                "/D_WIN32_WINNT=0x0A00",
-                "/MT",
-                "/Fe${workspaceFolder}/bench.exe",
-                "${workspaceFolder}/dbj-fwk/main.cpp",
-                "${workspaceFolder}/program.cpp",
-                "${workspaceFolder}\\units\\*.c",
-                "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
-                "${workspaceFolder}\\zallocators\\*.cpp",
-                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
-                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
-                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": "build",
-            "detail": "YES Exceptions and YES RTTI"
-        },
-        {
-            "type": "shell",
-            "label": "CLANG_64bit_DEBUG_BUILD",
-            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
-            "args": [
-                "--target=x86_64-pc-windows-msvc",
-                "/I${workspaceFolder}\\EASTL2020CORE\\include",
-                "/std:c++17",
-                "/GR",
-                "/EHsc",
-                "/D_HAS_EXCEPTIONS=1",
-                "/DUNICODE",
-                "/D_UNICODE",
-                "/D_DEBUG",
-                "/DDBJ_USE_UBENCH",
-                "/DDBJ_FWK_DISPLAY_INFO",
-                "/DWINVER=0x0A00",
-                "/D_WIN32_WINNT=0x0A00",
-                "/Zc:wchar_t",
-                "/Zi",
-                "/MTd",
-                "/Fe${workspaceFolder}/bench_dbg.exe",
-                "${workspaceFolder}/dbj-fwk/main.cpp",
-                "${workspaceFolder}/program.cpp",
-                "${workspaceFolder}\\units\\*.c",
-                "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
-                "${workspaceFolder}\\zallocators\\*.cpp",
-                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
-                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
-                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": "build",
-            "detail": "YES exceptions and yes RTTI"
-        },
-        {
-            "type": "shell",
-            "label": "CLANG_64bit_SEH_DEBUG_BUILD",
-            "command": "D:\\PROD\\programs\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\bin\\clang-cl.exe",
-            "args": [
-                "--target=x86_64-pc-windows-msvc",
-                "/I${workspaceFolder}\\EASTL2020CORE\\include",
-                "/std:c++17",
-                "/GR-",
-                "/D_HAS_EXCEPTIONS=0",
-                "/DUNICODE",
-                "/D_UNICODE",
-                "/D_DEBUG",
-                "/DDBJ_USE_UBENCH",
-                "/DDBJ_FWK_DISPLAY_INFO",
-                "/DWINVER=0x0A00",
-                "/D_WIN32_WINNT=0x0A00",
-                "/Zc:wchar_t",
-                "/Zi",
-                "/MTd",
-                "/Fe${workspaceFolder}/bench_seh_dbg.exe",
-                "${workspaceFolder}/dbj-fwk/main.cpp",
-                "${workspaceFolder}/program.cpp",
-                "${workspaceFolder}\\units\\*.c",
-                "${workspaceFolder}\\units\\*.cpp",
-                "${workspaceFolder}\\EASTL2020CORE\\source\\*.cpp",
-                "${workspaceFolder}\\zallocators\\*.cpp",
-                "${workspaceFolder}\\zallocators\\kalloc\\*.c",
-                "${workspaceFolder}\\zallocators\\nedmalloc\\nedmalloc.c",
-                "${workspaceFolder}\\zallocators\\nvwa\\*.cpp"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": "build",
-            "detail": "No Exceptions and no RTTI"
-        },
-        {
-            "type": "shell",
-            "label": "CLEAN",
-            "command": "del /S /Q",
-            "args": [
-                "${workspaceFolder}\\*pdb",
-                "${workspaceFolder}\\*obj",
-                "${workspaceFolder}\\*ilk"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "test",
-            "detail": "Delete *ALL*, *pdb *obj and *ilk files found"
-        },
-        {
-            "type": "shell",
-            "label": "input show",
-            "command": "echo",
-            "args": [
-                "${input:list_abc}"
-            ],
-            "detail": "Show a file list input result",
-            "presentation": {
-                "echo": false,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": false
-            },
-            "group": "test"
-        },
-        {
-            "label": "ADD CLANG-CL",
-            "type": "shell",
-            "command": "start ${workspaceFolder}\\.vscode\\addclang.cmd",
-            "detail": "Work in progress",
-            "group": "test"
         }
-    ],
-    "inputs": [
-        {
-            "type": "promptString",
-            "id": "list_abc",
-            "description": "Name?",
-            "default": "A B C"
-        }
-    ],
-    "args": ["A", "B", "C"]
+    ]
 }

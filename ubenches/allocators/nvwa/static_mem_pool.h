@@ -41,12 +41,14 @@
 #include <stdexcept>            // std::runtime_error
 #include <string>               // std::string
 #include <vector>               // std::vector
+#include <algorithm>            // std::for_each
 #include <assert.h>             // assert
 #include <stddef.h>             // size_t
 #include "_nvwa.h"              // NVWA/NVWA_NAMESPACE_*
 #include "c++_features.h"       // _DELETED/_NOEXCEPT/_NULLPTR/_OVERRIDE
 #include "class_level_lock.h"   // nvwa::class_level_lock
 #include "mem_pool_base.h"      // nvwa::mem_pool_base
+#include "cont_ptr_utils.h"     // nvwa::delete_object
 
 /* Defines the macro for debugging output */
 # ifdef _STATIC_MEM_POOL_DEBUG
@@ -74,13 +76,44 @@ NVWA_NAMESPACE_BEGIN
 class static_mem_pool_set {
 public:
     typedef class_level_lock<static_mem_pool_set>::lock lock;
-    static static_mem_pool_set& instance();
-    void recycle();
-    void add(mem_pool_base* memory_pool_p);
+
+static  static_mem_pool_set& instance()
+{
+    lock guard;
+    static static_mem_pool_set _S_instance;
+    return _S_instance;
+}
+
+void recycle()
+{
+    _STATIC_MEM_POOL_TRACE(false, "Memory pools are being recycled");
+    container_type::iterator end = _M_memory_pool_set.end();
+    for (container_type::iterator
+            i  = _M_memory_pool_set.begin();
+            i != end; ++i) {
+        (*i)->recycle();
+    }
+}
+
+void add(mem_pool_base* memory_pool_p)
+{
+    lock guard;
+    _M_memory_pool_set.push_back(memory_pool_p);
+}
 
 private:
-    static_mem_pool_set();
-    ~static_mem_pool_set();
+static_mem_pool_set()
+{
+    _STATIC_MEM_POOL_TRACE(false, "The static_mem_pool_set is created");
+}
+
+~static_mem_pool_set()
+{
+    std::for_each(_M_memory_pool_set.rbegin(),
+                  _M_memory_pool_set.rend(),
+                  delete_object());
+    _STATIC_MEM_POOL_TRACE(false, "The static_mem_pool_set is destroyed");
+}
 
     typedef std::vector<mem_pool_base*> container_type;
     container_type _M_memory_pool_set;
