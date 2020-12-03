@@ -1,7 +1,8 @@
 ::
-:: (c) 2020 by dbj@dbj.org
+:: (c) 2020 DEV 03 dbj@dbj.org
 :: windows only script
-:: any argument will make exe's and pdb's be deleted, too
+:: any argument will make exe's and pdb's be 
+:: and Visual Stuydio artefacts deleted, too
 ::
 @echo off
 @del /s *.obj>nul
