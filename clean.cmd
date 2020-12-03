@@ -9,4 +9,12 @@
 @IF [%1] == [] GOTO script_exit
 @del /s *.exe>nul
 @del /s *.pdb>nul
+
+:: remove the VStudio artefacts
+@del /s *.filters>nul
+@del /s *.user>nul
+
+FOR /F "tokens=*" %%G IN ('dir /b /s x64') DO @rd /s /q %%G
+FOR /F "tokens=*" %%G IN ('dir /b /s .vs') DO @rd /s /q %%G
+
 :script_exit
