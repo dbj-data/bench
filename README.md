@@ -9,6 +9,12 @@ Please check the [license](https://dbj.org/license_dbj/)
 
 There are some more readme's scattered bellow this one; please use them.
 
+Building of this might look ridiculous. We do not use CMake deliberately. It is an overkill. We use Visual Studio. Why do **you** need all this numerous build targets is [explained here](doc/you_do_not_want_to_gues.md).
+
+How is Visual Studio actually used is [explained here](doc/multi_target_vs_builds.md).
+
+That all works but is still W.I.P.
+
 ## Principles
 
 ### Architecture
