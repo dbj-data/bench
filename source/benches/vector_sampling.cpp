@@ -4,8 +4,8 @@
 #include "../ubut/ubench.h"
 // #include <vcruntime.h>
 
-constexpr static int vector_size = 0xFF ;
-static char buffer[0xFF] = { '?' };
+constexpr static int vector_size = 0xFFF ;
+static char buffer[vector_size] = { '?' };
 ///-----------------------------------------------
 /// driver driving vector types instance from bellow
 /// for a good hammering we pass and return by value
@@ -20,18 +20,72 @@ template<
 	hammer_of_thor
 	(middleman_remover remover_, VectorElementType_ const& default_element, size_t N)
 {
-	_ASSERTE(N >= vector_size);
+	_ASSERTE(N == vector_size);
 
 	VectorType_ vector_;
+
 	for (int k = 0; k < N; ++k)
 		vector_.push_back(default_element);
+
 	for (int k = 0; k < N / 4; ++k)
-		remover_(vector_);
+		// arg by value, return by value
+		vector_ = remover_(vector_);
+
 	return vector_;
 }
+
+///-----------------------------------------------
+#include <vector>
+#include <string>
+
+namespace ms_stl_sampling {
+
+	using std::vector;
+	using std::string;
+
+	UBENCH(vector_of_0xFFF_strings_each_0xFFF_chars, ms_stl)
+	{
+		auto rezult_v_ =
+		hammer_of_thor< std::vector<std::string> >(
+			[](auto v_)
+			{
+				v_.erase(v_.begin() + (v_.size() / 2));
+				return v_;
+			}
+			, std::string{ buffer }
+			, vector_size
+			);
+	}
+} // namespace ms_stl_sampling 
+
+///-----------------------------------------------
+#if __has_include(<EASTL/vector.h>)
+	/// EASTL2020 DBJ version with "better" allocator design
+#include   <EASTL/vector.h>
+#include   <EASTL/string.h>
+namespace EASTL_sampling {
+
+	UBENCH(vector_of_0xFFF_strings_each_0xFFF_chars, eastl)
+	{
+		auto rezult_v_ =
+			hammer_of_thor<eastl::vector<eastl::string> >(
+			[](auto v_)
+			{
+				v_.erase(v_.begin() + (v_.size() / 2));
+				return v_;
+			}
+			, eastl::string{ buffer }
+			, vector_size
+			);
+	}
+
+} // namespace EASTL_sampling
+
+#endif // __has_include(EASTL/vector.h)
+
 ///-----------------------------------------------
  // USING_VECTORS_WITH_STD_INTERFACE
-#if NOT_USING_VECTORS_WITH_STD_INTERFACE
+#if USING_VECTORS_WITH_NOT_STD_INTERFACE
 
 #if __has_include(<atlcoll.h>)
 
@@ -64,53 +118,4 @@ namespace atl_sampling {
 
 #endif // __has_include(<atlcoll.h>)
 
-#endif // 0 USING_VECTORS_WITH_STD_INTERFACE
-
-///-----------------------------------------------
-#include <vector>
-#include <string>
-
-namespace ms_stl_sampling {
-
-	using std::vector;
-	using std::string;
-
-	UBENCH(vector_255, ms_stl)
-	{
-		hammer_of_thor< std::vector<std::string> >(
-			[](auto& array_)
-			{
-				// remove the one from the middle
-				// no checks whatsoever 
-				array_.erase(array_.begin() + (array_.size() / 2));
-			}
-			, std::string{ buffer }
-				, vector_size
-				);
-	}
-} // namespace ms_stl_sampling 
-
-///-----------------------------------------------
-#if __has_include(<EASTL/vector.h>)
-	/// EASTL2020 DBJ version with "better" allocator design
-#include   <EASTL/vector.h>
-#include   <EASTL/string.h>
-namespace EASTL_sampling {
-
-	UBENCH(vector_255, eastl)
-	{
-		hammer_of_thor<eastl::vector<eastl::string> >(
-			[](auto& array_)
-			{
-				// remove the one from the middle
-				// no checks whatsoever 
-				array_.erase(array_.begin() + (array_.size() / 2));
-			}
-			, eastl::string{ buffer }
-				, vector_size
-				);
-	}
-
-} // namespace EASTL_sampling
-
-#endif // __has_include(EASTL/vector.h)
+#endif // USING_VECTORS_WITH_NOT_STD_INTERFACE

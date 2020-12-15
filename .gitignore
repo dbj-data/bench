@@ -1,7 +1,10 @@
 .vs
 *.exe
+*.lib
+*.iobj
 *.obj
 *.pdb
+*.ipdb
 *.ilk
 *.user
 *.filters
