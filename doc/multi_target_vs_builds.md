@@ -1,17 +1,17 @@
 
 # Multi Target Builds
 
-This has to follow the hosting app builds. This is static library.
+Visual Studio 2019 i used.
 
 ## Directory structure
 
-All building artefacts are under the build folder. Thus they are decoupled from the code.
+For each project all building artefacts are under the build folder. Thus they are decoupled from the code.
 
 Publich headers are "in the front", in the library top folder.
 
 When building the hosting app, you reference these projects, VStudio picks the right lib files. 
 
-This is one-to-one. Hosting app is built following the same paradigm as in here. One hoting app build link one li build from here.
+This is one-to-one. Hosting app is built following the same paradigm as in here. One hoting app build link one build from here.
 
 ## Main build attributes
 

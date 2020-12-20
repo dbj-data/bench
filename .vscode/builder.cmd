@@ -24,7 +24,7 @@
 @REM                            SEH code uses __try/__except/__finally
 @REM %5 -- RELEASE or DEBUG --  guess what is this for
 @REM
-@REM each build attributes are
+@REM common build attributes are
 @REM
 @REM - build platform: win10 pro x64
 @REM - UNICODE
