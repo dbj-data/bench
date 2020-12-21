@@ -4,18 +4,19 @@
 :: any argument will make exe's and pdb's be 
 :: and Visual Stuydio artefacts deleted, too
 ::
-@echo off
-@del /s *.obj>nul
-@del /s *.ilk>nul
-@IF [%1] == [] GOTO script_exit
-@del /s *.exe>nul
-@del /s *.pdb>nul
+@echo on
+@setlocal
+FOR /F "tokens=*" %%G IN ('dir /b /s *.obj') DO del /q %%G
+FOR /F "tokens=*" %%G IN ('dir /b /s *.ilk') DO del /q %%G
 
 :: remove the VStudio artefacts
-@del /s *.filters>nul
-@del /s *.user>nul
+FOR /F "tokens=*" %%G IN ('dir /b /s *.filters') DO del /q %%G
+FOR /F "tokens=*" %%G IN ('dir /b /s *.user') DO del /q %%G
 
-FOR /F "tokens=*" %%G IN ('dir /b /s x64') DO @rd /s /q %%G
-FOR /F "tokens=*" %%G IN ('dir /b /s .vs') DO @rd /s /q %%G
+@IF [%1] == [] GOTO script_exit
+
+:: remove the VStudio folders artefacts
+FOR /F "tokens=*" %%G IN ('dir /b /s x64') DO rd /s /q %%G
+FOR /F "tokens=*" %%G IN ('dir /a:h /b /s .vs') DO rd /s /q %%G
 
 :script_exit
