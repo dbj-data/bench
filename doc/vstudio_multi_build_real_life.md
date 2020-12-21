@@ -1,16 +1,28 @@
 
-We shall be using the "dbj-bench" project as the real life use-case
+<h1>Multi Solution Multi Target Visual Studio Every Day</h1>
 
+- [1. Folder project structure](#1-folder-project-structure)
+  - [1.1. Each project has one "build" folder](#11-each-project-has-one-build-folder)
+  - [1.2. Build folder structure](#12-build-folder-structure)
+    - [1.2.1. Build folder has "Target" folders](#121-build-folder-has-target-folders)
+    - [1.2.2. Build folder has one "shared code" project](#122-build-folder-has-one-shared-code-project)
+  - [1.3. Target Folder structure](#13-target-folder-structure)
+  - [Each lib is a multi-target build composed  by this same principles](#each-lib-is-a-multi-target-build-composed--by-this-same-principles)
+
+# 1. Folder project structure
+
+We shall be using the "dbj-bench" project as the real life use-case. Right now you are inside that project.
+
+- "Project" is set of folders and files
 - One project is mapped to one or more Visual Studio Solutions
+- Project is built into few executables. They differ  by attributes of build. Code used is the same.
+- "Build Target" is grouping of build attributes.
 - One build target is mapped to one Visual Studio Solution
   - The term is: "**Solution Targe**t"
 - Solution Target is made of one or more projects and one "shared project"
   - "shared project" is the single place where the source code is
 - Other projects are **libraries**.
   - Referenced to the "Solution Target" using VStudio project referencing mechanism
-
-
-# 1. Folder project structure
 
 
 ## 1.1. Each project has one "build" folder
@@ -43,10 +55,12 @@ Target attribites
 
 Target Folder does contain "Target Solution" and the base Visual Studio project.
 
+Above we see two targets. There can be many targets.
+
 ### 1.2.2. Build folder has one "shared code" project 
 
 Project source code is in this project. Nowhere else.
-This project is reference to all the "Solution Targets" for this project.
+This project is referenced to all the "Solution Targets" for this project.
 
 **Use "Shared Projects" to decouple code from usual projects**
 
@@ -55,6 +69,10 @@ That is how to reuse more effectively same source for many Solution Targets aka 
 - This is single place where source code is added or removed. 
 - Do not add source code anywhere else but in "shared code" projects
 - Visual Studio [Shared Projects](https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/shared-projects?tabs=windows) 
+
+ps: sometimes VS IDE "does not want" to reference the "Shared Project", Simple VS IDE restart should be enough. But sometimes one has to dive into the `.sln` file and add the shared project manually.
+
+To involve it in the build it is enough to reference the Shared Project in the project. To edit the code in there one has to add it as the existing project in the current solution.
 
 ## 1.3. Target Folder structure
 

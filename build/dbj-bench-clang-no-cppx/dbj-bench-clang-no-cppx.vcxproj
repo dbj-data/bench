@@ -47,9 +47,8 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
-    <Import Project="..\bench_console.vcxitems" Label="Shared" />
-    <Import Project="..\..\..\..\..\..\include\dbj\build\dbj-code.vcxitems" Label="Shared" />
     <Import Project="..\..\dbj-fwk\build\dbj-fwk-code.vcxitems" Label="Shared" />
+    <Import Project="..\bench_console.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

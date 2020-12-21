@@ -1,15 +1,26 @@
+![bench](media/bench.png)
+
 <h1>dbj*bench</h1>
 (c) 2020 by dbj@dbj.org 
+
+- [1. Releases](#1-releases)
+- [2. Benchmarking. No Guessing please.](#2-benchmarking-no-guessing-please)
+  - [2.1. Principles](#21-principles)
+    - [2.1.1. Architecture](#211-architecture)
+    - [2.1.2. serverside.systems bench](#212-serversidesystems-bench)
+    - [2.1.3. What does "serverside" mean?](#213-what-does-serverside-mean)
+  - [2.2. PS](#22-ps)
+
+# 1. Releases
+
+- [2.0.0](https://github.com/dbj-data/dbj-bench/releases)
 
 [Contributions](CODE_OF_CONDUCT.md) and [contributors](CONTRIBUTING.md) are wellcome.
 
 Please check the [license](https://dbj.org/license_dbj/)
 
-![bench](media/bench.png)
 
-There are some more readme's scattered bellow this one; please use them.
-
-# Benchmarking. No Guessing please.
+# 2. Benchmarking. No Guessing please.
 
 Building of this might look overengineered or plain ridiculous. 
 
@@ -19,13 +30,13 @@ How is Visual Studio actually used is [explained here](doc/multi_target_vs_build
 
 ANd fianlly how is all that [applied in here](doc/vstudio_multi_build_real_life.md).
 
-## Principles
+## 2.1. Principles
 
-### Architecture
+### 2.1.1. Architecture
 
 Architecture rules. No architecture no success.
 
-### serverside.systems bench
+### 2.1.2. serverside.systems bench
 
 - Using sheredom ubench and utest. Which are both modified.
 - not using Cmake, nmake, msbuild or any other building system (bazel is rather good) 
@@ -42,7 +53,7 @@ Architecture rules. No architecture no success.
     - not using .clang-format with VS  because it is incredibly slow?
     - not using vcpkg because it is a good idea over-engineered (as many other MSFT projects are)
   
-### What does "serverside" mean?
+### 2.1.3. What does "serverside" mean?
 
 - Windows only
     - no GUI
@@ -65,7 +76,7 @@ Architecture rules. No architecture no success.
     - comdef.h and "direct COM" based clients are (still) part of the cl.exe
         - much cleaner com clients
 
-## PS
+## 2.2. PS
 
 Why this `dbj` prefix everywhere, ego trip? No it is not an "ego trip". It is just the easy way to have unique names on the GitHub. That is the only reason.
 
