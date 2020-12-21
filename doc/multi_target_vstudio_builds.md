@@ -1,7 +1,7 @@
 
 # Multi Target Builds
 
-Visual Studio 2019 i used.
+Visual Studio 2019 is used. No CMake.
 
 ## Directory structure
 
@@ -15,14 +15,22 @@ This is one-to-one. Hosting app is built following the same paradigm as in here.
 
 ## Main build attributes
 
-1. Compiler: clang-cl  or cl
+1. Compilers: clang-cl  or cl
+   1. Why: clang-cl because it allows for powerfull mix and match of C11/C17 code with C++ code in one cpp file.
 2. C++ exceptions or no C++ exceptions
+   1. Why: no C++ exceptions, because executables are smaller and faster. Also. exceptions are not convieved for local error handling. You calling `fopen()` will never involve exceptions. 
+   2. no this can not be avoided by using std:: lib always
+      1. std lib throws very few exceptions 
+      2. MS STL can be build and does run very fast without C++ exceptions 
+         1. It uses SEH in that case
 
 ## Common to all builds
 
-> On Windows, SEH is always in
+>
+> Fact: On Windows, SEH is always present. It is intrinsic to Windows.
 >
 > Static run-time lib is always used
+> 
 
 | switch | comment
 |--------|-------------
@@ -37,11 +45,11 @@ This is one-to-one. Hosting app is built following the same paradigm as in here.
 
 ### /LTCG aka "Link Time Code Generation" 
 
-Must be set to "No" for clang builds
+Must be set to "No" for clang-cl builds
 
 ### Only x64
 
-32 bit builds are not built.
+32 bit builds are not built at all.
 
 ### EASTL and C++ exceptions
 
@@ -59,7 +67,7 @@ When EASTL has C++ exceptions enabled it even used std::exception and offsprings
 
 ## The core of the stunt
 
-"Shared code"  (VStudio project type) "dbj-eastl-code" collects all the code.
+"Shared code"  (VStudio project type) (for example) "dbj-eastl-code" collects all the code.
 
 All static lib projets reference that one. That is the only place where we add/remove/update the code. That is propagated to the building projects.
 
@@ -83,10 +91,11 @@ Extremely important. There is no tool to make this painless, just the rule:
 
 ## What's the big deal with C++ exceptions?
 
-- They are not invented to be used for local error handling
-  - sometimes called "in place error handling"
-- They make slow code
-- They make big code
+   1. Why: no C++ exceptions, because executables are smaller and faster. 
+   2. exceptions are not concieved for local error handling. You calling `fopen()` will never involve exceptions. 
+      1. no this can not be avoided by using std:: lib always
+      2. std lib throws very few exceptions 
+      3. MS STL can be built and does run very fast without C++ exceptions 
 
  Ben Craig, P1886R0 Error speed benchmarking, http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1886r0.html
 

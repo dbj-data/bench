@@ -11,14 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\dbj--simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj">
+    <ProjectReference Include="..\..\..\..\..\..\include\eastl_dbj\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj">
+      <Project>{58a43ef2-685d-4e7e-865a-8872cae2ed82}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\include\simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj">
       <Project>{ed08b54b-56d4-4073-b6a9-afe2c756368e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\dbj-fwk\build\dbj-fwk-clang-no-cppx\dbj-fwk-clang-no-cppx.vcxproj">
       <Project>{ffc89b0b-f4be-4489-b30b-0d4115a3ebb4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\EASTL2020CORE\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj">
-      <Project>{58a43ef2-685d-4e7e-865a-8872cae2ed82}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -27,6 +27,7 @@
     <ProjectGuid>{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}</ProjectGuid>
     <RootNamespace>dbjbenchclangnocppx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>app-dbj-bench-clang-no-cppx</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -47,6 +48,8 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
     <Import Project="..\bench_console.vcxitems" Label="Shared" />
+    <Import Project="..\..\..\..\..\..\include\dbj\build\dbj-code.vcxitems" Label="Shared" />
+    <Import Project="..\..\dbj-fwk\build\dbj-fwk-code.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -57,13 +60,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\DEVL\GITHUB\serverside.systems\dbj-bench\EASTL2020CORE\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\include\eastl_dbj\include;D:\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\DEVL\GITHUB\serverside.systems\dbj-bench\EASTL2020CORE\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\include\eastl_dbj\include;D:\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>

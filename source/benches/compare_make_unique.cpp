@@ -4,7 +4,7 @@ compare EASTL, STD and DBJ make_unique on native arrays
 #include "../ubut/ubench.h"
 
 #include <memory>
-#include <EASTL/unique_ptr.h>
+#include <eastl_dbj/include/EASTL/unique_ptr.h>
 
 #pragma warning( push )
 #pragma warning( disable : 4267 )

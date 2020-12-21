@@ -6,7 +6,7 @@
 
 // NOTE: for dbj simplelog to use your macros
 #define DBJ_SIMPLELOG_USER_DEFINED_MACRO_NAMES
-#include "../dbj--simplelog/dbj_simple_log.h"
+#include <simplelog/dbj_simple_log.h>
 
 #define UBUT_TRACE(...) dbj_log_trace(__VA_ARGS__)
 #define UBUT_DEBUG(...) dbj_log_debug(__VA_ARGS__)

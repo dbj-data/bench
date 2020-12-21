@@ -9,11 +9,15 @@ Please check the [license](https://dbj.org/license_dbj/)
 
 There are some more readme's scattered bellow this one; please use them.
 
-Building of this might look ridiculous. We do not use CMake deliberately. It is an overkill. We use Visual Studio. Why do **you** need all this numerous build targets is [explained here](doc/you_do_not_want_to_gues.md).
+# Benchmarking. No Guessing please.
+
+Building of this might look overengineered or plain ridiculous. 
+
+Why would **you** need numerous build targets is [explained here](doc/no_guessing.md).
 
 How is Visual Studio actually used is [explained here](doc/multi_target_vs_builds.md).
 
-That all works but is still W.I.P.
+ANd fianlly how is all that [applied in here](doc/vstudio_multi_build_real_life.md).
 
 ## Principles
 
@@ -63,11 +67,11 @@ Architecture rules. No architecture no success.
 
 ## PS
 
-Why this `dbj` prefix everywhere, ego trip? No. It is just the easy way to have unique names on the GitHub. That is the only reason.
+Why this `dbj` prefix everywhere, ego trip? No it is not an "ego trip". It is just the easy way to have unique names on the GitHub. That is the only reason.
 
 ![dbj-bench-logo](./media/dbj-bench%20128x128.png)
 
 DBJ*BENCH&trade;
 
-[Serverside Systems](https://github.com/dbj-data) is part of [dbj.systems](.https://dbj.systems) group.
+[Serverside Systems](https://github.com/dbj-data) is part of the [dbj.systems](https://dbj.systems) group.
 
