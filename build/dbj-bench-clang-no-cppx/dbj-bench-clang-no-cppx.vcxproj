@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\include\eastl_dbj\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj">
+    <ProjectReference Include="..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj">
       <Project>{58a43ef2-685d-4e7e-865a-8872cae2ed82}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\include\simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj">
+    <ProjectReference Include="..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj">
       <Project>{ed08b54b-56d4-4073-b6a9-afe2c756368e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\dbj-fwk\build\dbj-fwk-clang-no-cppx\dbj-fwk-clang-no-cppx.vcxproj">
@@ -47,7 +47,6 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
-    <Import Project="..\..\dbj-fwk\build\dbj-fwk-code.vcxitems" Label="Shared" />
     <Import Project="..\bench_console.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -59,13 +58,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\include\eastl_dbj\include;D:\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\machine_wide\eastl_dbj\include;D:\machine_wide;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\include\eastl_dbj\include;D:\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\machine_wide\eastl_dbj\include;D:\machine_wide;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
@@ -81,6 +80,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <AdditionalOptions>/D_HAS_EXCEPTIONS=0</AdditionalOptions>
       <PrecompiledHeaderFile />
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +102,7 @@
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
       <AdditionalOptions>/D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

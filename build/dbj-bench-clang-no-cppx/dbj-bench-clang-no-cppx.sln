@@ -5,25 +5,27 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app-dbj-bench-clang-no-cppx", "dbj-bench-clang-no-cppx.vcxproj", "{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-eastl-clang-no-cppx", "..\..\..\..\..\..\include\eastl_dbj\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj", "{58A43EF2-685D-4E7E-865A-8872CAE2ED82}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-simplelog-clang-no-cppx", "..\..\..\..\..\..\include\simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj", "{ED08B54B-56D4-4073-B6A9-AFE2C756368E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-fwk-clang-no-cppx", "..\..\dbj-fwk\build\dbj-fwk-clang-no-cppx\dbj-fwk-clang-no-cppx.vcxproj", "{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-fwk", "..\..\dbj-fwk\build\dbj-fwk-code.vcxitems", "{505DA675-29A6-4BFB-9F4E-C4A4F49A0AFF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-bench-console", "..\bench_console.vcxitems", "{129DAD01-6617-456D-B46F-6C890C73405B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-eastl-clang-no-cppx", "..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-clang-no-cppx\dbj-eastl-clang-no-cppx.vcxproj", "{58A43EF2-685D-4E7E-865A-8872CAE2ED82}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-simplelog-clang-no-cppx", "..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\dbj-simplelog-clang-no-cppx\dbj-simplelog-clang-no-cppx.vcxproj", "{ED08B54B-56D4-4073-B6A9-AFE2C756368E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-simplelog", "..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems", "{199C3113-E09D-443A-9446-35C8A2F92AC2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-fwk", "..\..\dbj-fwk\build\code-dbj-fwk.vcxitems", "{505DA675-29A6-4BFB-9F4E-C4A4F49A0AFF}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\bench_console.vcxitems*{129dad01-6617-456d-b46f-6c890c73405b}*SharedItemsImports = 9
-		..\..\dbj-fwk\build\dbj-fwk-code.vcxitems*{505da675-29a6-4bfb-9f4e-c4a4f49a0aff}*SharedItemsImports = 9
-		..\..\..\..\..\..\include\eastl_dbj\build\dbj-eastl-code.vcxitems*{58a43ef2-685d-4e7e-865a-8872cae2ed82}*SharedItemsImports = 4
+		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{199c3113-e09d-443a-9446-35c8a2f92ac2}*SharedItemsImports = 9
+		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{505da675-29a6-4bfb-9f4e-c4a4f49a0aff}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems*{58a43ef2-685d-4e7e-865a-8872cae2ed82}*SharedItemsImports = 4
 		..\bench_console.vcxitems*{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}*SharedItemsImports = 4
-		..\..\dbj-fwk\build\dbj-fwk-code.vcxitems*{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}*SharedItemsImports = 4
-		..\..\..\..\..\..\include\simplelog\build\dbj-simplelog-code.vcxitems*{ed08b54b-56d4-4073-b6a9-afe2c756368e}*SharedItemsImports = 4
-		..\..\dbj-fwk\build\dbj-fwk-code.vcxitems*{ffc89b0b-f4be-4489-b30b-0d4115a3ebb4}*SharedItemsImports = 4
+		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{ed08b54b-56d4-4073-b6a9-afe2c756368e}*SharedItemsImports = 4
+		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{ffc89b0b-f4be-4489-b30b-0d4115a3ebb4}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -38,6 +40,14 @@ Global
 		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Release|x64.ActiveCfg = Release|x64
 		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Release|x64.Build.0 = Release|x64
 		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Release|x86.ActiveCfg = Release|x64
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x64.ActiveCfg = Debug|x64
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x64.Build.0 = Debug|x64
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x86.ActiveCfg = Debug|Win32
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x86.Build.0 = Debug|Win32
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x64.ActiveCfg = Release|x64
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x64.Build.0 = Release|x64
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x86.ActiveCfg = Release|Win32
+		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x86.Build.0 = Release|Win32
 		{58A43EF2-685D-4E7E-865A-8872CAE2ED82}.Debug|x64.ActiveCfg = Debug|x64
 		{58A43EF2-685D-4E7E-865A-8872CAE2ED82}.Debug|x64.Build.0 = Debug|x64
 		{58A43EF2-685D-4E7E-865A-8872CAE2ED82}.Debug|x86.ActiveCfg = Debug|Win32
@@ -54,14 +64,6 @@ Global
 		{ED08B54B-56D4-4073-B6A9-AFE2C756368E}.Release|x64.Build.0 = Release|x64
 		{ED08B54B-56D4-4073-B6A9-AFE2C756368E}.Release|x86.ActiveCfg = Release|Win32
 		{ED08B54B-56D4-4073-B6A9-AFE2C756368E}.Release|x86.Build.0 = Release|Win32
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x64.ActiveCfg = Debug|x64
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x64.Build.0 = Debug|x64
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x86.ActiveCfg = Debug|Win32
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Debug|x86.Build.0 = Debug|Win32
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x64.ActiveCfg = Release|x64
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x64.Build.0 = Release|x64
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x86.ActiveCfg = Release|Win32
-		{FFC89B0B-F4BE-4489-B30B-0D4115A3EBB4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
