@@ -17,12 +17,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-simplelog", "..\..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-fwk", "..\..\dbj-fwk\build\code-dbj-fwk.vcxitems", "{505DA675-29A6-4BFB-9F4E-C4A4F49A0AFF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj", "..\..\..\..\..\..\MACHINE_WIDE\dbj\build\code-dbj.vcxitems", "{98A4B3CC-2A84-42B6-8CA5-7BD14B598031}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\bench_console.vcxitems*{129dad01-6617-456d-b46f-6c890c73405b}*SharedItemsImports = 9
 		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{199c3113-e09d-443a-9446-35c8a2f92ac2}*SharedItemsImports = 9
 		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{505da675-29a6-4bfb-9f4e-c4a4f49a0aff}*SharedItemsImports = 9
 		..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems*{58a43ef2-685d-4e7e-865a-8872cae2ed82}*SharedItemsImports = 4
+		..\..\..\..\..\..\MACHINE_WIDE\dbj\build\code-dbj.vcxitems*{98a4b3cc-2a84-42b6-8ca5-7bd14b598031}*SharedItemsImports = 9
 		..\bench_console.vcxitems*{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}*SharedItemsImports = 4
 		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{ed08b54b-56d4-4073-b6a9-afe2c756368e}*SharedItemsImports = 4
 		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{ffc89b0b-f4be-4489-b30b-0d4115a3ebb4}*SharedItemsImports = 4

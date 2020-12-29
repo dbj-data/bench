@@ -103,6 +103,8 @@
       <DebugInformationFormat>None</DebugInformationFormat>
       <AdditionalOptions>/D_HAS_EXCEPTIONS=0</AdditionalOptions>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <BrowseInformationFile />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,4 +117,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\adhoc\adhoc.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\adhoc\uthash_utarray_unique_strings_collections.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+  </ItemGroup>
 </Project>

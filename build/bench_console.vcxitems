@@ -15,7 +15,12 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\adhoc\adhoc.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\adhoc\uthash_utarray_unique_strings_collections.c">
+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</BufferSecurityCheck>
+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BufferSecurityCheck>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\adhoc\dbj_vla.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\allocators.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\kalloc\kalloc.c" />
@@ -32,5 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\uthash_cpp_usage.h" />
   </ItemGroup>
 </Project>

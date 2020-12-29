@@ -1,11 +1,7 @@
 #include "../../ubut/ubench.h"
 #include "../../dbj-fwk/wallofmacros.h"
 
-#define  SPECIMEN "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
-                  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
-                  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
-                  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
-                  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
+#define _CRT_SECURE_NO_WARNINGS 1
 
 #include <unordered_map>
 #include <string>
@@ -13,44 +9,116 @@
 #include <functional>
 #include <dbj/dbj_string_pointers.h>  // dbj::uniq_string_pointers 
 
-constexpr auto storage_size_ = 0xFFFF ;
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+extern "C" {
+
+	struct string_ {
+		size_t size;
+		char data[0xFF];
+	};
+
+#if 0
+	/* https://stackoverflow.com/a/17554531 */
+	static unsigned int rand_interval(unsigned int min, unsigned int max)
+	{
+		int r;
+		const unsigned int range = 1 + max - min;
+		const unsigned int buckets = RAND_MAX / range;
+		const unsigned int limit = buckets * range;
+
+		do
+		{
+			r = rand();
+		} while (r >= limit);
+
+		return min + (r / buckets);
+	}
+
+	inline char random_char() {
+		return (char)rand_interval(64, 126);
+	}
+
+	static struct string_  make_random_string(size_t size_arg_)
+	{
+		struct string_ retval = { 0, {0} };
+		assert(size_arg_ > 0);
+		srand(time(0));
+		retval.size = size_arg_ + 1;
+		// retval.data = (char*)calloc((size_arg_ + 1), sizeof(char) );
+		// assert(retval.data);
+
+		for (size_t k = 0U; k < size_arg_; ++k)
+			retval.data[k] = random_char();
+
+		retval.data[size_arg_] = '\0';
+		return retval;
+	}
+#endif // 0
+
+	static struct string_  counter_to_string(size_t size_arg_)
+	{
+		struct string_ retval = { 0, {0} };
+
+		// warning: 0 produces "" (that has lenght 1), aka empty string
+		size_arg_ += 1;
+
+		// retval.data = (char*)calloc(retval.size, sizeof(char));
+		(void)snprintf(retval.data, 0xFF, "%zu", size_arg_);
+		return retval;
+	}
+}
+
+constexpr auto storage_size_ = 0xFF;
 /*
 * driver requires string storage to be visible in the scope
 * bot appender and remover do require
 */
 inline auto driver = [](auto appender_, auto remover_)
 {
-	for (auto j = 0U; j < 1 ; ++j)
+	for (auto j = 0U; j < 1; ++j)
 	{
 		remover_(
-			appender_(SPECIMEN)
+			// add storage_size_ count of unique strings
+			// and then remove the last one added
+			appender_()
 		);
 	}
 };
 
-using std_hash_table =
-std::unordered_map<  std::size_t, dbj::string_ptr >;
-
-static std_hash_table strings_ht_;
+// ad-hoc usage of std::unordered_map
 
 UBENCH(hashtable_implementation, unordered_map)
 {
+	using std_hash_table =
+		std::unordered_map<  std::size_t, dbj::string_ptr >;
+
+	std_hash_table strings_ht_;
+
 	driver(
 		// appender
-		[](auto strng_) -> size_t {
+		[&](void) -> size_t {
 
 			static size_t hash_ = 0U; //  std::hash< decltype (strng_) >{}(strng_);
 
 			DBJ_REPEAT(storage_size_) {
+
+				struct string_ string_ = counter_to_string(dbj_repeat_counter_);
+
+				// debug time mem check
+				assert('*' == (string_.data[string_.size / 2] = '*'));
+
 				strings_ht_.emplace(
-					hash_ = std::hash< decltype (strng_) >{}(strng_),
-					dbj::string_ptr_make(strng_)
+					hash_ = std::hash< const char* >{}(string_.data),
+					dbj::string_ptr_make(string_.data)
 				);
 			}
 			return hash_;
 		},
 		// remover
-			[](size_t hash_) {
+			[&](size_t hash_) {
 
 			for (auto it = strings_ht_.begin(); it != strings_ht_.end(); ++it) {
 				if (it->first == hash_) {
@@ -62,55 +130,66 @@ UBENCH(hashtable_implementation, unordered_map)
 		);
 }
 
-static dbj::string_pointers  usstore_;
-
 UBENCH(hashtable_implementation, dbj_string_uniq_ptr)
 {
+	dbj::string_pointers  usstore_;
+
 	driver(
-		[](auto strng_) -> dbj::string_ptr& {
+		// appender
+		[&](void) noexcept -> size_t {
 
-			typename dbj::string_pointers::value_type::value_type  & str_ptr_ 
-				= dbj::string_ptr{} ;
-
-			DBJ_REPEAT(storage_size_) {
-				str_ptr_ =  std::move( assign(usstore_, strng_) ) ;
-			}
-
-			return str_ptr_;
-		},
-		[](dbj::string_ptr& sp_) {
-
-#if 0
-			// calling remove slows things down
-			bool rez_ = remove(usstore_, sp_);
-			assert(rez_);
-#endif
-			auto index_ = 0U;
-			const auto begin_ = usstore_.strings.begin();
-			for (auto&& it_ : usstore_.strings)
+			DBJ_REPEAT(storage_size_)
 			{
-				if (sp_ == it_)
-				{
-					usstore_.strings.erase(begin_ + index_);
-					break;
-				}
-				index_ += 1;
+				struct string_ string_ = counter_to_string(dbj_repeat_counter_);
+				// debug time mem check
+				// assert( '*' == ( string_.data[string_.size / 2] = '*' )  );
+				(void)assign(usstore_, string_.data);
 			}
-#if 0
-			// this is faster than  bool rez_ = remove(usstore_, sp_);
-			// but not as fast as above 
-			DBJ_REMOVE_FIRST_IF(usstore_.strings, [&](dbj::string_ptr const& it_) { return it_ == sp_;  });
-#endif 
-		}
-	);
-	}
+			// return the last one hash id
+			return usstore_.strings.back().H;
+		},
 
-/*
- [----------]Running 2 benchmarks.
- [ RUN      ]hashtable_implementation.unordered_map
- [      OK  ]hashtable_implementation.unordered_map (mean 92.822us, confidence interval +- 0.887484%)
- [ RUN      ]hashtable_implementation.dbj_string_uniq_ptr
- [      OK  ]hashtable_implementation.dbj_string_uniq_ptr (mean 63.020us, confidence interval +- 0.673364%)
- [----------]2 benchmarks ran.
- [  PASSED  ]2 benchmarks.
-*/
+		// remover
+			[&](size_t hash_uid_) noexcept {
+
+			// calling remove slows things down
+			remove(usstore_, hash_uid_);
+		}
+		);
+}
+
+
+#include "uthash_cpp_usage.h"
+
+UBENCH(hashtable_implementation, uthash_cpp_interface)
+{
+	namespace HT = dbj::string_hash_table;
+	typename  HT::type* sht_ = NULL;
+
+	driver(
+		// appender
+		[&](void) noexcept -> int {
+
+			int last_added_{};
+			DBJ_REPEAT(storage_size_)
+			{
+				sht_ = HT::assign(sht_, counter_to_string(dbj_repeat_counter_).data);
+				last_added_ = sht_->uid;
+			}
+			// return the last ones hash id
+			return last_added_;
+		},
+
+		// remover
+			[&](int last_) noexcept {
+			sht_ = HT::remove(sht_, last_);
+		}
+		);
+
+#ifdef _DEBUG
+	auto item_count = HASH_CNT(hh, sht_);
+	DBJ_UNUSED(item_count);
+#endif
+
+	sht_ =  HT::clear(sht_);
+}
