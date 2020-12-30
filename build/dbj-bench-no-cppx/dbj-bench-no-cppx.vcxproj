@@ -67,7 +67,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0 /wd4996 </AdditionalOptions>
       <PrecompiledHeaderFile />
       <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
@@ -90,7 +90,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0 /wd4996</AdditionalOptions>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <BrowseInformationFile />
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
