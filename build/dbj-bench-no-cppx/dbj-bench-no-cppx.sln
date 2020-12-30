@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app-dbj-bench-no-cppx", "dbj-bench-no-cppx.vcxproj", "{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-bench-console", "..\bench_console.vcxitems", "{129DAD01-6617-456D-B46F-6C890C73405B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-simplelog-no-cppx", "..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\dbj-simplelog-no-cppx\dbj-simplelog-no-cppx.vcxproj", "{59E330BB-6EC4-46D1-A74D-03A72E43B931}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-eastl-no-cppx", "..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-no-cppx\dbj-eastl-no-cppx.vcxproj", "{D11157E0-1280-4EEB-B0B4-9594317FE2F0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib-dbj-fwk-no-cppx", "..\..\dbj-fwk\build\dbj-fwk-no-cppx\dbj-fwk-no-cppx.vcxproj", "{7A4E3966-F40B-43A0-8AD9-6FF977F0EEC7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-fwk", "..\..\dbj-fwk\build\code-dbj-fwk.vcxitems", "{505DA675-29A6-4BFB-9F4E-C4A4F49A0AFF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbj-eastl-code", "..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems", "{A598CFF1-7F44-4971-8CCB-0C21E5CF0143}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj-simplelog", "..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems", "{199C3113-E09D-443A-9446-35C8A2F92AC2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "code-dbj", "..\..\..\..\..\..\MACHINE_WIDE\dbj\build\code-dbj.vcxitems", "{98A4B3CC-2A84-42B6-8CA5-7BD14B598031}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\bench_console.vcxitems*{129dad01-6617-456d-b46f-6c890c73405b}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{199c3113-e09d-443a-9446-35c8a2f92ac2}*SharedItemsImports = 9
+		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{505da675-29a6-4bfb-9f4e-c4a4f49a0aff}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{59e330bb-6ec4-46d1-a74d-03a72e43b931}*SharedItemsImports = 4
+		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{7a4e3966-f40b-43a0-8ad9-6ff977f0eec7}*SharedItemsImports = 4
+		..\..\..\..\..\..\MACHINE_WIDE\dbj\build\code-dbj.vcxitems*{98a4b3cc-2a84-42b6-8ca5-7bd14b598031}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems*{a598cff1-7f44-4971-8ccb-0c21e5cf0143}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems*{d11157e0-1280-4eeb-b0b4-9594317fe2f0}*SharedItemsImports = 4
+		..\bench_console.vcxitems*{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Debug|x64.ActiveCfg = Debug|x64
+		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Debug|x64.Build.0 = Debug|x64
+		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Release|x64.ActiveCfg = Release|x64
+		{D5348DC9-5D71-4E7D-9249-B0B16A2FE692}.Release|x64.Build.0 = Release|x64
+		{59E330BB-6EC4-46D1-A74D-03A72E43B931}.Debug|x64.ActiveCfg = Debug|x64
+		{59E330BB-6EC4-46D1-A74D-03A72E43B931}.Debug|x64.Build.0 = Debug|x64
+		{59E330BB-6EC4-46D1-A74D-03A72E43B931}.Release|x64.ActiveCfg = Release|x64
+		{59E330BB-6EC4-46D1-A74D-03A72E43B931}.Release|x64.Build.0 = Release|x64
+		{D11157E0-1280-4EEB-B0B4-9594317FE2F0}.Debug|x64.ActiveCfg = Debug|x64
+		{D11157E0-1280-4EEB-B0B4-9594317FE2F0}.Debug|x64.Build.0 = Debug|x64
+		{D11157E0-1280-4EEB-B0B4-9594317FE2F0}.Release|x64.ActiveCfg = Release|x64
+		{D11157E0-1280-4EEB-B0B4-9594317FE2F0}.Release|x64.Build.0 = Release|x64
+		{7A4E3966-F40B-43A0-8AD9-6FF977F0EEC7}.Debug|x64.ActiveCfg = Debug|x64
+		{7A4E3966-F40B-43A0-8AD9-6FF977F0EEC7}.Debug|x64.Build.0 = Debug|x64
+		{7A4E3966-F40B-43A0-8AD9-6FF977F0EEC7}.Release|x64.ActiveCfg = Release|x64
+		{7A4E3966-F40B-43A0-8AD9-6FF977F0EEC7}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93027A4F-9F3E-416F-A1D7-23BD057BBD09}
+	EndGlobalSection
+EndGlobal

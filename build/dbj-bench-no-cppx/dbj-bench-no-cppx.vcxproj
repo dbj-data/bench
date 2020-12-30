@@ -10,21 +10,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\include\eastl_dbj\build\dbj-eastl-no-cppx\dbj-eastl-no-cppx.vcxproj">
-      <Project>{d11157e0-1280-4eeb-b0b4-9594317fe2f0}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\include\simplelog\build\dbj-simplelog-no-cppx\dbj-simplelog-no-cppx.vcxproj">
-      <Project>{59e330bb-6ec4-46d1-a74d-03a72e43b931}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\dbj-fwk\build\dbj-fwk-no-cppx\dbj-fwk-no-cppx.vcxproj">
-      <Project>{7a4e3966-f40b-43a0-8ad9-6ff977f0eec7}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6FBAB3C9-2582-4D5C-BA56-40A26D822C8C}</ProjectGuid>
+    <ProjectGuid>{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}</ProjectGuid>
     <RootNamespace>dbjbenchclangnocppx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>app-dbj-bench-no-cppx</ProjectName>
@@ -58,28 +47,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\include\eastl_dbj\include;D:\include;;$(IncludePath)</IncludePath>
+    <IncludePath>D:\machine_wide\eastl_dbj\include;D:\machine_wide;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\include\eastl_dbj\include;D:\include;;$(IncludePath)</IncludePath>
+    <IncludePath>D:\machine_wide\eastl_dbj\include;D:\machine_wide;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>false</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0</AdditionalOptions>
       <PrecompiledHeaderFile />
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,7 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ExceptionHandling>false</ExceptionHandling>
@@ -100,7 +90,10 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <AdditionalOptions>/D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0</AdditionalOptions>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <BrowseInformationFile />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,4 +106,23 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\adhoc\adhoc.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\adhoc\uthash_utarray_unique_strings_collections.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-no-cppx\dbj-eastl-no-cppx.vcxproj">
+      <Project>{d11157e0-1280-4eeb-b0b4-9594317fe2f0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\dbj-simplelog-no-cppx\dbj-simplelog-no-cppx.vcxproj">
+      <Project>{59e330bb-6ec4-46d1-a74d-03a72e43b931}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\dbj-fwk\build\dbj-fwk-no-cppx\dbj-fwk-no-cppx.vcxproj">
+      <Project>{7a4e3966-f40b-43a0-8ad9-6ff977f0eec7}</Project>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

@@ -90,7 +90,7 @@ inline auto driver = [](auto appender_, auto remover_)
 
 // ad-hoc usage of std::unordered_map
 
-UBENCH(hashtable_implementation, unordered_map)
+UBENCH(hashtable, unordered_map)
 {
 	using std_hash_table =
 		std::unordered_map<  std::size_t, dbj::string_ptr >;
@@ -130,7 +130,7 @@ UBENCH(hashtable_implementation, unordered_map)
 		);
 }
 
-UBENCH(hashtable_implementation, dbj_string_uniq_ptr)
+UBENCH(hashtable, dbj_string_uniq_ptr)
 {
 	dbj::string_pointers  usstore_;
 
@@ -161,7 +161,7 @@ UBENCH(hashtable_implementation, dbj_string_uniq_ptr)
 
 #include "uthash_cpp_usage.h"
 
-UBENCH(hashtable_implementation, uthash_cpp_interface)
+UBENCH(hashtable, uthash_cpp_interface)
 {
 	namespace HT = dbj::string_hash_table;
 	typename  HT::type* sht_ = NULL;

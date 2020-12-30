@@ -178,8 +178,9 @@ static int test_()
 
 UBENCH( metastate, simplesample) 
 {
-        // test "tries" until city is found
+        // test "tries" times until city is found
         int tries = test_();
+        DBJ_UNUSED(tries);
 }
 
 /* ---------------------------------------------------------- */

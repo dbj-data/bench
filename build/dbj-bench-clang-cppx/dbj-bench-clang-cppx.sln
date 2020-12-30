@@ -28,6 +28,7 @@ Global
 		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{16ddde38-7db4-4d2a-92a5-98569575d0a2}*SharedItemsImports = 4
 		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{199c3113-e09d-443a-9446-35c8a2f92ac2}*SharedItemsImports = 9
 		..\..\dbj-fwk\build\code-dbj-fwk.vcxitems*{505da675-29a6-4bfb-9f4e-c4a4f49a0aff}*SharedItemsImports = 9
+		..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-code.vcxitems*{673d098f-bc06-41fd-8e9e-cd91501de5a5}*SharedItemsImports = 4
 		..\..\..\..\..\..\MACHINE_WIDE\dbj\build\code-dbj.vcxitems*{98a4b3cc-2a84-42b6-8ca5-7bd14b598031}*SharedItemsImports = 9
 		..\bench_console.vcxitems*{d5348dc9-5d71-4e7d-9249-b0b16a2fe692}*SharedItemsImports = 4
 		..\..\..\..\..\..\MACHINE_WIDE\simplelog\build\code-dbj-simplelog.vcxitems*{d92358e2-96e8-4c9d-ba9c-98423615bb9e}*SharedItemsImports = 4

@@ -124,12 +124,13 @@ namespace string_hash_table
 			if (htn_) return htn_; // found, do not add
 
 			htn_ = (string_ht_node_*)calloc(1, sizeof(string_ht_node_));
+			assert(htn_);
 
-			htn_ = string_ht_node_assign(hash_, next_str_, htn_);
-
-			// second arg is struct member name
-			// not variable name 
-			HASH_ADD_INT(nodes_, uid, htn_);
+			if (htn_) {
+				// second arg is struct member name
+				// not variable name 
+				HASH_ADD_INT(nodes_, uid, string_ht_node_assign(hash_, next_str_, htn_) );
+			}
 			return nodes_;
 		}
 
