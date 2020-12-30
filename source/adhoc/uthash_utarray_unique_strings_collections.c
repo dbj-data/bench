@@ -14,6 +14,7 @@ UBENCH(adhoc, random_words)
 
 #endif // __cplusplus
 
+
 //#ifdef _DEBUG
 //#define HASH_DEBUG = 1
 //#endif // _DEBUG
@@ -29,7 +30,7 @@ struct string_ {
 };
 
 
-UBENCH(hash_table, uthash_primary)
+UBENCH(hash_table, uthash_string_struct)
 {
 	struct string_* strings_ = NULL;
 
@@ -51,6 +52,59 @@ UBENCH(hash_table, uthash_primary)
 	}
 
 	HASH_CLEAR(hh, strings_);
+}
+
+
+enum { my_user_count = 3, name_max_len = 0xF };
+
+struct my_struct {
+	char name[name_max_len];             /* key (string is WITHIN the structure) */
+	int id;
+	UT_hash_handle hh;         /* makes this structure hashable */
+};
+
+static const char* my_names[my_user_count] = { "joe", "bob", "betty" };
+
+UBENCH(hash_table, uthash_string_as_key )
+{
+	struct my_struct* str_, * tmp, * users = NULL;
+
+	for (int k = 0; k < 0xFF; ++k) 
+	{
+		static char name_[name_max_len] = {0};
+		(void)snprintf(name_, name_max_len, "%d", k);
+
+		str_ = NULL;
+			HASH_FIND_STR(users, name_, str_);
+		if (! str_) {
+			str_ = (struct my_struct*)malloc(sizeof * str_);
+			strncpy(str_->name, name_, name_max_len );
+			str_->id = k;
+			HASH_ADD_STR(users, name, str_);
+		}
+	}
+
+#ifdef _DEBUG
+	int count_ = HASH_COUNT(users);
+#endif
+	// remove 
+	HASH_FIND_STR(users, "254", str_);
+	if (str_) {
+		HASH_DEL(users, str_);
+		free(str_);
+	}
+#ifdef _DEBUG
+	count_ = HASH_COUNT(users);
+#endif
+
+	/* free the rest of hash table contents */
+	HASH_ITER(hh, users, str_, tmp) {
+		HASH_DEL(users, str_);
+		free(str_);
+	}
+#ifdef _DEBUG
+	count_ = HASH_COUNT(users);
+#endif
 }
 
 /*
@@ -174,8 +228,6 @@ UBENCH(hash_table, utarray_c_user)
 
 	uniq_string_t* unique_str_ptr_ = NULL;
 
-#ifdef UTARRAY_DBJ_EXTENSIONS
-
 	// DBJ extension
 	// no sort necessary before find and free
 
@@ -186,29 +238,6 @@ UBENCH(hash_table, utarray_c_user)
 	// destructed but not freed
 	// free(unique_str_ptr_);
 	unique_str_ptr_ = NULL;
-
-#else
-	// utarray by default has to be sorted before it is searched
-	// abd that is a killer feature in the sense of
-	// kill it , do not use it
-	utarray_sort(uniq_strings_, intsort);
-
-	// by deault need to make a node to find entry 
-	specimen_->hash = 0xF;
-	specimen_->data = NULL;
-
-	// in this case result must be 15/"15"
-	unique_str_ptr_ = utarray_find(uniq_strings_, specimen_, intsort);
-	// get index of element from pointer
-	int idx_ = utarray_eltidx(uniq_strings_, unique_str_ptr_);
-	// in here hash == data thus 
-	assert(idx_ == atoi(unique_str_ptr_->data));
-
-	// lastly erase it by index
-	// utarray_erase(UT_array *a,int pos,int len)
-	utarray_erase(uniq_strings_, idx_, 1);
-#endif // ! UTARRAY_DBJ_EXTENSIONS
-
 
 	// this is calling utarray_done
 	// so DO NOT free the array elements pointers before !
