@@ -27,6 +27,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\allocators\pullocators.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\compare_make_unique.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\count_ones.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\matias_str_pool.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\metastate_nontrivialsimplesample.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\squareroot.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\unordered_map_or_not.cpp" />

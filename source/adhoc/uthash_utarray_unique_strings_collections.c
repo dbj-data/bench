@@ -112,6 +112,7 @@ UBENCH(hash_table, uthash_string_as_key )
 -----------------------------------------------------------------------------------------------------------
 */
 #include <uthash/utarray.h>
+#include <uthash/uthash.h>
 
 #define UTARRAY_DBJ_EXTENSIONS
 
@@ -127,13 +128,19 @@ UBENCH(hash_table, uthash_string_as_key )
     while ((result_ptr = utarray_next(arr_, result_ptr))) if ( comparator_( needle_value_, result_ptr)  ) break ;\
 	} while (0)
 
+#ifndef NDEBUG
+#define DBJ_VFY(X) do {if (false == (X)) fprintf(stderr, "\nERROR! %s(%d) : %s has failed", __FILE__, __LINE__, #X ); exit(0); } while(0)
+#else // NDEBUG ala release
+#define DBJ_VFY(X) ((void)((X)))
+#endif // NDEBUG
+
 // do not free the element 
 // utarray_free(uniq_strings_); frees the elements
 #undef utarray_erase_element
 #define utarray_erase_element(a,ep_) do {                                     \
   int pos = utarray_eltidx(a, ep_);                                           \
-  assert(pos > -1 );                                                          \
-  assert((a)->i > pos);                                                       \
+  DBJ_VFY(pos > -1 );                                                         \
+  DBJ_VFY((a)->i > pos);                                                      \
   if ((a)->icd.dtor) {                                                        \
       (a)->icd.dtor( ep_);                                                    \
   }                                                                           \
@@ -153,9 +160,15 @@ typedef struct {
 } uniq_string_t;
 
 // utarray_find_if will be passed and using this
-inline bool uniq_string_t_is_equal(int hash_, uniq_string_t* specimen_)
+inline bool uniq_string_t_hash_is_equal(int hash_, uniq_string_t* specimen_)
 {
 	return specimen_->hash == hash_;
+}
+
+// utarray_find_if will be passed and using this
+inline bool uniq_string_t_data_is_equal(const char * needle_, uniq_string_t* specimen_)
+{
+	return ! strcmp( specimen_->data, needle_ );
 }
 
 inline void uniq_string_copy(void* _dst, const void* _src) {
@@ -206,12 +219,20 @@ inline UT_array* populate_strings_array(uniq_string_t specimen_) {
 	for ( int k = 0; k < 0xFF; ++k)
 	{
 		specimen_.hash = k;
+		
 		// there is a copy function used by  uniq_string_t_icd 
 		specimen_.data = strings_to_store[(string_idx_++) % 10 ];
 
+		/* using The Paul Hsieh hash macro 
+		*  from uthash
+		*/
+		HASH_SFH(specimen_.data, strlen(specimen_.data), specimen_.hash);
+		specimen_.hash = abs(specimen_.hash);
+		assert(specimen_.hash > 0);
+
 		// first check if it does exist
 		uniq_string_t* existing_ = NULL ;
-		utarray_find_if(uniq_strings_, existing_, 15, uniq_string_t_is_equal);
+		utarray_find_if(uniq_strings_, existing_, specimen_.hash, uniq_string_t_hash_is_equal);
 
 		if (! existing_)
 			utarray_push_back(uniq_strings_, & specimen_);
@@ -226,18 +247,43 @@ UBENCH(hash_table, utarray_c_user)
 
 	uniq_strings_ = populate_strings_array(specimen_);
 
-	uniq_string_t* unique_str_ptr_ = NULL;
-
 	// DBJ extension
 	// no sort necessary before find and free
+	// get the fourth element
+	uniq_string_t* unique_str_ptr_ = NULL;
 
-	utarray_find_if(uniq_strings_, unique_str_ptr_, 15, uniq_string_t_is_equal);
+	utarray_find_if(uniq_strings_, unique_str_ptr_, "nine", uniq_string_t_data_is_equal);
+
 	// unique_str_ptr_ will point to the result
-	assert(unique_str_ptr_);
-	utarray_erase_element(uniq_strings_, unique_str_ptr_);
-	// destructed but not freed
-	// free(unique_str_ptr_);
-	unique_str_ptr_ = NULL;
+	if (unique_str_ptr_) {
+
+#ifdef _DEBUG
+	size_t pos = utarray_eltidx(uniq_strings_, unique_str_ptr_);
+#endif
+
+	UT_array* a = uniq_strings_;
+	uniq_string_t* ep_ = unique_str_ptr_ ;
+// #define utarray_erase_element(a,ep_) 
+do {                                
+  size_t  pos = utarray_eltidx(a, ep_);  
+  bool b1 = pos > (-1);
+  //DBJ_VFY( sgn(pos) );                                                       
+  //DBJ_VFY((a)->i > pos);                                                    
+  if ((a)->icd.dtor) {                                                      
+      (a)->icd.dtor( ep_);                                                  
+  }                                                                         
+  size_t len = 1;
+  if ((a)->i > ((pos) + (len))) {                                           
+    memmove( ep_, ep_ + 1,     
+            ((a)->i - (int)((pos) + (len))) * (a)->icd.sz);                      
+  }                                                                         
+  (a)->i -= (int)(len);                                                          
+} while (0);
+
+		// destructed but not freed
+		// free(unique_str_ptr_);
+		unique_str_ptr_ = NULL;
+	}
 
 	// this is calling utarray_done
 	// so DO NOT free the array elements pointers before !
