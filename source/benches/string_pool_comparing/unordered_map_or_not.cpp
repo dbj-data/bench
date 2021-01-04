@@ -47,9 +47,9 @@ UBENCH(strpool, unordered_map)
 		);
 }
 
-UBENCH(strpool, dbj_string_uniq_ptr)
+UBENCH(strpool, ustring_uptr)
 {
-	dbj::string_pointers  usstore_;
+	dbj::ustrings  usstore_;
 
 	driver(
 		// appender

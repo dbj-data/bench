@@ -18,19 +18,21 @@ struct uth_string_ {
 	UT_hash_handle hh; /* makes this structure hashable */
 };
 
-// serious cheat ;)
-static struct uth_string_ uth_string_pool[strpool_size + 1] = { {0, {0}} };
-size_t uth_string_pool_walker = 0;
-
-// note for c++ eggheads: we do not use heap, we cheat
 inline struct uth_string_  * uth_string_make( int number_ ) {
-	struct uth_string_ * str_ = & uth_string_pool[(uth_string_pool_walker++) % strpool_size] ;
+	struct uth_string_ * str_ =  (struct uth_string_*)calloc(1, sizeof(struct uth_string_)) ;
 	str_->id = number_;
 	_itoa_s(number_, str_->data, uth_string_data_max_length - 1, 10);
 	return str_;
 }
 
-UBENCH(strpool, uthash_int_struct)
+inline void uth_string_release(struct uth_string_** ustr_ ) {
+	if (*ustr_) {
+		free(*ustr_);
+		*ustr_ = NULL;
+	}
+}
+
+UBENCH(strpool, uthash_int_key_struct)
 {
 	struct uth_string_* strings_ = NULL;
 
@@ -49,8 +51,7 @@ UBENCH(strpool, uthash_int_struct)
 	HASH_FIND_INT(strings_, &k, str_);
 	if (str_) {
 		HASH_DEL(strings_, str_);
-		// must not: free(str_); as it is not made on the heap
-		str_ = NULL;
+		uth_string_release(&str_);
 	}
 
 	HASH_CLEAR(hh, strings_);
@@ -60,8 +61,6 @@ UBENCH(strpool, uthash_int_struct)
 /*
 * store the same struct as above but now "data" is the key member
 */
-
-
 UBENCH(strpool, uthash_string_as_key )
 {
 	struct uth_string_ * str_, * users = NULL;
@@ -85,7 +84,7 @@ UBENCH(strpool, uthash_string_as_key )
 	HASH_FIND_STR(users, "254", str_);
 	if (str_) {
 		HASH_DEL(users, str_);
-		// must not: free(str_); as it is made on stack
+		uth_string_release(&str_);
 	}
 #ifdef _DEBUG
 	count_ = HASH_COUNT(users);
@@ -94,7 +93,7 @@ UBENCH(strpool, uthash_string_as_key )
 	/* free the rest of hash table contents */
 	HASH_ITER(hh, users, str_, tmp) {
 		HASH_DEL(users, str_);
-		// must not: free(str_); as it is made on stack
+		uth_string_release(&str_);
 	}
 #ifdef _DEBUG
 	count_ = HASH_COUNT(users);
@@ -113,7 +112,6 @@ UBENCH(strpool, uthash_string_as_key )
 
 // DBJ extension
 // no sort necessary before find and free
-
 #undef utarray_find_if
 #define utarray_find_if(arr_, result_ptr, needle_value_ , comparator_ ) \
 	do {\
@@ -123,7 +121,15 @@ UBENCH(strpool, uthash_string_as_key )
 
 // do not free the element 
 // utarray_free(uniq_strings_); frees the elements
-
+#undef utarray_erase_element
+#define utarray_erase_element(arr_,elm_ptr_) \
+do { \
+  size_t  pos = utarray_eltidx(arr_, elm_ptr_), len = 1;  \
+  if ((arr_)->icd.dtor) { (arr_)->icd.dtor( elm_ptr_); } \
+  if ((arr_)->i > ((pos) + (len))) \
+	memmove( elm_ptr_, elm_ptr_ + 1, ((arr_)->i - (int)((pos) + (len))) * (arr_)->icd.sz);\
+  (arr_)->i -= (int)(len);\
+} while (0)
 
 #endif // UTARRAY_DBJ_EXTENSIONS
 
@@ -154,34 +160,16 @@ inline void uniq_string_copy(void* _dst, const void* _src) {
 }
 
 inline void uniq_string_dtor(void* _elt) {
-	struct uth_string_* elt = (struct uth_string_*)_elt;
-	elt->id = 0;
-	// remember: no heap allocation used
-	elt->data[0] = '\0';
+	struct uth_string_* uts_ = _elt ;
+	uts_->id = 0;
+	uts_->data[0] = '\0';
 }
-
-//inline void intchar_print(UT_array* uniq_strings_) {
-//
-//	uth_string_* unique_str_ptr_ = NULL;
-//
-//	while ((unique_str_ptr_ = (uth_string_*)utarray_next(uniq_strings_, unique_str_ptr_))) {
-//		printf("%d %s\n", unique_str_ptr_->hash, (unique_str_ptr_->data ? unique_str_ptr_->data : "null"));
-//	}
-//}
-
-inline int intsort(const void* a, const void* b) {
-	struct uth_string_ unique_str_a = *(const struct uth_string_*)a;
-	struct uth_string_ unique_str_b = *(const struct uth_string_*)b;
-	int _a = unique_str_a.id;
-	int _b = unique_str_b.id;
-	return (_a < _b) ? -1 : (_a > _b);
-}
-
-UT_array* uniq_strings_ = NULL;
 
 UT_icd uniq_string_t_icd = { sizeof(struct uth_string_), NULL, uniq_string_copy, uniq_string_dtor };
 
 inline UT_array* populate_strings_array(void) {
+
+	UT_array* uniq_strings_ = NULL;
 
 	utarray_new(uniq_strings_, &uniq_string_t_icd); // mandatory init
 
@@ -194,9 +182,11 @@ inline UT_array* populate_strings_array(void) {
 		/* using The Paul Hsieh hash macro 
 		*  from uthash
 		*/
-		HASH_SFH(specimen_->data, strlen(specimen_->data), specimen_->id);
-		specimen_->id = abs(specimen_->id);
-		assert(specimen_->id > 0);
+		//HASH_SFH(specimen_->data, strlen(specimen_->data), specimen_->id);
+		//specimen_->id = abs(specimen_->id);
+		//assert(specimen_->id > 0);
+
+		specimen_->id = paul_hsieh_hash(specimen_->data, strlen(specimen_->data));
 
 		// first check if it does exist
 		struct uth_string_* existing_ = NULL ;
@@ -213,7 +203,7 @@ UBENCH(strpool, utarray_c_user)
 {
 	struct uth_string_ specimen_ = { 0, {0} };
 
-	uniq_strings_ = populate_strings_array();
+	UT_array*  uniq_strings_ = populate_strings_array();
 
 	// DBJ extension
 	// no sort necessary before find and free
@@ -228,21 +218,9 @@ UBENCH(strpool, utarray_c_user)
 	size_t pos = utarray_eltidx(uniq_strings_, unique_str_ptr_);
 #endif
 
-#undef utarray_erase_element
-#define utarray_erase_element(arr_,elm_ptr_) \
-do { \
-  size_t  pos = utarray_eltidx(arr_, elm_ptr_), len = 1;  \
-  if ((arr_)->icd.dtor) { (arr_)->icd.dtor( elm_ptr_); } \
-  if ((arr_)->i > ((pos) + (len))) \
-	memmove( elm_ptr_, elm_ptr_ + 1, ((arr_)->i - (int)((pos) + (len))) * (arr_)->icd.sz);\
-  (arr_)->i -= (int)(len);\
-} while (0)
-
 	  utarray_erase_element(uniq_strings_, unique_str_ptr_);
-
-		// destructed but not freed
-		// free(unique_str_ptr_);
-		unique_str_ptr_ = NULL;
+	  // uth_string_release(&unique_str_ptr_);
+	  unique_str_ptr_ = NULL;
 	}
 
 	// this is calling utarray_done
