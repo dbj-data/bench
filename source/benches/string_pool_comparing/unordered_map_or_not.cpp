@@ -1,3 +1,5 @@
+#include <dbj/dbj_string_pointers.h>  // dbj::uniq_string_pointers 
+
 #include "string_pool_common.h"
 #include "string_pool_common.hpp"
 
@@ -5,7 +7,6 @@
 #include <string>
 #include <string_view>
 #include <functional>
-#include <dbj/dbj_string_pointers.h>  // dbj::uniq_string_pointers 
 
 // ad-hoc usage of std::unordered_map
 
@@ -106,5 +107,5 @@ UBENCH(strpool, uthash_cpp_interface)
 	DBJ_UNUSED(item_count);
 #endif
 
-	sht_ =  HT::clear(sht_);
+	sht_ = HT::clear(sht_);
 }
