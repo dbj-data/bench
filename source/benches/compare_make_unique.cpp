@@ -9,7 +9,7 @@ compare EASTL, STD and DBJ make_unique on native arrays
 #pragma warning( push )
 #pragma warning( disable : 4267 )
 
-// cheating, but EASTL is still almost as fast
+// Evan me "cheating" here, still EASTL is almost as fast
 namespace dbj {
 
     // unique arr ptr

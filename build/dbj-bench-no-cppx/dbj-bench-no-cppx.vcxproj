@@ -113,6 +113,9 @@
     <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\adhoc\uthash_utarray_unique_strings_collections.c">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClCompile Update="D:\DEVL\GITHUB\serverside.systems\dbj-bench\build\..\source\benches\string_pool_comparing\uthash_utarray_strpool.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\MACHINE_WIDE\eastl_dbj\build\dbj-eastl-no-cppx\dbj-eastl-no-cppx.vcxproj">

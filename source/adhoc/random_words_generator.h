@@ -187,4 +187,17 @@ namespace dbj_adhoc
 
 } // namespace dbj_adhoc
 
+#ifdef __cplusplus
+
+#include "random_words_generator.h"
+
+#ifdef UBUT_UBENCH_H_INCLUDED
+UBENCH(adhoc, random_words)
+{
+	dbj_adhoc::test_random_words_generator();
+}
+#endif // UBUT_UBENCH_H_INCLUDED
+
+#endif // __cplusplus
+
 #pragma warning( pop )
