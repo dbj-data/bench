@@ -23,9 +23,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\count_ones.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\metastate_nontrivialsimplesample.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\squareroot.c" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\matias_str_pool.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\unordered_map_or_not.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\uthash_utarray_strpool.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\all_in_one.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling_excpt_overhead.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\program.cpp" />
@@ -33,7 +31,5 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\string_pool_common.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\uthash_cpp_usage.h" />
   </ItemGroup>
 </Project>

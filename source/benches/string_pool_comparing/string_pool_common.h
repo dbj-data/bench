@@ -1,4 +1,7 @@
 #pragma once
+#ifndef STRING_POOL_COMMON_INC
+#define STRING_POOL_COMMON_INC
+
 #undef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS 1
 
@@ -13,12 +16,12 @@
 extern "C" {
 #endif
 
-    /*
-    general utilities
-    move possibly into dbj top level headers
-    */
+	/*
+	general utilities
+	move possibly into dbj top level headers
+	*/
 
-	#pragma region 	Paul Hsieh Fast Hash
+#pragma region 	Paul Hsieh Fast Hash
 
 	// Jenkins is here: http://www.burtleburtle.net/bob/hash/spooky.html
 
@@ -30,86 +33,86 @@ extern "C" {
 		//
 		// super hash function by Paul Hsieh
 		//
-			inline uint32_t paul_hsieh_hash(const char* data, int len) {
-				uint32_t hash = len, tmp;
-				int rem;
-		
-				if (len <= 0 || data == NULL) return 0;
-		
-				rem = len & 3;
-				len >>= 2;
-		
-				/* Main loop */
-				for (; len > 0; len--) {
-					hash += get16bits(data);
-					tmp = (get16bits(data + 2) << 11) ^ hash;
-					hash = (hash << 16) ^ tmp;
-					data += 2 * sizeof(uint16_t);
-					hash += hash >> 11;
-				}
-		
-				/* Handle end cases */
-				switch (rem) {
-				case 3: hash += get16bits(data);
-					hash ^= hash << 16;
-					hash ^= data[sizeof(uint16_t)] << 18;
-					hash += hash >> 11;
-					break;
-				case 2: hash += get16bits(data);
-					hash ^= hash << 11;
-					hash += hash >> 17;
-					break;
-				case 1: hash += *data;
-					hash ^= hash << 10;
-					hash += hash >> 1;
-				}
-		
-				/* Force "avalanching" of final 127 bits */
-				hash ^= hash << 3;
-				hash += hash >> 5;
-				hash ^= hash << 4;
-				hash += hash >> 17;
-				hash ^= hash << 25;
-				hash += hash >> 6;
-		
-				return hash;
-			} // paul_hsieh_hash
-		
-		#undef get16bits
-		#pragma endregion 
+	inline uint32_t paul_hsieh_hash(const char* data, size_t len) {
+		uint32_t hash = (uint32_t)len, tmp;
+		int rem;
+
+		if (len <= 0 || data == NULL) return 0;
+
+		rem = (int)(len & 3);
+		len >>= 2;
+
+		/* Main loop */
+		for (; len > 0; len--) {
+			hash += get16bits(data);
+			tmp = (get16bits(data + 2) << 11) ^ hash;
+			hash = (hash << 16) ^ tmp;
+			data += 2 * sizeof(uint16_t);
+			hash += hash >> 11;
+		}
+
+		/* Handle end cases */
+		switch (rem) {
+		case 3: hash += get16bits(data);
+			hash ^= hash << 16;
+			hash ^= data[sizeof(uint16_t)] << 18;
+			hash += hash >> 11;
+			break;
+		case 2: hash += get16bits(data);
+			hash ^= hash << 11;
+			hash += hash >> 17;
+			break;
+		case 1: hash += *data;
+			hash ^= hash << 10;
+			hash += hash >> 1;
+		}
+
+		/* Force "avalanching" of final 127 bits */
+		hash ^= hash << 3;
+		hash += hash >> 5;
+		hash ^= hash << 4;
+		hash += hash >> 17;
+		hash ^= hash << 25;
+		hash += hash >> 6;
+
+		return hash;
+	} // paul_hsieh_hash
+
+#undef get16bits
+#pragma endregion 
 
 
-	/* https://stackoverflow.com/a/17554531 */
+/* https://stackoverflow.com/a/17554531 */
 	static unsigned int rand_interval(unsigned int min, unsigned int max)
 	{
 		unsigned int r;
 		const unsigned int range = 1 + max - min;
 		const unsigned int buckets = RAND_MAX / range;
 		const unsigned int limit = buckets * range;
-		do	{	r = rand();	} while (r >= limit);
+		do { r = rand(); } while (r >= limit);
 		return min + (r / buckets);
 	}
 
-    /*
-    common things made for comparing various string pooling solutions
-    */
-    enum { common_string_data_size_ = 0xFF };
-    struct string_
-    {
-        size_t size; // the strlen result
-        char data[common_string_data_size_];
-    };
+	/*
+	common things made for comparing various string pooling solutions
+	*/
+	enum { common_string_data_size_ = 0xFF };
+	struct string_
+	{
+		size_t size; // the strlen result
+		char data[common_string_data_size_];
+	};
 
-    static struct string_ counter_to_string(size_t size_arg_)
-    {
-        struct string_ retval = {0, {0}};
-        // warning: 0 produces "" (that has lenght 1), aka empty string
-        // thus we start from 1
-        size_arg_ += 1;
-        (void)snprintf(retval.data, common_string_data_size_, "%zu", size_arg_);
-        retval.size = strlen(retval.data);
-        return retval;
-    }
+	static struct string_ counter_to_string(size_t size_arg_)
+	{
+		struct string_ retval = { 0, {0} };
+		// warning: 0 produces "" (that has lenght 1), aka empty string
+		// thus we start from 1
+		size_arg_ += 1;
+		(void)snprintf(retval.data, common_string_data_size_, "%zu", size_arg_);
+		retval.size = strlen(retval.data);
+		return retval;
+	}
 
 	inline char make_random_char() {
 		return (char)rand_interval(64, 126);
@@ -133,3 +136,4 @@ extern "C" {
 } //	extern "C" 
 #endif
 
+#endif  // STRING_POOL_COMMON_INC

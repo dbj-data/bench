@@ -129,7 +129,7 @@ I have found (for above), vector is faster than list. list has `remove_if()` but
 
 I do sincerely hope I am using uthash and friends as they should be.
 
-I have added UBENCH to Artur's good solutions: https://godbolt.org/z/7PPzjW
+I have added UBENCH to [Artur's good solutions](https://godbolt.org/z/bPh6ss)
 
 
 
