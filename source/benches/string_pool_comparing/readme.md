@@ -14,29 +14,29 @@ Build:
 
 The results using my [bench](https://github.com/dbj-data/dbj-bench) , basically my variant of [sheredom ubench](https://github.com/sheredom/ubench.h).
 ```
-16:50:30 INFO [----------]Running 7 benchmarks.
-16:50:30 INFO [ RUN      ]strpool.gustavson_string_pool
-16:50:30 INFO [      OK  ]strpool.gustavson_string_pool (mean 143.058us, confidence interval +- 1.094559%)
-16:50:30 INFO [ RUN      ]strpool.ustring_uptr
-16:50:30 INFO [      OK  ]strpool.ustring_uptr (mean 80.329us, confidence interval +- 1.478651%)
-16:50:30 INFO [ RUN      ]strpool.uthash_cpp_interface
-16:50:30 INFO [      OK  ]strpool.uthash_cpp_interface (mean 349.834us, confidence interval +- 4.902785%)
-16:50:30 INFO [ RUN      ]strpool.unordered_map
-16:50:30 INFO [      OK  ]strpool.unordered_map (mean 122.813us, confidence interval +- 0.871586%)
-16:50:30 INFO [ RUN      ]strpool.uthash_string_as_key
-16:50:30 INFO [      OK  ]strpool.uthash_string_as_key (mean 88.776us, confidence interval +- 0.658827%)
-16:50:30 INFO [ RUN      ]strpool.utarray_c_user
-16:50:30 INFO [      OK  ]strpool.utarray_c_user (mean 989.476us, confidence interval +- 2.659351%)
-16:50:30 INFO [ RUN      ]strpool.uthash_int_key_struct
-16:50:30 INFO [      OK  ]strpool.uthash_int_key_struct (mean 131.180us, confidence interval +- 8.556799%)
-16:50:30 INFO [----------]7 benchmarks ran.
-16:50:30 INFO [  PASSED  ]7 benchmarks.
+12:30:06 INFO [----------]Running 6 benchmarks.
+12:30:06 INFO [ RUN      ]strpool.uthash_string_pool
+12:30:06 INFO [      OK  ]strpool.uthash_string_pool (mean 1.376us, confidence interval +- 1.402546%)
+12:30:06 INFO [ RUN      ]strpool.dbj_unique_strings
+12:30:06 INFO [      OK  ]strpool.dbj_unique_strings (mean 0.861us, confidence interval +- 3.797177%)
+12:30:06 INFO [ RUN      ]strpool.uthash_using_unique_ptr
+12:30:06 INFO [      OK  ]strpool.uthash_using_unique_ptr (mean 1.255us, confidence interval +- 7.770992%)
+12:30:06 INFO [ RUN      ]strpool.uthash_using_vector
+12:30:07 INFO [      OK  ]strpool.uthash_using_vector (mean 1.326us, confidence interval +- 0.571929%)
+12:30:07 INFO [ RUN      ]strpool.gustavson_string_pool
+12:30:07 INFO [      OK  ]strpool.gustavson_string_pool (mean 162.167us, confidence interval +- 3.682658%)
+12:30:07 INFO [ RUN      ]strpool.set_of_strings
+12:30:07 INFO [      OK  ]strpool.set_of_strings (mean 0.977us, confidence interval +- 2.246290%)
+12:30:07 INFO [----------]6 benchmarks ran.
+12:30:07 INFO [  PASSED  ]6 benchmarks.
 ```
+
+Benchmarks are [here](all_in_one.cpp). Behind a common interface and passed through a common test.
 
 After lengthy attempts I could not find faster solution than `dbj::ustrings` (`ustring_uptr` above).  `uthash` comes close second. But. 
 I have decided to develop in very simple C++, interlaced with a lot o C11/17 constructs. 
 
-C++ is mainly because of RAII abilities. And. Because MS STL has already developed all, I need **without** forcing me to use C++ exceptions, iostreams, `<system_error>`, RTTI and the rest. That is possible because MS STL builds and works wihtout  C++ exceptions present and with keywords try/throw/catch removed from the language. 
+C++ is is use mainly because of RAII abilities. And. Because MS STL has already developed all, I need **without** forcing me to use C++ exceptions, iostreams, `<system_error>`, RTTI and the rest. That is possible because MS STL builds and works wihtout  C++ exceptions present and with keywords try/throw/catch removed from the language. 
 
 [SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160) is used in that mode. SEH + VisualStudio + "minidumps", are giving me very poerfull debugging tools for C++ Windows development. 
 
