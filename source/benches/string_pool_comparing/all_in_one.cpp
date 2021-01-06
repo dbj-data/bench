@@ -17,6 +17,11 @@ struct evergrowing_ustring_pool_interface
 	// this implies engine defauly ctor
 	engine_type engine{};
 
+	// must not insert if already exist
+	// return ahndle to the entry made 
+	// or just found
+	// thus there is no concept of
+	// invalid handle coming out of here
 	handle add(const char* str_) noexcept {
 		return engine.add(str_);
 	}
@@ -58,6 +63,7 @@ struct ustring_pool_interface final : public evergrowing_ustring_pool_interface<
 #include <string>
 #include <string_view>
 #include <set>
+#include <array>
 
 /****************************************************************************************/
 #define STB_DS_IMPLEMENTATION
@@ -109,7 +115,7 @@ struct stb_pool_ final
 	const char* cstring(handle key_) noexcept {
 		item* itm_ = shgetp_null(pool, key_);
 		if (itm_)
-			return itm_->key;
+			return key_;
 		return nullptr;
 	}
 
@@ -191,7 +197,9 @@ struct dbj_ustrings final {
 		return store_t::assign(store_, s);
 	}
 
-	const char* cstring(handle h) const noexcept {
+	//if hanlde is not valid null pointer is returned
+	const char* cstring(handle h) const noexcept
+	{
 		for (auto&& node_ : store_.strings)
 		{
 			if (h == node_.H)
@@ -227,13 +235,18 @@ struct strings_set_pool final {
 		return *it;
 	}
 	const char* cstring(handle h) {
+		// handle should be always valid
+		// as there is no removal
 		return h.data();
 	}
-	bool remove(handle h) {
-		// no sanity check?
-		set_.erase(set_.find(h));
-		return true;
-	}
+	// this is evergrowing pool
+	// no removal
+	//
+	//bool remove(handle h) {
+	//	// no sanity check?
+	//	set_.erase(set_.find(h));
+	//	return true;
+	//}
 	size_t count() const {
 		return set_.size();
 	}
@@ -258,18 +271,22 @@ struct uthash_pool final {
 		return item->data;
 	}
 	const char* cstring(handle h) {
+		// handle should be always valid
+		// as there is no removal
 		return h.data();
 	}
-	bool remove(handle h) noexcept {
-		Item* item{};
-		HASH_FIND_STR(set_, h.data(), item);
-		if (item) {
-			HASH_DEL(set_, item);
-			delete item;
-			return true;
-		}
-		return false;
-	}
+
+	// this is evergrowing pool, no removal please
+	//bool remove(handle h) noexcept {
+	//	Item* item{};
+	//	HASH_FIND_STR(set_, h.data(), item);
+	//	if (item) {
+	//		HASH_DEL(set_, item);
+	//		delete item;
+	//		return true;
+	//	}
+	//	return false;
+	//}
 	int count() const {
 		return HASH_COUNT(set_);
 	}
@@ -304,6 +321,8 @@ struct uthash_vector_pool final {
 		{
 			std::string_view sv(s);
 			item = new Item{ {sv.begin(), sv.end()}, {} };
+			// CAUTION! made as above data vector has no '\0' termination! ...ditto
+			item->data.push_back('\0');
 			HASH_ADD_STR(set_, data.data(), item);
 		}
 		return item->data.data();
@@ -311,16 +330,18 @@ struct uthash_vector_pool final {
 	const char* cstring(handle h) {
 		return h.data();
 	}
-	bool remove(handle h) {
-		Item* item = nullptr;
-		HASH_FIND_STR(set_, h.data(), item);
-		if (item) {
-			HASH_DEL(set_, item);
-			delete item;
-			return true;
-		}
-		return false;
-	}
+
+	// this is evergrowing pool, no removal please
+	//bool remove(handle h) {
+	//	Item* item = nullptr;
+	//	HASH_FIND_STR(set_, h.data(), item);
+	//	if (item) {
+	//		HASH_DEL(set_, item);
+	//		delete item;
+	//		return true;
+	//	}
+	//	return false;
+	//}
 	int count() const {
 		return HASH_COUNT(set_);
 	}
@@ -331,7 +352,13 @@ struct uthash_vector_pool final {
 		HASH_ITER(hh, set_, item, tmp) {
 			delete item;
 		}
+#ifdef _MSC_VER
+#ifdef NDEBUG
 		HASH_CLEAR(hh, set_);
+#endif
+#else  // ! _MSC_VER
+		HASH_CLEAR(hh, set_);
+#endif // _MSC_VER
 	}
 };
 
@@ -362,27 +389,34 @@ struct uthash_up_pool final {
 		return h.data();
 	}
 
-	bool remove(handle h) noexcept {
-		Item* item = nullptr;
-		HASH_FIND_STR(set_, h.data(), item);
-		if (item) {
-			HASH_DEL(set_, item);
-			delete item;
-			return true;
-		}
-		return false;
-	}
+	// this is evergrowing pool, no removal please
+	//bool remove(handle h) noexcept {
+	//	Item* item = nullptr;
+	//	HASH_FIND_STR(set_, h.data(), item);
+	//	if (item) {
+	//		HASH_DEL(set_, item);
+	//		delete item;
+	//		return true;
+	//	}
+	//	return false;
+	//}
 	int count() const {
 		return HASH_COUNT(set_);
 	}
 	uthash_up_pool() noexcept = default;
 	~uthash_up_pool() noexcept {
-		//Item* item;
-		//Item* tmp;
-		// HASH_ITER(hh, set_, item, tmp) {
-		//	 is this required?? -> delete item;
-		// }
+		Item* item;
+		Item* tmp;
+		HASH_ITER(hh, set_, item, tmp) {
+			delete item;
+		}
+#ifdef _MSC_VER
+#ifdef NDEBUG
 		HASH_CLEAR(hh, set_);
+#endif
+#else  // ! _MSC_VER
+		HASH_CLEAR(hh, set_);
+#endif // _MSC_VER
 	}
 };
 
@@ -402,19 +436,23 @@ struct meta final {
 	constexpr static bool is_goodbye(const char* specimen_) { return goodbye == specimen_; }
 	constexpr static bool is_jello(const char* specimen_) { return jello == specimen_; }
 
-	constexpr static bool match(const char* specimen_) {
+	// test the pool to char * retrieval
+	// compare to testing meta data
+	template<typename pool, typename handle >
+	constexpr static bool match(pool& pool_, handle handle_) {
+		const char* specimen_ = pool_.cstring(handle_);
 		if (!specimen_) return false;
-		if (is_hello(specimen_)) return true;
-		if (is_goodbye(specimen_)) return true;
-		if (is_jello(specimen_)) return true;
+		if (hello == specimen_) return true;
+		if (goodbye == specimen_) return true;
+		if (jello == specimen_) return true;
 		return false;
 	}
 };
 
 // common means no removal called
-// return handles obtained
-// notice how types above have no mechanisms to get  handles to the callers
-// explicitly, but instead of complicating them we solve that on the calling side
+// return all the handles obtained
+// types above have no mechanisms to get  handles to the callers
+// instead of complicating them we solve that on the calling side
 template<typename pool_type>
 inline auto test_common(pool_type& pool)
 {
@@ -423,8 +461,8 @@ inline auto test_common(pool_type& pool)
 	auto goodbye_h = pool.add(meta::goodbye.data());
 
 	// test the retrieval
-	assert(meta::is_hello(pool.cstring(hello_h)));
-	assert(meta::is_goodbye(pool.cstring(goodbye_h)));
+	assert(meta::match(pool, hello_h));
+	assert(meta::match(pool, goodbye_h));
 
 	// add two more hello's
 	(void)pool.add(meta::hello.data());
@@ -436,13 +474,9 @@ inline auto test_common(pool_type& pool)
 	// count must have incremented 
 	assert(pool.count() == 3);
 
-	struct handles_ final {
-		typename pool_type::handle hello;
-		typename pool_type::handle goodbye;
-		typename pool_type::handle jello;
-	};
+	std::array retval = { hello_h , goodbye_h, jello_h };
 
-	return handles_{ hello_h , goodbye_h, jello_h };
+	return retval;
 };
 
 template<typename the_pool_type >
@@ -466,8 +500,10 @@ inline void test_removal(the_pool_type& sp) noexcept
 	assert(pool.count() == 2);
 
 	// check if the rest has stayed
-	assert(meta::is_goodbye(pool.cstring(goodbye_h)));
-	assert(meta::is_jello(pool.cstring(jello_h)));
+	assert(meta::match(pool, goodbye_h));
+	assert(meta::match(pool, jello_h));
+
+
 	assert(pool.count() == 2);
 
 	// try removing the removed one
@@ -502,10 +538,13 @@ UBENCH(strpool_evergrowing, uthash_using_unique_ptr) {
 	test_evergrowing<uthash_up_pool>();
 }
 
+
+#ifdef NDEBUG
 UBENCH(strpool, gustavson_string_pool) {
 	gustavson_pool_ pool{};
 	(void)test_removal(pool);
 }
+#endif
 
 UBENCH(strpool, stb_pool_bench) {
 	stb_pool_ pool{};
