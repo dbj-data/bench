@@ -3,8 +3,8 @@
   "Id": "d5348dc9-5d71-4e7d-9249-b0b16a2fe692",
   "Items": [
     {
-      "Id": "eca3a503-7c3c-4aab-9a82-5d94597ad146",
-      "Command": "--filter=strp* --confidence=99"
+      "Id": "84cca71e-3bc8-49af-9b36-e29444e17fe7",
+      "Command": "--filter=strp* --confidence=6 +ignore-utest"
     }
   ]
 }

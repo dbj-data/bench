@@ -47,13 +47,13 @@ UBUT_EXTERN struct utest_state_s utest_state;
 
 #define UTEST_XML_OUT(...)    do {                                            \
   if (utest_state.output) {                                                   \
-    fprintf(utest_state.output, __VA_ARGS__);                                 \
+	fprintf(utest_state.output, __VA_ARGS__);                                 \
   }   \
 } while(0)
 
 #define UTEST_REZ_OUT(...)    do {                                            \
   if (utest_state.output) {                                                   \
-    fprintf(utest_state.output, __VA_ARGS__);                                 \
+	fprintf(utest_state.output, __VA_ARGS__);                                 \
   }   \
 UBUT_INFO( __VA_ARGS__ ) ; \
 } while(0)
@@ -98,7 +98,7 @@ UBUT_FORCEINLINE UBUT_OVERLOADABLE void utest_type_printer(const void* p) {
    long long is a c++11 extension
 */
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) ||              \
-    defined(__cplusplus) && (__cplusplus >= 201103L)
+	defined(__cplusplus) && (__cplusplus >= 201103L)
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -124,23 +124,23 @@ utest_type_printer(long long unsigned int i) {
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
 #define utest_type_printer(val)                                                \
   UTEST_REZ_OUT(_Generic((val), signed char                                     \
-                        : "%d", unsigned char                                  \
-                        : "%u", short                                          \
-                        : "%d", unsigned short                                 \
-                        : "%u", int                                            \
-                        : "%d", long                                           \
-                        : "%ld", long long                                     \
-                        : "%lld", unsigned                                     \
-                        : "%u", unsigned long                                  \
-                        : "%lu", unsigned long long                            \
-                        : "%llu", float                                        \
-                        : "%f", double                                         \
-                        : "%f", long double                                    \
-                        : "%Lf", default                                       \
-                        : _Generic((val - val), ptrdiff_t                      \
-                                   : "%p", default                             \
-                                   : "undef")),                                \
-               (val))
+						: "%d", unsigned char                                  \
+						: "%u", short                                          \
+						: "%d", unsigned short                                 \
+						: "%u", int                                            \
+						: "%d", long                                           \
+						: "%ld", long long                                     \
+						: "%lld", unsigned                                     \
+						: "%u", unsigned long                                  \
+						: "%lu", unsigned long long                            \
+						: "%llu", float                                        \
+						: "%f", double                                         \
+						: "%f", long double                                    \
+						: "%Lf", default                                       \
+						: _Generic((val - val), ptrdiff_t                      \
+								   : "%p", default                             \
+								   : "undef")),                                \
+			   (val))
 #else
 /*
    we don't have the ability to print the values we got, so we create a macro
@@ -158,8 +158,8 @@ utest_type_printer(long long unsigned int i) {
 /* had to disable clang-format here because it malforms the pragmas */
 #define UTEST_AUTO(x)                                                          \
   _Pragma("clang diagnostic push")                                             \
-      _Pragma("clang diagnostic ignored \"-Wgnu-auto-type\"") __auto_type      \
-          _Pragma("clang diagnostic pop")
+	  _Pragma("clang diagnostic ignored \"-Wgnu-auto-type\"") __auto_type      \
+		  _Pragma("clang diagnostic pop")
 /* clang-format on */
 #else
 #define UTEST_AUTO(x) __auto_type
@@ -174,8 +174,8 @@ utest_type_printer(long long unsigned int i) {
 #if defined(__clang__)
 #define UTEST_STRNCMP(x, y, size)                                              \
   _Pragma("clang diagnostic push")                                             \
-      _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"")       \
-          strncmp(x, y, size) _Pragma("clang diagnostic pop")
+	  _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"")       \
+		  strncmp(x, y, size) _Pragma("clang diagnostic pop")
 #else
 #define UTEST_STRNCMP(x, y, size) ubut_strncmp(x, y, size)
 #endif
@@ -183,51 +183,51 @@ utest_type_printer(long long unsigned int i) {
 #if defined(__clang__)
 #define UTEST_EXPECT(x, y, cond)                                               \
   {                                                                            \
-    _Pragma("clang diagnostic push")                                           \
-        _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
-            _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
-                _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
-                    UTEST_AUTO(x) xEval = (x);                                 \
-    UTEST_AUTO(y) yEval = (y);                                                 \
-    if (!((xEval)cond(yEval))) {                                               \
-      _Pragma("clang diagnostic pop")                                          \
-          UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                \
-      UTEST_REZ_OUT("  Expected : ");                                           \
-      utest_type_printer(xEval);                                               \
-      UTEST_REZ_OUT("\n");                                                      \
-      UTEST_REZ_OUT("    Actual : ");                                           \
-      utest_type_printer(yEval);                                               \
-      UTEST_REZ_OUT("\n");                                                      \
-      *utest_result = 1;                                                       \
-    }                                                                          \
+	_Pragma("clang diagnostic push")                                           \
+		_Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
+			_Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
+				_Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
+					UTEST_AUTO(x) xEval = (x);                                 \
+	UTEST_AUTO(y) yEval = (y);                                                 \
+	if (!((xEval)cond(yEval))) {                                               \
+	  _Pragma("clang diagnostic pop")                                          \
+		  UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                \
+	  UTEST_REZ_OUT("  Expected : ");                                           \
+	  utest_type_printer(xEval);                                               \
+	  UTEST_REZ_OUT("\n");                                                      \
+	  UTEST_REZ_OUT("    Actual : ");                                           \
+	  utest_type_printer(yEval);                                               \
+	  UTEST_REZ_OUT("\n");                                                      \
+	  *utest_result = 1;                                                       \
+	}                                                                          \
   } 
 
 #else // ! __clang__
 
 #define UTEST_EXPECT(x, y, cond)                                               \
   {                                                                            \
-    if (!((x)cond(y))) {                                                       \
-      UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-      *utest_result = 1;                                                       \
-    }                                                                          \
+	if (!((x)cond(y))) {                                                       \
+	  UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+	  *utest_result = 1;                                                       \
+	}                                                                          \
   }
 
 #endif // ! __clang__
 
 #define EXPECT_TRUE(x)                                                         \
   if (!(x)) {                                                                  \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : true\n");                                       \
-    UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : true\n");                                       \
+	UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
+	*utest_result = 1;                                                         \
   }
 
 #define EXPECT_FALSE(x)                                                        \
   if (x) {                                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : false\n");                                      \
-    UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : false\n");                                      \
+	UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
+	*utest_result = 1;                                                         \
   }
 
 #define EXPECT_EQ(x, y) UTEST_EXPECT(x, y, ==)
@@ -239,86 +239,86 @@ utest_type_printer(long long unsigned int i) {
 
 #define EXPECT_STREQ(x, y)                                                     \
   if (0 != strcmp(x, y)) {                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
   }
 
 #define EXPECT_STRNE(x, y)                                                     \
   if (0 == strcmp(x, y)) {                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
   }
 
 #define EXPECT_STRNEQ(x, y)                                                    \
   if (0 != UTEST_STRNCMP(x, y, strlen(x))) {                                   \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
   }
 
 #define EXPECT_STRNNE(x, y)                                                    \
   if (0 == UTEST_STRNCMP(x, y, strlen(x))) {                                   \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
   }
 
 #if defined(__clang__)
 #define UTEST_ASSERT(x, y, cond)                                               \
   {                                                                            \
-    _Pragma("clang diagnostic push")                                           \
-        _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
-            _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
-                _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
-                    UTEST_AUTO(x) xEval = (x);                                 \
-    UTEST_AUTO(y) yEval = (y);                                                 \
-    if (!((xEval)cond(yEval))) {                                               \
-      _Pragma("clang diagnostic pop")                                          \
-          UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                \
-      UTEST_REZ_OUT("  Expected : ");                                           \
-      utest_type_printer(xEval);                                               \
-      UTEST_REZ_OUT("\n");                                                      \
-      UTEST_REZ_OUT("    Actual : ");                                           \
-      utest_type_printer(yEval);                                               \
-      UTEST_REZ_OUT("\n");                                                      \
-      *utest_result = 1;                                                       \
-      return;                                                                  \
-    }                                                                          \
+	_Pragma("clang diagnostic push")                                           \
+		_Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
+			_Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
+				_Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
+					UTEST_AUTO(x) xEval = (x);                                 \
+	UTEST_AUTO(y) yEval = (y);                                                 \
+	if (!((xEval)cond(yEval))) {                                               \
+	  _Pragma("clang diagnostic pop")                                          \
+		  UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                \
+	  UTEST_REZ_OUT("  Expected : ");                                           \
+	  utest_type_printer(xEval);                                               \
+	  UTEST_REZ_OUT("\n");                                                      \
+	  UTEST_REZ_OUT("    Actual : ");                                           \
+	  utest_type_printer(yEval);                                               \
+	  UTEST_REZ_OUT("\n");                                                      \
+	  *utest_result = 1;                                                       \
+	  return;                                                                  \
+	}                                                                          \
   }
 #else // ! __clang__ 
 #define UTEST_ASSERT(x, y, cond)                                               \
   {                                                                            \
-    if (!((x)cond(y))) {                                                       \
-      UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-      *utest_result = 1;                                                       \
-      return;                                                                  \
-    }                                                                          \
+	if (!((x)cond(y))) {                                                       \
+	  UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+	  *utest_result = 1;                                                       \
+	  return;                                                                  \
+	}                                                                          \
   }
 
 #endif // ! __clang__
 
 #define ASSERT_TRUE(x)                                                         \
   if (!(x)) {                                                                  \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : true\n");                                       \
-    UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : true\n");                                       \
+	UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define ASSERT_FALSE(x)                                                        \
   if (x) {                                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : false\n");                                      \
-    UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : false\n");                                      \
+	UTEST_REZ_OUT("    Actual : %s\n", (x) ? "true" : "false");                 \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define ASSERT_EQ(x, y) UTEST_ASSERT(x, y, ==)
@@ -330,60 +330,60 @@ utest_type_printer(long long unsigned int i) {
 
 #define ASSERT_STREQ(x, y)                                                     \
   if (0 != strcmp(x, y)) {                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define ASSERT_STRNE(x, y)                                                     \
   if (0 == strcmp(x, y)) {                                                     \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define ASSERT_STRNEQ(x, y)                                                    \
   if (0 != UTEST_STRNCMP(x, y, strlen(x))) {                                   \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define ASSERT_STRNNE(x, y)                                                    \
   if (0 == UTEST_STRNCMP(x, y, strlen(x))) {                                   \
-    UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
-    UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
-    UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
-    *utest_result = 1;                                                         \
-    return;                                                                    \
+	UTEST_REZ_OUT("%s:%u: Failure\n", __FILE__, __LINE__);                      \
+	UTEST_REZ_OUT("  Expected : \"%s\"\n", x);                                  \
+	UTEST_REZ_OUT("    Actual : \"%s\"\n", y);                                  \
+	*utest_result = 1;                                                         \
+	return;                                                                    \
   }
 
 #define UTEST(SET, NAME)                                                       \
   UBUT_EXTERN struct utest_state_s utest_state;                               \
   static void utest_run_##SET##_##NAME(int *utest_result);                     \
   static void utest_##SET##_##NAME(int *utest_result, size_t utest_index) {    \
-    (void)utest_index;                                                         \
-    utest_run_##SET##_##NAME(utest_result);                                    \
+	(void)utest_index;                                                         \
+	utest_run_##SET##_##NAME(utest_result);                                    \
   }                                                                            \
   UBUT_INITIALIZER(utest_register_##SET##_##NAME) {                           \
-    const size_t index = utest_state.tests_length++;                           \
-    const char *name_part = #SET "." #NAME;                                    \
-    const size_t name_size = strlen(name_part) + 1;                            \
-    char *name = UBUT_PTR_CAST(char *, malloc(name_size));                    \
-    utest_state.tests =                                                        \
-        UBUT_PTR_CAST(struct utest_test_state_s *,                            \
-                       realloc(UBUT_PTR_CAST(void *, utest_state.tests),      \
-                               sizeof(struct utest_test_state_s) *             \
-                                   utest_state.tests_length));                 \
-    utest_state.tests[index].func = &utest_##SET##_##NAME;                     \
-    utest_state.tests[index].name = name;                                      \
-    UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
+	const size_t index = utest_state.tests_length++;                           \
+	const char *name_part = #SET "." #NAME;                                    \
+	const size_t name_size = strlen(name_part) + 1;                            \
+	char *name = UBUT_PTR_CAST(char *, malloc(name_size));                    \
+	utest_state.tests =                                                        \
+		UBUT_PTR_CAST(struct utest_test_state_s *,                            \
+					   realloc(UBUT_PTR_CAST(void *, utest_state.tests),      \
+							   sizeof(struct utest_test_state_s) *             \
+								   utest_state.tests_length));                 \
+	utest_state.tests[index].func = &utest_##SET##_##NAME;                     \
+	utest_state.tests[index].name = name;                                      \
+	UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
   void utest_run_##SET##_##NAME(int *utest_result)
 
@@ -391,11 +391,11 @@ utest_type_printer(long long unsigned int i) {
 
 #define UTEST_F_SETUP(FIXTURE)                                                 \
   static void utest_f_setup_##FIXTURE(int *utest_result,                       \
-                                      struct FIXTURE *utest_fixture)
+									  struct FIXTURE *utest_fixture)
 
 #define UTEST_F_TEARDOWN(FIXTURE)                                              \
   static void utest_f_teardown_##FIXTURE(int *utest_result,                    \
-                                         struct FIXTURE *utest_fixture)
+										 struct FIXTURE *utest_fixture)
 
 #define UTEST_F(FIXTURE, NAME)                                                 \
   UBUT_EXTERN struct utest_state_s utest_state;                               \
@@ -403,78 +403,78 @@ utest_type_printer(long long unsigned int i) {
   static void utest_f_teardown_##FIXTURE(int *, struct FIXTURE *);             \
   static void utest_run_##FIXTURE##_##NAME(int *, struct FIXTURE *);           \
   static void utest_f_##FIXTURE##_##NAME(int *utest_result,                    \
-                                         size_t utest_index) {                 \
-    struct FIXTURE fixture;                                                    \
-    (void)utest_index;                                                         \
-    memset(&fixture, 0, sizeof(fixture));                                      \
-    utest_f_setup_##FIXTURE(utest_result, &fixture);                           \
-    if (0 != *utest_result) {                                                  \
-      return;                                                                  \
-    }                                                                          \
-    utest_run_##FIXTURE##_##NAME(utest_result, &fixture);                      \
-    utest_f_teardown_##FIXTURE(utest_result, &fixture);                        \
+										 size_t utest_index) {                 \
+	struct FIXTURE fixture;                                                    \
+	(void)utest_index;                                                         \
+	memset(&fixture, 0, sizeof(fixture));                                      \
+	utest_f_setup_##FIXTURE(utest_result, &fixture);                           \
+	if (0 != *utest_result) {                                                  \
+	  return;                                                                  \
+	}                                                                          \
+	utest_run_##FIXTURE##_##NAME(utest_result, &fixture);                      \
+	utest_f_teardown_##FIXTURE(utest_result, &fixture);                        \
   }                                                                            \
   UBUT_INITIALIZER(utest_register_##FIXTURE##_##NAME) {                       \
-    const size_t index = utest_state.tests_length++;                           \
-    const char *name_part = #FIXTURE "." #NAME;                                \
-    const size_t name_size = strlen(name_part) + 1;                            \
-    char *name = UBUT_PTR_CAST(char *, malloc(name_size));                    \
-    utest_state.tests =                                                        \
-        UBUT_PTR_CAST(struct utest_test_state_s *,                            \
-                       realloc(UBUT_PTR_CAST(void *, utest_state.tests),      \
-                               sizeof(struct utest_test_state_s) *             \
-                                   utest_state.tests_length));                 \
-    utest_state.tests[index].func = &utest_f_##FIXTURE##_##NAME;               \
-    utest_state.tests[index].name = name;                                      \
-    UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
+	const size_t index = utest_state.tests_length++;                           \
+	const char *name_part = #FIXTURE "." #NAME;                                \
+	const size_t name_size = strlen(name_part) + 1;                            \
+	char *name = UBUT_PTR_CAST(char *, malloc(name_size));                    \
+	utest_state.tests =                                                        \
+		UBUT_PTR_CAST(struct utest_test_state_s *,                            \
+					   realloc(UBUT_PTR_CAST(void *, utest_state.tests),      \
+							   sizeof(struct utest_test_state_s) *             \
+								   utest_state.tests_length));                 \
+	utest_state.tests[index].func = &utest_f_##FIXTURE##_##NAME;               \
+	utest_state.tests[index].name = name;                                      \
+	UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
   void utest_run_##FIXTURE##_##NAME(int *utest_result,                         \
-                                    struct FIXTURE *utest_fixture)
+									struct FIXTURE *utest_fixture)
 
 #define UTEST_I_SETUP(FIXTURE)                                                 \
   static void utest_i_setup_##FIXTURE(                                         \
-      int *utest_result, struct FIXTURE *utest_fixture, size_t utest_index)
+	  int *utest_result, struct FIXTURE *utest_fixture, size_t utest_index)
 
 #define UTEST_I_TEARDOWN(FIXTURE)                                              \
   static void utest_i_teardown_##FIXTURE(                                      \
-      int *utest_result, struct FIXTURE *utest_fixture, size_t utest_index)
+	  int *utest_result, struct FIXTURE *utest_fixture, size_t utest_index)
 
 #define UTEST_I(FIXTURE, NAME, INDEX)                                          \
   UBUT_EXTERN struct utest_state_s utest_state;                               \
   static void utest_run_##FIXTURE##_##NAME##_##INDEX(int *, struct FIXTURE *); \
   static void utest_i_##FIXTURE##_##NAME##_##INDEX(int *utest_result,          \
-                                                   size_t index) {             \
-    struct FIXTURE fixture;                                                    \
-    memset(&fixture, 0, sizeof(fixture));                                      \
-    utest_i_setup_##FIXTURE(utest_result, &fixture, index);                    \
-    if (0 != *utest_result) {                                                  \
-      return;                                                                  \
-    }                                                                          \
-    utest_run_##FIXTURE##_##NAME##_##INDEX(utest_result, &fixture);            \
-    utest_i_teardown_##FIXTURE(utest_result, &fixture, index);                 \
+												   size_t index) {             \
+	struct FIXTURE fixture;                                                    \
+	memset(&fixture, 0, sizeof(fixture));                                      \
+	utest_i_setup_##FIXTURE(utest_result, &fixture, index);                    \
+	if (0 != *utest_result) {                                                  \
+	  return;                                                                  \
+	}                                                                          \
+	utest_run_##FIXTURE##_##NAME##_##INDEX(utest_result, &fixture);            \
+	utest_i_teardown_##FIXTURE(utest_result, &fixture, index);                 \
   }                                                                            \
   UBUT_INITIALIZER(utest_register_##FIXTURE##_##NAME##_##INDEX) {             \
-    size_t i;                                                                  \
-    ubut_uint64_t iUp;                                                        \
-    for (i = 0; i < (INDEX); i++) {                                            \
-      const size_t index = utest_state.tests_length++;                         \
-      const char *name_part = #FIXTURE "." #NAME;                              \
-      const size_t name_size = strlen(name_part) + 32;                         \
-      char *name = UBUT_PTR_CAST(char *, malloc(name_size));                  \
-      utest_state.tests =                                                      \
-          UBUT_PTR_CAST(struct utest_test_state_s *,                          \
-                         realloc(UBUT_PTR_CAST(void *, utest_state.tests),    \
-                                 sizeof(struct utest_test_state_s) *           \
-                                     utest_state.tests_length));               \
-      utest_state.tests[index].func = &utest_i_##FIXTURE##_##NAME##_##INDEX;   \
-      utest_state.tests[index].index = i;                                      \
-      utest_state.tests[index].name = name;                                    \
-      iUp = UBUT_CAST(ubut_uint64_t, i);                                     \
-      UBUT_SNPRINTF(name, name_size, "%s/%" UBUT_PRIu64, name_part, iUp);    \
-    }                                                                          \
+	size_t i;                                                                  \
+	ubut_uint64_t iUp;                                                        \
+	for (i = 0; i < (INDEX); i++) {                                            \
+	  const size_t index = utest_state.tests_length++;                         \
+	  const char *name_part = #FIXTURE "." #NAME;                              \
+	  const size_t name_size = strlen(name_part) + 32;                         \
+	  char *name = UBUT_PTR_CAST(char *, malloc(name_size));                  \
+	  utest_state.tests =                                                      \
+		  UBUT_PTR_CAST(struct utest_test_state_s *,                          \
+						 realloc(UBUT_PTR_CAST(void *, utest_state.tests),    \
+								 sizeof(struct utest_test_state_s) *           \
+									 utest_state.tests_length));               \
+	  utest_state.tests[index].func = &utest_i_##FIXTURE##_##NAME##_##INDEX;   \
+	  utest_state.tests[index].index = i;                                      \
+	  utest_state.tests[index].name = name;                                    \
+	  iUp = UBUT_CAST(ubut_uint64_t, i);                                     \
+	  UBUT_SNPRINTF(name, name_size, "%s/%" UBUT_PRIu64, name_part, iUp);    \
+	}                                                                          \
   }                                                                            \
   void utest_run_##FIXTURE##_##NAME##_##INDEX(int *utest_result,               \
-                                              struct FIXTURE *utest_fixture)
+											  struct FIXTURE *utest_fixture)
 
 #endif // UTEST_HAVING_FIXTURES 
 
@@ -619,12 +619,12 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 		ran_tests++;
 	}
 
-    UTEST_REZ_OUT(PFX_DIVIDER "Running %" UBUT_PRIu64 " test cases.",
+	UTEST_REZ_OUT(PFX_DIVIDER "Running %" UBUT_PRIu64 " test cases.",
 		UBUT_CAST(ubut_uint64_t, ran_tests));
 
 	UTEST_XML_OUT("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    UTEST_XML_OUT("<testsuites tests=\"%" UBUT_PRIu64 "\" name=\"All\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
-    UTEST_XML_OUT("<testsuite name=\"Tests\" tests=\"%" UBUT_PRIu64 "\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
+	UTEST_XML_OUT("<testsuites tests=\"%" UBUT_PRIu64 "\" name=\"All\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
+	UTEST_XML_OUT("<testsuite name=\"Tests\" tests=\"%" UBUT_PRIu64 "\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
 
 	for (index = 0; index < utest_state.tests_length; index++) {
 		int result = 0;
@@ -634,15 +634,15 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 			continue;
 		}
 
-        UTEST_REZ_OUT(PFX_RUN "%s", utest_state.tests[index].name);
+		UTEST_REZ_OUT(PFX_RUN "%s", utest_state.tests[index].name);
 
-        UTEST_XML_OUT("<testcase name=\"%s\">", utest_state.tests[index].name);
+		UTEST_XML_OUT("<testcase name=\"%s\">", utest_state.tests[index].name);
 
 		ns = ubut_ns();
 		utest_state.tests[index].func(&result, utest_state.tests[index].index);
 		ns = ubut_ns() - ns;
 
-        UTEST_XML_OUT("</testcase>\n");
+		UTEST_XML_OUT("</testcase>\n");
 
 		if (0 != result) {
 			const size_t failed_testcase_index = failed_testcases_length++;
@@ -656,17 +656,17 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 
 #pragma warning( pop )
 
-            failed_testcases[failed_testcase_index] = index;
+			failed_testcases[failed_testcase_index] = index;
 			failed++;
 			UTEST_REZ_OUT(PFX_FAILED "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
 		}
 		else {
-            UTEST_REZ_OUT(PFX_OK "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
+			UTEST_REZ_OUT(PFX_OK "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
 		}
 	}
 
-    UTEST_REZ_OUT(PFX_DIVIDER "%" UBUT_PRIu64 " test cases ran.", ran_tests);
-    UTEST_REZ_OUT(PFX_PASSED "%" UBUT_PRIu64 " tests.", ran_tests - failed);
+	UTEST_REZ_OUT(PFX_DIVIDER "%" UBUT_PRIu64 " test cases ran.", ran_tests);
+	UTEST_REZ_OUT(PFX_PASSED "%" UBUT_PRIu64 " tests.", ran_tests - failed);
 
 	if (0 != failed) {
 		UBUT_WARN(PFX_FAILED "%" UBUT_PRIu64 " tests, listed below:", failed);
@@ -675,7 +675,7 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 		}
 	}
 
-    UTEST_XML_OUT("</testsuite>\n</testsuites>\n");
+	UTEST_XML_OUT("</testsuite>\n</testsuites>\n");
 
 cleanup:
 	for (index = 0; index < utest_state.tests_length; index++) {
@@ -711,7 +711,7 @@ cleanup:
    data without having to use the UTEST_MAIN macro, thus allowing them to write
    their own main() function.
 
-   DBJ warning: 
+   DBJ warning:
 
    had a persistent "function not declared" from cl.exe when using UTEST_STATE()
    removed `()`
