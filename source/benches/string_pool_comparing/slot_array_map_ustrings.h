@@ -1,8 +1,9 @@
 #pragma once
 #include "ustring_pool_interface.h"
 #include "../ubut/ubench.h"
-#include "slot_map.h" // by Arthur O'Dwyer
-#include "slot_array.h" // by Allan Deutsch
+#include <slot/slot_array.h> // // by Allan Deutsch
+#include <slot/slot_map.h> // by Arthur O'Dwyer
+#include <slot/packed_array.h> // by Dusan B. Jovanovic
 #include <string>
 
 
@@ -25,12 +26,12 @@ struct slot_arr_pool final
 		{
 			if (it == str_)
 			{
-				return	pool.get_ID(pool.alloc(str_));
+				std::string lvalue{ str_ };
+				return pool.get_ID(lvalue);
 			}
 		}
-
-		std::string lvalue{ str_ };
-		return pool.get_ID(lvalue);
+		// not found -- insert
+		return	pool.get_ID(pool.alloc(str_));
 	}
 
 	// returns nullptr if not found
