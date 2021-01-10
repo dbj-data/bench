@@ -31,5 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\slot_array_map_ustrings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\ustring_pool_using_c_apis.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\uthash_ustrings.h" />
   </ItemGroup>
 </Project>

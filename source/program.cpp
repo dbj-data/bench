@@ -8,12 +8,12 @@
 
 #include "../ubut/ubench.h"
 
-UBENCH_STATE ;
+UBENCH_STATE;
 
 
 #include "../ubut/utest.h"
 
-UTEST_STATE ;
+UTEST_STATE;
 
 // user code start here
 // this is called from framework
@@ -23,7 +23,7 @@ extern "C" int program(int argc, char** argv)
 	// logic is this
 	// if DBJ_CL_ARG_IGNORE_UBENCH argument is NOT given result is proceed
 	// if it is given callback provided will return stop and flow will pass this
-	if(app_args_result::proceed == app_args_callback_(DBJ_CL_ARG_IGNORE_UBENCH, app_args_stop ))
+	if (dbj::app_args_result::proceed == dbj::app_args_callback_(DBJ_CL_ARG_IGNORE_UBENCH, dbj::app_args_stop))
 	{
 		UBUT_INFO(" ");
 		UBUT_INFO("================================================================");
@@ -34,7 +34,7 @@ extern "C" int program(int argc, char** argv)
 		(void)ubench_main(argc, argv);
 	}
 
-	if (app_args_result::proceed == app_args_callback_(DBJ_CL_ARG_IGNORE_UTEST, app_args_stop))
+	if (dbj::app_args_result::proceed == dbj::app_args_callback_(DBJ_CL_ARG_IGNORE_UTEST, dbj::app_args_stop))
 	{
 		UBUT_INFO(" ");
 		UBUT_INFO("================================================================");
@@ -61,7 +61,7 @@ extern "C" int program(int argc, char** argv)
 #include <EABase/config/eacompiler.h>
 #include <EASTL/internal/config.h>
 
-extern "C" app_args_result show_eastl_compile_time_defines( void ) {
+extern "C" dbj::app_args_result show_eastl_compile_time_defines(void) {
 
 	DBJ_INFO(": ");
 
@@ -83,7 +83,7 @@ extern "C" app_args_result show_eastl_compile_time_defines( void ) {
 
 	DBJ_INFO(": ");
 
-	return app_args_result::proceed;
+	return dbj::app_args_result::proceed;
 }
 
 #endif // DBJ_FWK_EASTL_DIRECT_DEPENDANCY
