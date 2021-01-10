@@ -32,9 +32,11 @@ typedef void (*utest_testcase_t)(int*, size_t);
 
 struct utest_test_state_s {
 	utest_testcase_t func;
-	size_t index;
+	size_t test_index;
 	char* name;
 };
+
+static struct utest_test_state_s empty_utest_test_state_s = { NULL, 0, NULL };
 
 struct utest_state_s {
 	struct utest_test_state_s* tests;
@@ -383,6 +385,7 @@ utest_type_printer(long long unsigned int i) {
 								   utest_state.tests_length));                 \
 	utest_state.tests[index].func = &utest_##SET##_##NAME;                     \
 	utest_state.tests[index].name = name;                                      \
+	utest_state.tests[index].test_index = index;                              \
 	UBUT_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
   void utest_run_##SET##_##NAME(int *utest_result)
@@ -565,14 +568,13 @@ UBUT_FORCEINLINE int utest_should_filter_test(const char* filter,
 UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]);
 UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 	ubut_uint64_t failed = 0;
-	size_t index = 0;
 	size_t* failed_testcases = UBUT_NULL;
 	size_t failed_testcases_length = 0;
 	const char* filter = UBUT_NULL;
 	ubut_uint64_t ran_tests = 0;
 
 	/* loop through all arguments looking for our options */
-	for (index = 1; index < UBUT_CAST(size_t, argc); index++) {
+	for (size_t index = 1; index < UBUT_CAST(size_t, argc); index++) {
 
 		if (0 == ubut_strncmp(argv[index], HELP_STR, SLEN(HELP_STR))) {
 			UBUT_INFO("utest - the testing solution");
@@ -611,7 +613,7 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 		}
 	}
 
-	for (index = 0; index < utest_state.tests_length; index++) {
+	for (size_t index = 0; index < utest_state.tests_length; index++) {
 		if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
 			continue;
 		}
@@ -626,21 +628,21 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 	UTEST_XML_OUT("<testsuites tests=\"%" UBUT_PRIu64 "\" name=\"All\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
 	UTEST_XML_OUT("<testsuite name=\"Tests\" tests=\"%" UBUT_PRIu64 "\">\n", UBUT_CAST(ubut_uint64_t, ran_tests));
 
-	for (index = 0; index < utest_state.tests_length; index++) {
+	for (size_t index_ = 0; index_ < utest_state.tests_length; index_++) {
 		int result = 0;
-		ubut_int64_t ns = 0;
+		ubut_int64_t nanosecs_ = 0;
 
-		if (utest_should_filter_test(filter, utest_state.tests[index].name)) {
+		if (utest_should_filter_test(filter, utest_state.tests[index_].name)) {
 			continue;
 		}
 
-		UTEST_REZ_OUT(PFX_RUN "%s", utest_state.tests[index].name);
+		UTEST_REZ_OUT(PFX_RUN "%s", utest_state.tests[index_].name);
 
-		UTEST_XML_OUT("<testcase name=\"%s\">", utest_state.tests[index].name);
+		UTEST_XML_OUT("<testcase name=\"%s\">", utest_state.tests[index_].name);
 
-		ns = ubut_ns();
-		utest_state.tests[index].func(&result, utest_state.tests[index].index);
-		ns = ubut_ns() - ns;
+		nanosecs_ = ubut_ns();
+		utest_state.tests[index_].func(&result, utest_state.tests[index_].test_index);
+		nanosecs_ = ubut_ns() - nanosecs_;
 
 		UTEST_XML_OUT("</testcase>\n");
 
@@ -656,21 +658,21 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 
 #pragma warning( pop )
 
-			failed_testcases[failed_testcase_index] = index;
+			failed_testcases[failed_testcase_index] = index_;
 			failed++;
-			UTEST_REZ_OUT(PFX_FAILED "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
+			UTEST_REZ_OUT(PFX_FAILED "%s (%" UBUT_PRId64 "nanosecs_)", utest_state.tests[index_].name, nanosecs_);
 		}
 		else {
-			UTEST_REZ_OUT(PFX_OK "%s (%" UBUT_PRId64 "ns)", utest_state.tests[index].name, ns);
+			UTEST_REZ_OUT(PFX_OK "%s (%" UBUT_PRId64 "nanosecs_)", utest_state.tests[index_].name, nanosecs_);
 		}
-	}
+	} // for()
 
 	UTEST_REZ_OUT(PFX_DIVIDER "%" UBUT_PRIu64 " test cases ran.", ran_tests);
 	UTEST_REZ_OUT(PFX_PASSED "%" UBUT_PRIu64 " tests.", ran_tests - failed);
 
 	if (0 != failed) {
 		UBUT_WARN(PFX_FAILED "%" UBUT_PRIu64 " tests, listed below:", failed);
-		for (index = 0; index < failed_testcases_length; index++) {
+		for (size_t index = 0; index < failed_testcases_length; index++) {
 			UBUT_WARN(PFX_FAILED "%s", utest_state.tests[failed_testcases[index]].name);
 		}
 	}
@@ -678,7 +680,7 @@ UBUT_FORCEINLINE int utest_main(int argc, const char* const argv[]) {
 	UTEST_XML_OUT("</testsuite>\n</testsuites>\n");
 
 cleanup:
-	for (index = 0; index < utest_state.tests_length; index++) {
+	for (size_t index = 0; index < utest_state.tests_length; index++) {
 		free(UBUT_PTR_CAST(void*, utest_state.tests[index].name));
 	}
 
@@ -718,7 +720,7 @@ cleanup:
    UTEST_STATE ... no warnings
 
 */
-#define UTEST_STATE struct utest_state_s utest_state = {0, 0, 0}
+#define UTEST_STATE extern struct utest_state_s utest_state = { NULL , 0, 0}
 
 /*
    define a main() function to call into utest.h and start executing tests! A

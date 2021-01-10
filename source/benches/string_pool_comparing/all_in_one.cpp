@@ -1,5 +1,4 @@
-
-#include "ustring_pool_interface.h"
+#include "../../ht_testing_common.h"
 #include "slot_array_map_ustrings.h"
 #include "ustring_pool_using_c_apis.h"
 #include "uthash_ustrings.h"

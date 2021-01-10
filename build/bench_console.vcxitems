@@ -27,6 +27,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling_excpt_overhead.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\program.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\tests\ht_tests.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\tests\type_printers.c" />
   </ItemGroup>
   <ItemGroup>
@@ -34,5 +35,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\slot_array_map_ustrings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\ustring_pool_using_c_apis.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\uthash_ustrings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ht_testing_common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ustring_pool_interface.h" />
   </ItemGroup>
 </Project>
