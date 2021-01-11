@@ -3,9 +3,7 @@
 #include "ustring_pool_using_c_apis.h"
 #include "uthash_ustrings.h"
 #include <dbj/dbj_ustrings.h>
-#include "../ubut/ubench.h"
-
-
+#include <ubut/ubench.h>
 
 /****************************************************************************************/
 // (c) 2021 by dbj@dbj.org

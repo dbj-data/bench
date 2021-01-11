@@ -1,6 +1,6 @@
 #pragma once
 #include "../../ustring_pool_interface.h"
-#include "../ubut/ubench.h"
+#include <ubut/ubench.h>
 #include <uthash/uthash.h>
 
 #include <dbj/dbj_ustrings.h> // dbj::string_ptr

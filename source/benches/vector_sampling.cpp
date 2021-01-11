@@ -1,10 +1,9 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include "../ubut/ubench.h"
-// #include <vcruntime.h>
+#include <ubut/ubench.h>
 
-constexpr static int vector_size = 0xFFF ;
+constexpr static int vector_size = 0xFFF;
 static char buffer[vector_size] = { '?' };
 ///-----------------------------------------------
 /// driver driving vector types instance from bellow
@@ -46,15 +45,15 @@ namespace ms_stl_sampling {
 	UBENCH(vector_of_0xFFF_strings_each_0xFFF_chars, ms_stl)
 	{
 		auto rezult_v_ =
-		hammer_of_thor< std::vector<std::string> >(
-			[](auto v_)
-			{
-				v_.erase(v_.begin() + (v_.size() / 2));
-				return v_;
-			}
-			, std::string{ buffer }
-			, vector_size
-			);
+			hammer_of_thor< std::vector<std::string> >(
+				[](auto v_)
+				{
+					v_.erase(v_.begin() + (v_.size() / 2));
+					return v_;
+				}
+				, std::string{ buffer }
+					, vector_size
+					);
 	}
 } // namespace ms_stl_sampling 
 
@@ -69,14 +68,14 @@ namespace EASTL_sampling {
 	{
 		auto rezult_v_ =
 			hammer_of_thor<eastl::vector<eastl::string> >(
-			[](auto v_)
-			{
-				v_.erase(v_.begin() + (v_.size() / 2));
-				return v_;
-			}
-			, eastl::string{ buffer }
-			, vector_size
-			);
+				[](auto v_)
+				{
+					v_.erase(v_.begin() + (v_.size() / 2));
+					return v_;
+				}
+				, eastl::string{ buffer }
+					, vector_size
+					);
 	}
 
 } // namespace EASTL_sampling

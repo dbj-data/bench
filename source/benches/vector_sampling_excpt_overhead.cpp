@@ -1,7 +1,7 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include "../ubut/ubench.h"
+#include <ubut/ubench.h>
 #include "../dbj-fwk/printing_macros.h"
 
 #include <stdexcept>
@@ -27,7 +27,7 @@ static const test_array_type test_array_element = { {'?'} };
 #pragma message("_CPPUNWIND == 0 and _ATL_NO_EXCEPTIONS is not defined")
 #endif // _CPPUNWIND == 0
 
-static void atl_array() 
+static void atl_array()
 {
 	using atl_arr = ATL::CAtlArray<test_array_type>;
 	// _ATL_NO_EXCEPTIONS ?
@@ -96,8 +96,8 @@ static void atl_simple_array() {
 
 #if _CPPUNWIND
 	}
-	catch ( ...) {
-    }
+	catch (...) {
+	}
 #endif // _CPPUNWIND
 
 }
@@ -111,14 +111,14 @@ UBENCH(bad_index_vector, atl_simple_arr)
 	__try {
 		atl_simple_array();
 	}
-	__except ( 
-		GetExceptionCode() == EXCEPTION_ARRAY_BOUNDS_EXCEEDED 
-		? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_EXECUTION )
+	__except (
+		GetExceptionCode() == EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+		? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_EXECUTION)
 	{
-	// RELEASE or DEBUG build
-	// on bad index ATL raises SE with id: EXCEPTION_ARRAY_BOUNDS_EXCEEDED
-	// which is defined in minwinbase.h
-	// ATL never throws C++ exceptions
+		// RELEASE or DEBUG build
+		// on bad index ATL raises SE with id: EXCEPTION_ARRAY_BOUNDS_EXCEEDED
+		// which is defined in minwinbase.h
+		// ATL never throws C++ exceptions
 		if (!done_that) {
 			DBJ_WARN("ATL index out of range caught by SEH, on each call!");
 			done_that = true;
@@ -134,7 +134,7 @@ UBENCH(bad_index_vector, atl_simple_arr)
 
 // SEH and C++ exceptions can not be 
 //mixed in one function
-static void mst_stl_bad_index_vector () {
+static void mst_stl_bad_index_vector() {
 #if _CPPUNWIND
 	static bool done_that = false;
 	try {
@@ -146,9 +146,10 @@ static void mst_stl_bad_index_vector () {
 		// use illegal index
 		(void)array_.at(9);
 #if _CPPUNWIND
-	} catch (std::out_of_range & x ) {
+	}
+	catch (std::out_of_range& x) {
 		if (!done_that) {
-			DBJ_WARN("MS STL C++ exception: '%s' ,caught on each call!", x.what() );
+			DBJ_WARN("MS STL C++ exception: '%s' ,caught on each call!", x.what());
 			done_that = true;
 		}
 	}
@@ -160,7 +161,8 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 	static bool done_that = false;
 	__try {
 		mst_stl_bad_index_vector();
-	} __except (EXCEPTION_EXECUTE_HANDLER) { 
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
 		if (!done_that) {
 			DBJ_WARN("MS STL index out of range caught by SEH, on each call!");
 			done_that = true;
@@ -182,7 +184,7 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 
 #include <EASTL/vector.h>
 
-static void eastl_vector_of_strings() 
+static void eastl_vector_of_strings()
 {
 #if _CPPUNWIND
 	try {
@@ -214,7 +216,7 @@ static void eastl_vector_of_strings()
 
 UBENCH(bad_index_vector, eastl_vec_)
 {
-static bool done_that = false;
+	static bool done_that = false;
 
 	__try {
 		eastl_vector_of_strings();
@@ -223,7 +225,7 @@ static bool done_that = false;
 		// _debugbreak() it seems raises the SE
 		// if debugger is not present ?
 		// but only in debug builds
-		if ( !done_that ) {
+		if (!done_that) {
 			DBJ_WARN("EASTL caught by SEH, on each call!");
 			done_that = true;
 		}
