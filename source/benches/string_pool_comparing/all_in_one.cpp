@@ -37,6 +37,43 @@ struct dbj_ustrings final {
 	}
 }; // dbj_ustrings
 
+/****************************************************************************************/
+#include "../../loki_assoc_vector.h"
+
+struct loki_assoc_vector_pool final
+{
+	using pool_type = Loki::AssocVector<size_t, std::string>;
+	using handle = pool_type::key_type;
+
+	pool_type pool_{};
+
+	handle add(const char* s)
+	{
+		static std::hash<std::string_view> hash_fun;
+		//
+		size_t hash = hash_fun(s);
+		auto it = pool_.find(hash);
+		// already in here
+		if (it != pool_.end())  return hash;
+		// new unique entry
+		pool_[hash] = pool_type::mapped_type(s);
+		return hash;
+	}
+	const char* cstring(handle h) {
+		auto it = pool_.find(h);
+		if (it == pool_.end())  return nullptr;
+		return (*it).second.c_str();
+	}
+
+	bool remove(handle h) noexcept {
+		return pool_.erase(h); // returns 0 or 1
+	}
+
+	size_t count() const {
+		return pool_.size();
+	}
+};
+/****************************************************************************************/
 // evergrowing ustring pool based on 
 // vector of uniq_ptr<char[]>
 // handle is the index of the vector
@@ -133,19 +170,19 @@ std::cout << "\nSet size:" << names.size() << "\n";
 }
 */
 
+/****************************************************************************************/
 // (c) 2021 by Arthur O'Dwyer
 
-// different handle type for 
+// not-a-handle type for 
 // Arthur's solutions
 // it is std::string_view
-// not a handle actually but a view
-
+// not a handle actually but a "pointer"
 
 struct strings_set_pool final {
 	using handle = std::string_view;
 	std::set<std::string, std::less<> > set_;
 	handle add(const char* s) {
-		// inserted, just ignore it
+		// just ignore the inserted
 		auto [it, inserted] = set_.emplace(s);
 		return *it;
 	}
@@ -174,6 +211,7 @@ UBENCH(strpool, dbj_unique_strings) {
 	test_removal<dbj_ustrings>();
 }
 
-
-
+UBENCH(strpool, loki_assoc_vector_pool) {
+	test_removal<loki_assoc_vector_pool>();
+}
 

@@ -3,6 +3,7 @@
 #include "../../ustring_pool_interface.h"
 #include <ubut/ubench.h>
 #include <ctime>
+#include <string>
 
 /****************************************************************************************/
 #define STB_DS_IMPLEMENTATION
@@ -11,14 +12,19 @@
 struct stb_pool_ final
 {
 	using type = stb_pool_;
-	using handle = char*;
 
-	constexpr static inline size_t value_max_len = 0xFF;
+	// cheating: handle must be a number
+	// if pointer, dangling handle is 
+	// impossible to deduce
+	using handle = size_t;
 
 	// value is the hash but do we need it at all?
-	struct item { char* key; size_t value; };
+	struct item { size_t key; char* value; };
 
 	item* pool{};
+
+
+	constexpr static inline size_t value_max_len = 0xFF;
 
 	static size_t seed() { static /*time_t*/ __int64 seed_ = time(0); return seed_; }
 
@@ -31,42 +37,56 @@ struct stb_pool_ final
 	}
 
 	~stb_pool_() noexcept {
-		shfree(pool);
+		hmfree(pool);
 	}
 
-
+	//	Inserts a <key, value> pair into the hashmap.If the key is already
+	//	present in the hashmap, updates its value.
+/*
+#define stbds_hmput(t, k, v) \
+	((t) = stbds_hmput_key_wrapper((t), sizeof *(t), (void*) STBDS_ADDRESSOF((t)->key, (k)), sizeof (t)->key, 0),   \
+	 (t)[stbds_temp((t)-1)].key = (k),    \
+	 (t)[stbds_temp((t)-1)].value = (v))
+	*/
 	handle add(const char* str_) noexcept {
 
-		item* itm_ = shgetp_null(pool, str_);
-
-		static int whatever = 42; /*string_hash((char*)str_)*/
+		handle hash = string_hash((char*)str_);
+		item* itm_ = hmgetp_null(pool, hash);
 
 		if (!itm_) {
-			//	Inserts a <key, value> pair into the hashmap.If the key is already
-			//	present in the hashmap, updates its value.
-			size_t control_ = shput(pool, (char*)str_, whatever);
-			(void)control_;
+
+			item* t = pool;
+			handle k = hash;
+			char* v = (char*)str_;
+
+			(t) = stbds_hmput_key_wrapper((t), sizeof * (t), (void*)STBDS_ADDRESSOF((t)->key, (k)), sizeof(t)->key, 0);
+			(t)[stbds_temp((t)-1)].key = (k);
+			(t)[stbds_temp((t)-1)].value = (v);
 		}
-		return (handle)str_;
+
+		return hash;
 	}
 
 	// returns nullptr if not found
 	const char* cstring(handle key_) noexcept {
-		item* itm_ = shgetp_null(pool, key_);
-		if (itm_)
-			return key_;
-		return nullptr;
+
+		auto it = stbds_hmgeti(pool, key_);
+
+		if (it == -1) return nullptr;
+
+		auto el = pool[it];
+		return el.value;
 	}
 
 	// returns true if found
 	bool remove(handle key_) noexcept {
 		//	If 'key' is in the hashmap, deletes its entry and returns 1.
 		//	Otherwise returns 0.
-		return shdel(pool, key_);
+		return hmdel(pool, key_);
 	}
 
 	size_t count() noexcept {
-		return shlenu(pool);
+		return hmlenu(pool);
 	}
 }; // stb_pool_
 
@@ -76,6 +96,9 @@ struct stb_pool_ final
 #include <mg/strpool.h>
 
 namespace gustavson {
+
+	// this cofig was found to be necessary 
+	// so that gustavson pool has decent speed
 	inline strpool_config_t const strpool_config =
 	{
 		/* memctx         = */ 0,
@@ -148,7 +171,7 @@ this is used from all_in_one.cpp in this same folder
 // otherwise it is extremely slow
 // and it seems it does not work properly?
 // has to be investigated
-// it private hash function looks simplistic?
+// its private hash function looks simplistic?
 #if 0
 UBENCH(strpool, gustavson_string_pool) {
 	test_removal<gustavson_pool_>();

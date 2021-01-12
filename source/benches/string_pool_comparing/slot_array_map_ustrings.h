@@ -61,6 +61,7 @@ struct slot_arr_pool final
 }; // slot_arr_pool
 
 /****************************************************************************************/
+// slot map by Arthur O'Dwyer
 struct slot_map_pool final
 {
 	using type = slot_map_pool;
@@ -115,8 +116,10 @@ slot_map on its own has no unique insert
 UBENCH(strpool, slot_map_pool_bench) {
 	test_removal<slot_map_pool>();
 }
-*/
 
 UBENCH(strpool, slot_array_pool_bench) {
 	test_removal<slot_arr_pool>();
 }
+
+*/
+

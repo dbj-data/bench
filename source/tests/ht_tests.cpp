@@ -12,13 +12,27 @@
 // C11 and C++11
 // #endif // __STDC_VERSION__ >= 201112L || __cplusplus >= 201103L
 
+#include "../source/loki_assoc_vector.h"
 #include <slot/packed_array.h>
 #include <string>
 
 using tmd = testing_meta_data;
 
-UTEST(meta, test) {
-	ASSERT_EQ(1, 1);
+UTEST(handle_solutions, loki_assoc_vector)
+{
+	Loki::AssocVector< size_t, std::string > lav;
+
+	lav[0] = "A"; // eh?
+	lav[1] = "B"; // eh?
+	lav[2] = "C"; // eh?
+
+	ASSERT_EQ(lav.size(), 3);
+
+	lav[0] = "A"; // eh?
+	lav[1] = "B"; // eh?
+	lav[2] = "C"; // eh?
+
+	ASSERT_EQ(lav.size(), 3);
 }
 
 //UTEST(handle_solutions, packed_aray_dbj) {
