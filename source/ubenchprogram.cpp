@@ -15,8 +15,7 @@ UBENCH_STATE;
 // framework is where SEH is managed
 extern "C" int bench_program(int argc, char** argv)
 {
-
-	return EXIT_SUCCESS;
+	return ubench_main(argc, argv);
 } // program
 
 // this is used from DBJ+FWK if we compile it that way

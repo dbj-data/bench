@@ -15,7 +15,9 @@ UTEST_STATE;
 // framework is where SEH is managed
 extern "C" int test_program(int argc, char** argv)
 {
-	return EXIT_SUCCESS;
+	return utest_main(argc, argv);
 } // program
+
+
 
 
