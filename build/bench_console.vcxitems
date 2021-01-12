@@ -26,9 +26,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\all_in_one.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling_excpt_overhead.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\program.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\ubenchprogram.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\tests\ht_tests.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\tests\type_printers.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\utestprogram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />

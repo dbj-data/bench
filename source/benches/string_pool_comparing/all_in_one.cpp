@@ -74,6 +74,65 @@ struct dbj_extreme final {
 }; // dbj_extreme
 
 /****************************************************************************************/
+/*  (c) 2021 by dbj@dbj.org -- unique string with unordered_set
+	https://godbolt.org/z/Kjjfcq
+
+#include <unordered_set>
+
+struct S final {
+	size_t hash ;
+	std::string name;
+};
+inline bool operator==(const S& lhs, const S& rhs) noexcept {
+	return lhs.hash == rhs.hash;
+}
+
+// custom hash
+struct MyHash
+{
+	std::size_t operator()(S const & s) const noexcept
+	{
+		return const_cast<S&>(s).hash = std::hash<std::string>{}(s.name);
+		// return s.hash ;
+	}
+};
+
+using set_of_unique_names =  std::unordered_set<S, MyHash> ;
+
+size_t add (set_of_unique_names & names, const char * name_) {
+	auto R = names.emplace( S{0, std::string(name_) });
+	return R.first->hash;
+}
+
+bool find
+(set_of_unique_names const & names, std::string & retval, size_t hash_) {
+for(auto&& s: names)
+if (s.hash == hash_) {
+	retval = s.name ;
+	return true;
+}
+return false ;
+}
+
+int main()
+{
+	set_of_unique_names names;
+	auto h1 = add( names, "Rodriguez" );
+	auto h2 = add( names, "Mickey" );
+	auto h3 = add( names, "Leela" );
+	auto h4 = add( names, "Mouse" );
+	auto h5 = add( names, "Leela" );
+
+	std::string rezult;
+	 if ( find(names, rezult, h1 ) )
+	std::cout << "Found: " << rezult << ", by id: " << h1 << "\n";
+
+
+std::cout << "\nSet size:" << names.size() << "\n";
+	for(auto&& s: names)  std::cout << s << '\n';
+}
+*/
+
 // (c) 2021 by Arthur O'Dwyer
 
 // different handle type for 

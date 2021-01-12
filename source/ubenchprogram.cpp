@@ -10,46 +10,11 @@
 
 UBENCH_STATE;
 
-
-#include <ubut/utest.h>
-
-UTEST_STATE;
-
 // user code start here
 // this is called from framework
 // framework is where SEH is managed
-extern "C" int program(int argc, char** argv)
+extern "C" int bench_program(int argc, char** argv)
 {
-	// logic is this
-	// if DBJ_CL_ARG_IGNORE_UBENCH argument is NOT given result is proceed
-	// if it is given callback provided will return stop and flow will pass this
-	if (dbj::app_args_result::proceed == dbj::app_args_callback_(DBJ_CL_ARG_IGNORE_UBENCH, dbj::app_args_stop))
-	{
-		UBUT_INFO(" ");
-		UBUT_INFO("================================================================");
-		UBUT_INFO("UBENCHES");
-		UBUT_INFO("================================================================");
-		UBUT_INFO(" ");
-
-		(void)ubench_main(argc, argv);
-	}
-
-	if (dbj::app_args_result::proceed == dbj::app_args_callback_(DBJ_CL_ARG_IGNORE_UTEST, dbj::app_args_stop))
-	{
-		UBUT_INFO(" ");
-		UBUT_INFO("================================================================");
-		UBUT_INFO("UTESTS");
-		UBUT_INFO("================================================================");
-		UBUT_INFO(" ");
-
-		(void)utest_main(argc, argv);
-	}
-
-	UBUT_INFO(" ");
-	UBUT_INFO("================================================================");
-	UBUT_INFO("%s %s DONE", DBJ_APP_NAME, DBJ_APP_VERSION);
-	UBUT_INFO("================================================================");
-	UBUT_INFO(" ");
 
 	return EXIT_SUCCESS;
 } // program
