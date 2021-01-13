@@ -1,28 +1,131 @@
-#pragma once
-
-#include "ustring_pool_interface.h"
+#ifndef TH_TESTING_COMMON_INC
+#define TH_TESTING_COMMON_INC
 
 /****************************************************************************************/
 // testing stuff 
 // all implementations must go through here
 // all using the same testing metadata
 
-#include <cassert>
-#include <string>
-#include <string_view>
-#include <set>
-#include <array>
+#include <assert.h>
+#include <string.h>
+#include <stdio.h>
 
-namespace /*ustring_pool_testing*/ {
 #undef  PRINTF
 #define PRINTF(...) 	fprintf(stderr, __VA_ARGS__);  
+
+#undef  DBJ_NME_1
+#undef  DBJ_NME_2
+#undef  DBJ_NME_3
 
 #define DBJ_NME_1(x, y) x##y
 #define DBJ_NME_2(x, y) DBJ_NME_1(x, y)
 #define DBJ_NME_3(x)    DBJ_NME_2(x, __COUNTER__)
 
-#undef DBJ_VERIFY
-#define DBJ_VERIFY(x) do {          \
+// UST_VERIFY == Uniqaue Strings Testing  Verify
+
+#undef UST_VERIFY
+#define UST_VERIFY(x) do {          \
+  bool rzlt = (x) ;					\
+  if (! rzlt) {                     \
+	PRINTF("\nNot true: %s", #x);   \
+	PRINTF("\n%s(%4u)\n", __FILE__, __LINE__);      \
+	exit(0) ;                       \
+  }                                 \
+} while(0)
+
+
+#ifndef  __cplusplus
+
+#include "ustring_pool_interface_CAPI.h"
+
+typedef struct us_testing_meta_data
+{
+	const char* const hello;
+	const char* const goodbye;
+	const char* const jello;
+
+	bool (*is_hello)  (const char*);
+	bool (*is_goodbye)(const char*);
+	bool (*is_jello)  (const char*);
+} us_testing_meta_data;
+
+extern struct us_testing_meta_data usmd;
+
+// implementation is here,  but could be hidden in some c file
+
+static bool is_hello(const char* s) { return !strcmp(s, usmd.hello); }
+static bool is_goodbye(const char* s) { return !strcmp(s, usmd.goodbye); }
+static bool is_jello(const char* s) { return !strcmp(s, usmd.jello); }
+
+static us_testing_meta_data usmd = {
+   .hello = "Hello",
+   .goodbye = "Goodbye",
+   .jello = "Jello",
+   .is_hello = is_hello ,
+   .is_goodbye = is_goodbye ,
+   .is_jello = is_jello
+};
+
+inline void test_common(const struct dbj_evergrowing_ustring_pool* pool)
+{
+	dbj_handle hello_h = pool->add(usmd.hello);
+	dbj_handle goodbye_h = pool->add(usmd.goodbye);
+
+	// test the retrieval
+	UST_VERIFY(usmd.is_hello(pool->cstring(hello_h)));
+	UST_VERIFY(usmd.is_goodbye(pool->cstring(goodbye_h)));
+
+	// add two more hello's
+	(void)pool->add(usmd.hello);
+	(void)pool->add(usmd.hello);
+	// count must stay the same
+	UST_VERIFY(pool->count() == 2);
+	// add new 
+	pool->add(usmd.jello);
+	// count must have incremented 
+	UST_VERIFY(pool->count() == 3);
+};
+
+inline void test_removal(const struct dbj_us_pool_interface* pool)
+{
+	dbj_handle hello_h = pool->add(usmd.hello);
+	dbj_handle goodbye_h = pool->add(usmd.goodbye);
+	dbj_handle jello_h = pool->add(usmd.jello);
+
+	UST_VERIFY(pool->remove(hello_h));
+	// check if "hello" has been removed
+	UST_VERIFY(pool->cstring(hello_h) == NULL);
+	UST_VERIFY(pool->count() == 2);
+
+	// check if the rest has stayed
+	UST_VERIFY(usmd.is_hello(pool->cstring(hello_h)));
+	UST_VERIFY(usmd.is_jello(pool->cstring(jello_h)));
+	UST_VERIFY(pool->count() == 2);
+
+	// try removing the removed one
+	UST_VERIFY(false == pool->remove(hello_h));
+	// now remove the rest
+	UST_VERIFY(pool->remove(goodbye_h));
+	UST_VERIFY(pool->remove(jello_h));
+	UST_VERIFY(pool->count() == 0);
+}
+
+#endif // ! __cplusplus
+
+#ifdef __cplusplus
+
+#include <string_view>
+#include <set>
+#include <array>
+#include <string>
+
+
+#include "ustring_pool_interface.h"
+
+namespace /*ustring_pool_testing*/ {
+
+#undef UST_VERIFY
+#define UST_VERIFY(x) do {          \
   bool rzlt = (x) ;					\
   if (! rzlt) {                     \
 	PRINTF("\nNot true: %s", #x);   \
@@ -32,6 +135,7 @@ namespace /*ustring_pool_testing*/ {
 	exit(0) ;                       \
   }                                 \
 } while(0)
+
 
 	// one test covers all
 	// regardless of the fact
@@ -75,18 +179,18 @@ namespace /*ustring_pool_testing*/ {
 			auto goodbye_h = pool.add(tmd::goodbye.data());
 
 			// test the retrieval
-			DBJ_VERIFY(match(pool, hello_h));
-			DBJ_VERIFY(match(pool, goodbye_h));
+			UST_VERIFY(match(pool, hello_h));
+			UST_VERIFY(match(pool, goodbye_h));
 
 			// add two more hello's
 			(void)pool.add(tmd::hello.data());
 			(void)pool.add(tmd::hello.data());
 			// count must stay the same
-			DBJ_VERIFY(pool.count() == 2);
+			UST_VERIFY(pool.count() == 2);
 			// add new 
 			/*auto jello_h = */pool.add(tmd::jello.data());
 			// count must have incremented 
-			DBJ_VERIFY(pool.count() == 3);
+			UST_VERIFY(pool.count() == 3);
 		};
 	} // nspace 
 
@@ -110,24 +214,30 @@ namespace /*ustring_pool_testing*/ {
 		auto goodbye_h = pool.add(tmd::goodbye.data());
 		auto jello_h = pool.add(tmd::jello.data());
 
-		DBJ_VERIFY(pool.remove(hello_h));
+		UST_VERIFY(pool.remove(hello_h));
 		// check if "hello" has been removed
-		DBJ_VERIFY(pool.cstring(hello_h) == nullptr);
-		DBJ_VERIFY(pool.count() == 2);
+		UST_VERIFY(pool.cstring(hello_h) == nullptr);
+		UST_VERIFY(pool.count() == 2);
 
 		using namespace detail;
 
 		// check if the rest has stayed
-		DBJ_VERIFY(match(pool, goodbye_h));
-		DBJ_VERIFY(match(pool, jello_h));
-		DBJ_VERIFY(pool.count() == 2);
+		UST_VERIFY(match(pool, goodbye_h));
+		UST_VERIFY(match(pool, jello_h));
+		UST_VERIFY(pool.count() == 2);
 
 		// try removing the removed one
-		DBJ_VERIFY(false == pool.remove(hello_h));
+		UST_VERIFY(false == pool.remove(hello_h));
 		// now remove the rest
-		DBJ_VERIFY(pool.remove(goodbye_h));
-		DBJ_VERIFY(pool.remove(jello_h));
-		DBJ_VERIFY(pool.count() == 0);
+		UST_VERIFY(pool.remove(goodbye_h));
+		UST_VERIFY(pool.remove(jello_h));
+		UST_VERIFY(pool.count() == 0);
 	}
 
+#undef UST_VERIFY
+
 } // namespace ustring_pool_testing
+
+#endif // __cplusplus
+
+#endif // !TH_TESTING_COMMON_INC

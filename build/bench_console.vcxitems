@@ -24,6 +24,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\metastate_nontrivialsimplesample.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\squareroot.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\all_in_one.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\ustring_pool_CAPI.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\ustring_pool_testing_CAPI.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\benches\vector_sampling_excpt_overhead.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\source\ubenchprogram.cpp" />
@@ -38,5 +40,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ht_testing_common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\loki_assoc_vector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ustring_pool_interface.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ustring_pool_interface_CAPI.h" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 
 /****************************************************************************************/
 // (c) 2021 by dbj@dbj.org
-struct dbj_ustrings final {
+struct dbj_uss final {
 	using handle = size_t;
 	using store_t = dbj::ustrings;
 	store_t store_{};
@@ -35,7 +35,7 @@ struct dbj_ustrings final {
 	size_t count() const noexcept {
 		return store_.strings.size();
 	}
-}; // dbj_ustrings
+}; // dbj_uss
 
 /****************************************************************************************/
 #include "../../loki_assoc_vector.h"
@@ -208,7 +208,7 @@ UBENCH(strpool_evergrowing, dbj_extreme_solution) {
 }
 
 UBENCH(strpool, dbj_unique_strings) {
-	test_removal<dbj_ustrings>();
+	test_removal<dbj_uss>();
 }
 
 UBENCH(strpool, loki_assoc_vector_pool) {

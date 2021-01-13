@@ -3,10 +3,14 @@
 > &copy 2020 by dbj@dbj.org -- https://dbj.org/license_dbj
 > 
 
-Relevant code is [here](https://github.com/dbj-data/dbj-bench/tree/master/source/benches/string_pool_comparing).
+Godbolt with key types is [here](https://godbolt.org/z/s7b8Td)
 
-Build: 
-- cl.exe in release mode. 
+Relevant repo and code is [here](https://github.com/dbj-data/dbj-bench/tree/master/source/benches/string_pool_comparing).
+
+Build key details: 
+- cl.exe or clang-cl.exe compilers
+- release mode
+  - remember `NDEBUG` is official and required by `assert.h`
 - `/D_HAS_EXCEPTIONS=0` 
   - also puts MS STL in the "[SEH](https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160) mode"
 -  `/GR-` for no RTTI. 
