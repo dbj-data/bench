@@ -11,6 +11,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
+#include <random>
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,34 +83,50 @@ extern "C" {
 #pragma endregion 
 
 
-/* https://stackoverflow.com/a/17554531 */
-	static unsigned int rand_interval(unsigned int min, unsigned int max)
+/* https://stackoverflow.com/a/17554531
+*
+* dbj : RAND_MAX is SHRT_MAX is 32767
+* thus be carefull  max <  RAND_MAX
+*/
+	static unsigned int rand_interval(const unsigned short min, const unsigned short max)
 	{
+		constexpr unsigned short RANDYMAXY{ RAND_MAX };
+		assert(RANDYMAXY > 0);
+		assert(RANDYMAXY > max);
+
+		assert(max > min);
+		if (min == max) return min;
+
 		unsigned int r;
 		const unsigned int range = 1 + max - min;
-		const unsigned int buckets = RAND_MAX / range;
+		const unsigned int buckets = RANDYMAXY / range;
+		assert(buckets > 0);
 		const unsigned int limit = buckets * range;
-		do { r = rand(); } while (r >= limit);
+		assert(limit > 0);
+
+		do {
+			r = std::rand();
+		} while (r >= limit);
+
 		return min + (r / buckets);
 	}
 
 	/*
 	common things made for comparing various string pooling solutions
 	*/
-	enum { common_string_data_size_ = 0xFF };
-	struct string_
+	enum { dbj_string_data_size_ = 0xFF };
+	struct dbj_string_
 	{
 		size_t size; // the strlen result
-		char data[common_string_data_size_];
+		char data[dbj_string_data_size_];
 	};
 
-	static struct string_ counter_to_string(size_t size_arg_)
+	static struct dbj_string_ counter_to_string(size_t counter_)
 	{
-		struct string_ retval = { 0, {0} };
-		// warning: 0 produces "" (that has lenght 1), aka empty string
-		// thus we start from 1
-		size_arg_ += 1;
-		(void)snprintf(retval.data, common_string_data_size_, "%zu", size_arg_);
+		struct dbj_string_ retval = { 0, {0} };
+		// warning: counter_ == 0 produces "" aka empty string
+		// thus we do +1
+		(void)snprintf(retval.data, dbj_string_data_size_, "%zu", (counter_ + 1));
 		retval.size = strlen(retval.data);
 		return retval;
 	}
@@ -118,9 +135,9 @@ extern "C" {
 		return (char)rand_interval(64, 126);
 	}
 
-	static struct string_  make_random_string(size_t size_arg_)
+	static struct dbj_string_  make_random_string(size_t size_arg_)
 	{
-		struct string_ retval = { 0, {0} };
+		struct dbj_string_ retval = { 0, {0} };
 		assert(size_arg_ > 0);
 		srand((unsigned)time(0));
 		retval.size = size_arg_ + 1;
@@ -135,5 +152,59 @@ extern "C" {
 #ifdef __cplusplus
 } //	extern "C" 
 #endif
+
+#ifdef __cplusplus
+
+#include <cstdint>
+#include <limits>
+
+//
+
+namespace {
+
+	static constexpr std::uint64_t time_to_seed()
+	{
+		std::uint64_t shifted = 0;
+
+		for (const auto c : __TIME__)
+		{
+			shifted <<= 8;
+			shifted |= c;
+		}
+
+		return shifted;
+	}
+
+	// can't find the author?
+	template<std::uint32_t S, std::uint32_t A = 16807UL, std::uint32_t C = 0UL, std::uint32_t M = (1UL << 31) - 1>
+	struct LinearGenerator final {
+		constexpr static const std::uint32_t state = ((std::uint64_t)S * A + C) % M;
+		constexpr static const std::uint32_t value = state;
+
+#if LINEAR_GENERATOR_LEAPFROG
+		typedef LinearGenerator<state> next;
+		struct Split { // Leapfrog
+			typedef LinearGenerator< state, A* A, 0, M> Gen1;
+			typedef LinearGenerator<next::state, A* A, 0, M> Gen2;
+	};
+#endif // LINEAR_GENERATOR_LEAPFROG
+
+};
+
+	using DBJ_CT_RND = LinearGenerator<std::uint32_t(time_to_seed())>;
+
+} // nspace as
+#endif // __cplusplus
+
+/* usage:
+
+#include <stdio.h>
+int main()
+{
+  constexpr auto r2 = DBJ_CT_RND::value;
+}
+*/
+
+
 
 #endif  // STRING_POOL_COMMON_INC
