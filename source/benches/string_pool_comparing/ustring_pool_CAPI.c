@@ -1,8 +1,9 @@
 #include "../../ustring_pool_interface_CAPI.h"
 
-
 /****************************************************************************************/
-// #define STB_DS_IMPLEMENTATION
+#pragma region STB DS pool
+
+#define STB_DS_IMPLEMENTATION
 #include <stb/stb_ds.h>
 
 // the implementation
@@ -36,7 +37,7 @@ static dbj_handle stb_pool_add(const char* str_)
 	return hash;
 }
 
-const char* stb_pool_cstring(dbj_handle key_)
+static const char* stb_pool_cstring(dbj_handle key_)
 {
 	int it = stbds_hmgeti(stb_pool, key_);
 
@@ -46,57 +47,179 @@ const char* stb_pool_cstring(dbj_handle key_)
 	return el.value;
 }
 
-bool stb_pool_remove(dbj_handle key_)
+static bool stb_pool_remove(dbj_handle key_)
 {
 	//	If 'key' is in the hashmap, deletes its entry and returns 1.
 //	Otherwise returns 0.
-	return hmdel(stb_pool, key_);
+	return stbds_hmdel(stb_pool, key_);
 }
 
+static size_t stb_pool_count() {
 
-size_t stb_pool_count() { return hmlenu(stb_pool); }
+#ifdef _DEBUG
+	if (stb_pool) {
+		stbds_array_header* head = stbds_header((stb_pool)-1);
+		return head->length - 1;
+	}
+	else {
+		return 0;
+	}
+#else
+	return stbds_hmlenu(stb_pool);
+#endif
+}
+
+static void stb_pool_reset() {
+
+	// erase the previous hash map
+	// otherwise this will be a single global us gustavson_pool_
+	// which is sometimes a "good thing"
+	if (stb_pool) {
+		stbds_hmfree(stb_pool);
+		stb_pool = NULL;
+	}
+}
 
 /* not part of interface , aka "private" *******************************************************************/
-static struct dbj_us_pool_interface* instance_ = NULL;
+static struct dbj_us_pool_interface* stb_pool_instance_ = NULL;
 
 static struct dbj_us_pool_interface* stb_pool_construct()
 {
-	if (!instance_) {
-		instance_ =
+	if (!stb_pool_instance_) {
+		stb_pool_instance_ =
 			(struct dbj_us_pool_interface*)calloc(1, sizeof(struct dbj_us_pool_interface));
 
-		assert(instance_);
+		assert(stb_pool_instance_);
 
-		instance_->add = stb_pool_add;
-		instance_->cstring = stb_pool_cstring;
-		instance_->count = stb_pool_count;
-		instance_->remove = stb_pool_remove;
+		stb_pool_instance_->add = stb_pool_add;
+		stb_pool_instance_->cstring = stb_pool_cstring;
+		stb_pool_instance_->count = stb_pool_count;
+		stb_pool_instance_->remove = stb_pool_remove;
+		stb_pool_instance_->reset = stb_pool_reset;
 	}
 
-	// before you leave, erase the previous hash map
-	// otherwise this will be a single global us pool
-	// which is sometimes a "good thing"
-	if (stb_pool != NULL) {
-		hmfree(stb_pool);
-		stb_pool = NULL;
-	}
-
-	return instance_;
+	return stb_pool_instance_;
 }
 
 // clang destruction
 __attribute__((destructor))
 static void stb_pool_destruct(void)
 {
-	if (instance_)
+	if (stb_pool_instance_)
 	{
 		hmfree(stb_pool);
 		stb_pool = NULL;
-		free(instance_);
-		instance_ = NULL;
+		free(stb_pool_instance_);
+		stb_pool_instance_ = NULL;
 	}
 }
 
+#pragma endregion
+
+/****************************************************************************************/
+#pragma region Gustavson unique strings pool 
+// gustavson has a complete implementation. but.
+// it required effort to configure it 
+// otherwise it is extremely slow
+// and it seems it does not work properly?
+// has to be investigated
+// its private hash function looks simplistic?
+
+#define STRPOOL_IMPLEMENTATION
+#include <mg/strpool.h>
+
+// this cofig was found to be necessary 
+// so that gustavson gustavson_pool_ has decent speed
+//  strpool_default_config provokes MUCH worse results?
+static strpool_config_t const gustavson_strpool_config =
+{
+	/* memctx         = */ 0,
+	/* ignore_case    = */ 0,
+	/* counter_bits   = */ 0xF,
+	/* index_bits     = */ 0xF,
+	/* entry_capacity = */ 0xF,
+	/* block_capacity = */ 0xF,
+	/* block_size     = */ 0xF,
+	/* min_length     = */ 0xF
+};
+
+// gustavson handle type is STRPOOL_U64;
+// dbj_handle is size_t
+
+static strpool_t gustavson_pool_;
+
+static dbj_handle gustavson_add(const char* str_)
+{
+#ifdef _DEBUG
+	size_t dummy = gustavson_pool_.entry_count;
+	(void)dummy;
+#endif
+	return strpool_inject(&gustavson_pool_,
+		str_,
+		(int)strlen(str_)
+	);
+}
+
+// returns nullptr if not found
+static const char* gustavson_cstring(dbj_handle h_) {
+	return strpool_cstr(&gustavson_pool_, h_);
+}
+
+// returns true if found
+static bool gustavson_remove(dbj_handle h_) {
+
+	if (NULL == strpool_cstr(&gustavson_pool_, h_)) return false;
+	strpool_discard(&gustavson_pool_, h_);
+	return true;
+}
+
+static size_t gustavson_count()
+{
+	return gustavson_pool_.entry_count;
+}
+
+static void gustavson_reset() {
+	// erase the previous gustavson hash map
+	// otherwise this will be a single global ever growing pool
+	// which is sometimes a "good thing" but not now
+	strpool_term(&gustavson_pool_);
+	strpool_init(&gustavson_pool_, &gustavson_strpool_config);
+}
+
+static struct dbj_us_pool_interface* gustavson_instance_ = NULL;
+
+static struct dbj_us_pool_interface* gustavson_construct()
+{
+	if (!gustavson_instance_) {
+		gustavson_instance_ =
+			(struct dbj_us_pool_interface*)calloc(1, sizeof(struct dbj_us_pool_interface));
+
+		assert(gustavson_instance_);
+
+		gustavson_instance_->add = gustavson_add;
+		gustavson_instance_->cstring = gustavson_cstring;
+		gustavson_instance_->count = gustavson_count;
+		gustavson_instance_->remove = gustavson_remove;
+		gustavson_instance_->reset = gustavson_reset;
+	}
+
+	return gustavson_instance_;
+}
+
+// clang destruction
+__attribute__((destructor))
+static void gustavson_destruct(void)
+{
+	if (gustavson_instance_)
+	{
+		strpool_term(&gustavson_pool_);
+		free(gustavson_instance_);
+		gustavson_instance_ = NULL;
+	}
+}
+
+#undef STRPOOL_IMPLEMENTATION
+#pragma endregion 
 /****************************************************************************************************************/
 // we could make a shared single instance
 // static dbj_evergrowing_ustring_pool singleinst_ { . . . };
@@ -121,6 +244,11 @@ void* uspool_factory(uspool_implementations_registry which_)
 	case US_STB_POOL:
 	{
 		return stb_pool_construct();
+	}
+	break;
+	case US_GUSTAVSON_POOL:
+	{
+		return gustavson_construct();
 	}
 	break;
 	default:

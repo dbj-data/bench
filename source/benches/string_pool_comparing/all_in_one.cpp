@@ -1,6 +1,5 @@
 #include "../../ht_testing_common.h"
-#include "slot_array_map_ustrings.h"
-#include "ustring_pool_using_c_apis.h"
+// #include "slot_array_map_ustrings.h"
 #include "uthash_ustrings.h"
 #include <dbj/dbj_ustrings.h>
 #include <ubut/ubench.h>
@@ -170,6 +169,71 @@ std::cout << "\nSet size:" << names.size() << "\n";
 }
 */
 
+#include <unordered_set>
+
+struct dbj_uset_pool final
+{
+	using handle = size_t;
+
+	struct S final {
+		size_t hash{};
+		std::string name{};
+	};
+
+	friend bool operator==(const S& lhs, const S& rhs) noexcept {
+		return lhs.hash == rhs.hash;
+	}
+
+	// custom hash is the mechanism by which we enter
+	// hash and string automagically
+	struct MyHash final
+	{
+		std::size_t operator()(S const& s) const noexcept
+		{
+			return const_cast<S&>(s).hash = std::hash<std::string>{}(s.name);
+			// return s.hash ;
+		}
+	};
+
+	using set_of_unique_names = std::unordered_set<S, MyHash>;
+	set_of_unique_names names{};
+
+	static bool find
+	(set_of_unique_names const& names, std::string& retval, size_t hash_) noexcept {
+		for (auto&& s : names)
+			if (s.hash == hash_) {
+				retval = s.name;
+				return true;
+			}
+		return false;
+	}
+
+	handle add(const char* s) noexcept {
+		auto R = names.emplace(S{ 0, std::string(s) });
+		return R.first->hash;
+	}
+
+	const char* cstring(handle h) const noexcept
+	{
+		static std::string rv_{};
+		if (find(names, rv_, h)) return rv_.c_str();
+		return nullptr;
+	}
+
+	bool remove(handle h)
+	{
+		if (cstring(h)) {
+			static std::string empty{};
+			names.erase(S{ h, empty });
+			return true;
+		}
+	}
+	size_t count() const {
+		return names.size();
+	}
+
+};
+
 /****************************************************************************************/
 // (c) 2021 by Arthur O'Dwyer
 
@@ -213,5 +277,9 @@ UBENCH(strpool, dbj_unique_strings) {
 
 UBENCH(strpool, loki_assoc_vector_pool) {
 	test_removal<loki_assoc_vector_pool>();
+}
+
+UBENCH(strpool, dbj_unordered_set_pool) {
+	test_removal<dbj_uset_pool>();
 }
 

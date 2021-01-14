@@ -121,6 +121,7 @@ extern "C" {
 		char data[dbj_string_data_size_];
 	};
 
+#if 0
 	static struct dbj_string_ counter_to_string(size_t counter_)
 	{
 		struct dbj_string_ retval = { 0, {0} };
@@ -148,7 +149,7 @@ extern "C" {
 		retval.data[size_arg_] = '\0';
 		return retval;
 	}
-
+#endif // 0
 #ifdef __cplusplus
 } //	extern "C" 
 #endif
@@ -186,10 +187,10 @@ namespace {
 		struct Split { // Leapfrog
 			typedef LinearGenerator< state, A* A, 0, M> Gen1;
 			typedef LinearGenerator<next::state, A* A, 0, M> Gen2;
-	};
+		};
 #endif // LINEAR_GENERATOR_LEAPFROG
 
-};
+	};
 
 	using DBJ_CT_RND = LinearGenerator<std::uint32_t(time_to_seed())>;
 

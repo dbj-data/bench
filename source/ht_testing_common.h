@@ -53,9 +53,9 @@ extern struct us_testing_meta_data usmd;
 
 // implementation is here,  but could be hidden in some c file
 
-static bool is_hello(const char* s) { return !strcmp(s, usmd.hello); }
-static bool is_goodbye(const char* s) { return !strcmp(s, usmd.goodbye); }
-static bool is_jello(const char* s) { return !strcmp(s, usmd.jello); }
+static bool is_hello(const char* s) { assert(s);  return !strcmp(s, usmd.hello); }
+static bool is_goodbye(const char* s) { assert(s); return !strcmp(s, usmd.goodbye); }
+static bool is_jello(const char* s) { assert(s); return !strcmp(s, usmd.jello); }
 
 static us_testing_meta_data usmd = {
    .hello = "Hello",
@@ -98,7 +98,7 @@ inline void test_removal(const struct dbj_us_pool_interface* pool)
 	UST_VERIFY(pool->count() == 2);
 
 	// check if the rest has stayed
-	UST_VERIFY(usmd.is_hello(pool->cstring(hello_h)));
+	UST_VERIFY(usmd.is_goodbye(pool->cstring(goodbye_h)));
 	UST_VERIFY(usmd.is_jello(pool->cstring(jello_h)));
 	UST_VERIFY(pool->count() == 2);
 

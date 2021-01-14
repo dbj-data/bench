@@ -1,4 +1,9 @@
 #pragma once
+/*
+* (c) 2021 by dbj@dbj.org  -- https://dbj.org/dbj_license
+*
+* USPOOL == Unique String POOL
+*/
 #include <assert.h>
 #include <time.h>
 #include <stdlib.h>
@@ -52,6 +57,8 @@ struct dbj_us_pool_data;
 
 struct dbj_evergrowing_ustring_pool
 {
+	// if single shared instance 
+	void (*reset)(void);
 	// does not insert if already exist
 	// return handle to the entry made 
 	// or found
@@ -70,6 +77,8 @@ struct dbj_evergrowing_ustring_pool
 // thus the problem arises: the dangling handles
 struct dbj_us_pool_interface
 {
+	// if single shared instance 
+	void (*reset)(void);
 	// we couild expose parent methods
 	// nut we wont, one might just use c++
 	// dbj_evergrowing_ustring_pool* (*parent)(void);
@@ -100,7 +109,7 @@ struct dbj_us_pool_interface
 // TODO: locking policy. NULL policy does no locking.
 
 // master factory 
-typedef enum uspool_implementations_registry { US_STB_POOL } uspool_implementations_registry;
+typedef enum uspool_implementations_registry { US_STB_POOL, US_GUSTAVSON_POOL } uspool_implementations_registry;
 
 void* uspool_factory(uspool_implementations_registry);
 
