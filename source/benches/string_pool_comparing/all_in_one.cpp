@@ -3,12 +3,15 @@
 #include "uthash_ustrings.h"
 #include <dbj/dbj_ustrings.h>
 #include <ubut/ubench.h>
+#include <uthash/uthash.h>
+
+#include <string_view>
 
 /****************************************************************************************/
 // (c) 2021 by dbj@dbj.org
 struct dbj_uss final {
 	using handle = size_t;
-	using store_t = dbj::ustrings;
+	using store_t = dbj::ustring_pool_using_uniq_ptr;
 	store_t store_{};
 
 	handle add(const char* s) noexcept {
@@ -18,11 +21,11 @@ struct dbj_uss final {
 	//if handle is not valid null pointer is returned
 	const char* cstring(handle h) const noexcept
 	{
-		for (auto&& node_ : store_.strings)
+		for (auto&& hspair_ : store_.strings)
 		{
-			if (h == node_.H)
+			if (h == hspair_.first)
 			{
-				return node_.ptr.get();
+				return hspair_.second.get();
 			}
 		}
 		return nullptr;
@@ -110,64 +113,8 @@ struct dbj_extreme final {
 }; // dbj_extreme
 
 /****************************************************************************************/
-/*  (c) 2021 by dbj@dbj.org -- unique string with unordered_set
-	https://godbolt.org/z/Kjjfcq
-
-#include <unordered_set>
-
-struct S final {
-	size_t hash ;
-	std::string name;
-};
-inline bool operator==(const S& lhs, const S& rhs) noexcept {
-	return lhs.hash == rhs.hash;
-}
-
-// custom hash
-struct MyHash
-{
-	std::size_t operator()(S const & s) const noexcept
-	{
-		return const_cast<S&>(s).hash = std::hash<std::string>{}(s.name);
-		// return s.hash ;
-	}
-};
-
-using set_of_unique_names =  std::unordered_set<S, MyHash> ;
-
-size_t add (set_of_unique_names & names, const char * name_) {
-	auto R = names.emplace( S{0, std::string(name_) });
-	return R.first->hash;
-}
-
-bool find
-(set_of_unique_names const & names, std::string & retval, size_t hash_) {
-for(auto&& s: names)
-if (s.hash == hash_) {
-	retval = s.name ;
-	return true;
-}
-return false ;
-}
-
-int main()
-{
-	set_of_unique_names names;
-	auto h1 = add( names, "Rodriguez" );
-	auto h2 = add( names, "Mickey" );
-	auto h3 = add( names, "Leela" );
-	auto h4 = add( names, "Mouse" );
-	auto h5 = add( names, "Leela" );
-
-	std::string rezult;
-	 if ( find(names, rezult, h1 ) )
-	std::cout << "Found: " << rezult << ", by id: " << h1 << "\n";
-
-
-std::cout << "\nSet size:" << names.size() << "\n";
-	for(auto&& s: names)  std::cout << s << '\n';
-}
-*/
+/*  (c) 2021 by dbj@dbj.org -- unique string with unordered_set */
+/*  https://godbolt.org/z/1xTK4c */
 
 #include <unordered_set>
 
@@ -199,7 +146,8 @@ struct dbj_uset_pool final
 	set_of_unique_names names{};
 
 	static bool find
-	(set_of_unique_names const& names, std::string& retval, size_t hash_) noexcept {
+	(set_of_unique_names const& names, std::string& retval, size_t hash_)
+		noexcept {
 		for (auto&& s : names)
 			if (s.hash == hash_) {
 				retval = s.name;
@@ -222,12 +170,15 @@ struct dbj_uset_pool final
 
 	bool remove(handle h)
 	{
-		if (cstring(h)) {
-			static std::string empty{};
-			names.erase(S{ h, empty });
-			return true;
-		}
+		for (auto it = names.begin(); it != names.end(); ++it)
+			if (it->hash == h) {
+				(void)names.erase(it);
+				return true;
+			}
+
+		return false;
 	}
+
 	size_t count() const {
 		return names.size();
 	}
@@ -240,8 +191,6 @@ struct dbj_uset_pool final
 // not-a-handle type for 
 // Arthur's solutions
 // it is std::string_view
-// not a handle actually but a "pointer"
-
 struct strings_set_pool final {
 	using handle = std::string_view;
 	std::set<std::string, std::less<> > set_;
@@ -260,14 +209,52 @@ struct strings_set_pool final {
 	}
 };
 
-
+/****************************************************************************************/
+// (c) 2021 by Arthur O'Dwyer
+struct uthash_pool final {
+	using handle = std::string_view;
+	struct Item {
+		std::string data;
+		UT_hash_handle hh;
+	};
+	Item* set_ = nullptr;
+	handle add(const char* s) {
+		Item* item;
+		HASH_FIND_STR(set_, s, item);
+		if (item == nullptr) {
+			item = new Item{ s, {} };
+			HASH_ADD_STR(set_, data.c_str(), item);
+		}
+		return item->data;
+	}
+	const char* cstring(handle h) {
+		return h.data();
+	}
+	bool remove(handle h) noexcept {
+		Item* item = nullptr;
+		HASH_FIND_STR(set_, h.data(), item);
+		if (item) {
+			HASH_DEL(set_, item);
+			delete item;
+			return true;
+		}
+		return false;
+	}
+	int count() const {
+		return HASH_COUNT(set_);
+	}
+	~uthash_pool() {
+		// we hold std::strings so this is OK
+		HASH_CLEAR(hh, set_);
+	}
+};
 /****************************************************************************************/
 
-UBENCH(strpool_evergrowing, set_of_strings) {
+UBENCH(evergrowing, set_of_strings) {
 	test_evergrowing<strings_set_pool>();
 }
 
-UBENCH(strpool_evergrowing, dbj_extreme_solution) {
+UBENCH(evergrowing, dbj_extreme_solution) {
 	test_evergrowing<dbj_extreme>();
 }
 
@@ -282,4 +269,11 @@ UBENCH(strpool, loki_assoc_vector_pool) {
 UBENCH(strpool, dbj_unordered_set_pool) {
 	test_removal<dbj_uset_pool>();
 }
+
+// can not deduce invalid handle
+//UBENCH(strpool, arthur_uthash_pool) {
+//	test_removal<uthash_pool>();
+//}
+
+
 

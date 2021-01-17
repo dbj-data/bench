@@ -72,7 +72,7 @@ static size_t stb_pool_count() {
 static void stb_pool_reset() {
 
 	// erase the previous hash map
-	// otherwise this will be a single global us gustavson_pool_
+	// otherwise this will be a single global pool_
 	// which is sometimes a "good thing"
 	if (stb_pool) {
 		stbds_hmfree(stb_pool);
@@ -185,10 +185,10 @@ static void gustavson_reset() {
 	strpool_term(&gustavson_pool_);
 	strpool_init(&gustavson_pool_, &gustavson_strpool_config);
 }
-
+/**************************************************************************************/
 static struct dbj_us_pool_interface* gustavson_instance_ = NULL;
-
-static struct dbj_us_pool_interface* gustavson_construct()
+// same instance on each call
+static struct dbj_us_pool_interface* gustavson_construct(void)
 {
 	if (!gustavson_instance_) {
 		gustavson_instance_ =
@@ -202,11 +202,10 @@ static struct dbj_us_pool_interface* gustavson_construct()
 		gustavson_instance_->remove = gustavson_remove;
 		gustavson_instance_->reset = gustavson_reset;
 	}
-
 	return gustavson_instance_;
 }
 
-// clang destruction
+// clang destruction at app exit
 __attribute__((destructor))
 static void gustavson_destruct(void)
 {
@@ -220,7 +219,61 @@ static void gustavson_destruct(void)
 
 #undef STRPOOL_IMPLEMENTATION
 #pragma endregion 
-/****************************************************************************************************************/
+/****************************************************************************************/
+#pragma region ut hash ustring pool
+static dbj_handle uthash_add(const char* str_)
+{
+	return (dbj_handle)0;
+}
+
+// returns nullptr if not found
+static const char* uthash_cstring(dbj_handle h_) {
+	return NULL;
+}
+
+// returns true if found
+static bool uthash_remove(dbj_handle h_) {
+	return true;
+}
+
+static size_t uthash_count()
+{
+	return 0U;
+}
+
+static void uthash_reset() {
+}
+/**************************************************************************************/
+// same instance on each call
+static struct dbj_us_pool_interface* uthash_instance_ = NULL;
+static struct dbj_us_pool_interface* uthash_construct(void)
+{
+	if (!uthash_instance_) {
+		struct dbj_us_pool_interface* uthash_instance_ =
+			(struct dbj_us_pool_interface*)calloc(1, sizeof(struct dbj_us_pool_interface));
+
+		assert(uthash_instance_);
+
+		uthash_instance_->add = uthash_add;
+		uthash_instance_->cstring = uthash_cstring;
+		uthash_instance_->count = uthash_count;
+		uthash_instance_->remove = uthash_remove;
+		uthash_instance_->reset = uthash_reset;
+	}
+	return uthash_instance_;
+}
+
+// clang destruction at app exit
+__attribute__((destructor)) static void uthash_destruct(void)
+{
+	if (uthash_instance_)
+	{
+		free(uthash_instance_);
+		uthash_instance_ = NULL;
+	}
+}
+#pragma endregion
+/****************************************************************************************/
 // we could make a shared single instance
 // static dbj_evergrowing_ustring_pool singleinst_ { . . . };
 
@@ -231,13 +284,9 @@ static void gustavson_destruct(void)
 //       = (dbj_evergrowing_ustring_pool *)malloc( sizeof(dbj_evergrowing_ustring_pool)  ) ;
 // now use the construct method  which in turn will require a "data pointer" to the per-instance data struct
 
-// we CAN NOT simply create in o stack here and retun a copy
+// we CAN NOT simply create on stack here and retun a copy
 // becuase we need to return void *
-// which is required to allow to type agnostic factory
-
-// master factory 
-// typedef enum implementations_registry { STB_POOL } implementations_registry;
-
+// which is required to allow the type agnostic factory
 void* uspool_factory(uspool_implementations_registry which_)
 {
 	switch (which_) {
@@ -249,6 +298,11 @@ void* uspool_factory(uspool_implementations_registry which_)
 	case US_GUSTAVSON_POOL:
 	{
 		return gustavson_construct();
+	}
+	break;
+	case US_UTHASH_POOL:
+	{
+		return uthash_construct();
 	}
 	break;
 	default:

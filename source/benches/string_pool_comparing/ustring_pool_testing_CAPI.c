@@ -3,6 +3,21 @@
 #include <ubut/ubench.h>
 
 
+/*************************************************************************************************************/
+// implementation is here,  but could be hidden in some c file
+
+static bool is_hello_(const char* s) { assert(s);  return !strcmp(s, usmd.hello); }
+static bool is_goodbye_(const char* s) { assert(s); return !strcmp(s, usmd.goodbye); }
+static bool is_jello_(const char* s) { assert(s); return !strcmp(s, usmd.jello); }
+
+struct us_testing_meta_data usmd = {
+   .hello = "Hello",
+   .goodbye = "Goodbye",
+   .jello = "Jello",
+   .is_hello = is_hello_ ,
+   .is_goodbye = is_goodbye_ ,
+   .is_jello = is_jello_
+};
 
 /*************************************************************************************************************/
 inline const struct dbj_us_pool_interface* stb_pool()
@@ -42,6 +57,7 @@ inline const struct dbj_us_pool_interface* gustavson_pool()
 		gustavson_pool_instance =
 			(struct dbj_us_pool_interface*)uspool_factory(US_GUSTAVSON_POOL);
 	}
+	assert(gustavson_pool_instance);
 	gustavson_pool_instance->reset();
 	return gustavson_pool_instance;
 }

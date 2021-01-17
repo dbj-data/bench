@@ -16,8 +16,6 @@
 #include <slot/packed_array.h>
 #include <string>
 
-using tmd = testing_meta_data;
-
 UTEST(handle_solutions, loki_assoc_vector)
 {
 	Loki::AssocVector< size_t, std::string > lav;
@@ -26,13 +24,16 @@ UTEST(handle_solutions, loki_assoc_vector)
 	lav[1] = "B"; // eh?
 	lav[2] = "C"; // eh?
 
-	ASSERT_EQ(lav.size(), 3);
+	ASSERT_EQ((int)lav.size(), 3);
 
 	lav[0] = "A"; // eh?
 	lav[1] = "B"; // eh?
 	lav[2] = "C"; // eh?
 
-	ASSERT_EQ(lav.size(), 3);
+	ASSERT_EQ((int)lav.size(), 3);
+
+	lav.erase(1);
+	ASSERT_EQ((int)lav.size(), 2);
 }
 
 //UTEST(handle_solutions, packed_aray_dbj) {

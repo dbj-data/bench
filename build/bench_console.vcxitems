@@ -35,7 +35,6 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\allocators\dbj_heap_alloc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\slot_array_map_ustrings.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\source\benches\string_pool_comparing\uthash_ustrings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ht_testing_common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\loki_assoc_vector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\source\ustring_pool_interface.h" />

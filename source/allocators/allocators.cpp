@@ -28,7 +28,7 @@ static inline auto meta_driver = [](auto aloka, auto dealoka) {
 UBENCH(allocators, kmem)
 {
 	meta_driver(
-		[&](size_t sze_) { return DBJ_KALLOC(test_array_type, test_array_size); },
+		[&](size_t sze_) { (void)sze_;  return DBJ_KALLOC(test_array_type, test_array_size); },
 		[&](test_array_type* array_) { DBJ_KFREE(array_); });
 }
 
@@ -36,21 +36,21 @@ UBENCH(allocators, kmem)
 UBENCH(allocators, straight_calloc_free)
 {
 	meta_driver(
-		[&](size_t sze_) { return calloc(test_array_size, sizeof(test_array_type)); },
+		[&](size_t sze_) { (void)sze_;  return calloc(test_array_size, sizeof(test_array_type)); },
 		[&](test_array_type* array_) { free(array_); });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, dbj_nano_calloc_free)
 {
 	meta_driver(
-		[&](size_t sze_) { return DBJ_CALLOC(test_array_size, test_array_type); },
+		[&](size_t sze_) { (void)sze_; return DBJ_CALLOC(test_array_size, test_array_type); },
 		[&](test_array_type* array_) { DBJ_FREE(array_); });
 }
 // ----------------------------------------------------------
 UBENCH(allocators, standard_new_delete)
 {
 	meta_driver(
-		[&](size_t sze_) { return new test_array_type[test_array_size]; },
+		[&](size_t sze_) { (void)sze_; return new test_array_type[test_array_size]; },
 		[&](test_array_type* array_) { delete[] array_; });
 }
 // ----------------------------------------------------------
@@ -70,7 +70,7 @@ UBENCH(allocators, standard_new_delete)
 UBENCH(allocators, ned_14)
 {
 	meta_driver(
-		[&](size_t sze_) { return (test_array_type*)::nedcalloc(test_array_size, sizeof(test_array_type)); },
-		[&](test_array_type* array_) { ::nedfree((void*)array_); });
+		[&](size_t sze_) { (void)sze_; return (test_array_type*)::nedcalloc(test_array_size, sizeof(test_array_type)); },
+		[&](test_array_type* array_) { (void)sze_; ::nedfree((void*)array_); });
 }
 #endif // DBJ_USES_NEDMALLOC
