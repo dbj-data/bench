@@ -1,3 +1,6 @@
+#ifndef LOKI_ASSOCVECTOR_INC_
+#define LOKI_ASSOCVECTOR_INC_
+
 // http://loki-lib.sourceforge.net/html/a00645.html
 
 // DBJ added
@@ -16,8 +19,7 @@
  // The author or Addison-Wesley Longman make no representations about the 
  //     suitability of this software for any purpose. It is provided "as is" 
  //     without express or implied warranty.
-#ifndef LOKI_ASSOCVECTOR_INC_
-#define LOKI_ASSOCVECTOR_INC_
+
 
 // $Id: AssocVector.h 765 2006-10-18 13:55:32Z syntheticpp $
 
