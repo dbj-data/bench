@@ -2,6 +2,10 @@
 #define TH_TESTING_COMMON_INC
 
 /****************************************************************************************/
+ // demo and benchmarking
+ // https://godbolt.org/z/PsKT19
+// C wins
+/****************************************************************************************/
 // testing stuff 
 // all implementations must go through here
 // all using the same testing metadata
