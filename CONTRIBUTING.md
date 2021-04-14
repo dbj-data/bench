@@ -1,26 +1,26 @@
 
-## If we might ask of you:
+## We might ask of you:
 
 - Visual Studio 2019 know-how
 - VS Code know-how
 - Some medium level git/github knowledge 
-- Focus on measuring and improving the perfromance
+- Focus on measuring and improving the performance
 - C/C++ medium level knowledge
 
 ## The run time environments in which this code has to operate
 
 - Windows desktop
 - Windows server
-- Various loggin mechanisms
+- Various logging mechanisms
 - SEH (always there)
 - Win32
 - C code
    - coding with no stdio
 - C++ code
    - using the CL /kernel switch
-   - coding with no C++ exceptions, no RTTI and no stdio
-   - coding with MS STL in SEH mode
-   - coding with EASTL2020 CORE 
+   - no C++ exceptions, no RTTI and no stdio
+   - MS STL in SEH mode
+   - EASTL2020 CORE 
    
    ---
    

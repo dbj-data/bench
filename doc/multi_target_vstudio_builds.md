@@ -7,25 +7,23 @@ Visual Studio 2019 is used. No CMake.
 
 For each project all building artefacts are under the build folder. Thus they are decoupled from the code.
 
-Publich headers are "in the front", in the library top folder.
+Public headers are "in the front", in the library top folder.
 
 When building the hosting app, you reference these projects, VStudio picks the right lib files. 
 
-This is one-to-one. Hosting app is built following the same paradigm as in here. One hoting app build link one build from here.
+This is one-to-one. Hosting app is built following the same paradigm as in here. One hosting app build link one build from here.
 
 ## Main build attributes
 
 1. Compilers: clang-cl  or cl
-   1. Why: clang-cl because it allows for powerfull mix and match of C11/C17 code with C++ code in one cpp file.
-2. C++ exceptions or no C++ exceptions
-   1. Why: no C++ exceptions, because executables are smaller and faster. Also. exceptions are not convieved for local error handling. You calling `fopen()` will never involve exceptions. 
-   2. no this can not be avoided by using std:: lib always
-      1. std lib throws very few exceptions 
-      2. MS STL can be build and does run very fast without C++ exceptions 
+   1. Why: clang-cl because it allows for powerful mix and match of C11/C17 code with C++ code in one cpp file.
+2. No C++ exceptions
+   1. Because executables are smaller and faster. Also. Exceptions are not conceived for **local error handling**. Example: You calling `fopen()` will never involve exceptions. 
+   1. std lib throws very few exceptions 
+      2. MS STL can be built and does run very fast without C++ exceptions 
          1. It uses SEH in that case
 
 ## Common to all builds
-
 >
 > Fact: On Windows, SEH is always present. It is intrinsic to Windows.
 >
@@ -63,13 +61,13 @@ manually set it to 1.
 
 Thus most of the time EASTL is with no C++ exceptions. It uses it's own assert.cpp.
 
-When EASTL has C++ exceptions enabled it even used std::exception and offsprings. This is how rarely, if ever, anybody uses EASTL in projects where C++ exceptions are enabled.
+When EASTL has C++ exceptions enabled it even used std::exception and offspring's. This is how rarely, if ever, anybody uses EASTL in projects where C++ exceptions are enabled.
 
 ## The core of the stunt
 
 "Shared code"  (VStudio project type) (for example) "dbj-eastl-code" collects all the code.
 
-All static lib projets reference that one. That is the only place where we add/remove/update the code. That is propagated to the building projects.
+All static lib projects reference that one. That is the only place where we add/remove/update the code. That is propagated to the building projects.
 
 Lib projects have no compilation units. Beside pch.cpp.
 
@@ -92,7 +90,7 @@ Extremely important. There is no tool to make this painless, just the rule:
 ## What's the big deal with C++ exceptions?
 
    1. Why: no C++ exceptions, because executables are smaller and faster. 
-   2. exceptions are not concieved for local error handling. You calling `fopen()` will never involve exceptions. 
+   2. exceptions are not conceived for local error handling. You calling `fopen()` will never involve exceptions. 
       1. no this can not be avoided by using std:: lib always
       2. std lib throws very few exceptions 
       3. MS STL can be built and does run very fast without C++ exceptions 

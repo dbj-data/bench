@@ -1,8 +1,8 @@
 ::
 :: (c) 2020 DEV 03 dbj@dbj.org
 :: windows only script
-:: any argument will make exe's and pdb's be 
-:: and Visual Stuydio artefacts deleted, too
+:: any argument will make exe's and pdb's  
+:: and Visual Studio artefacts deleted, too
 ::
 @echo on
 @setlocal

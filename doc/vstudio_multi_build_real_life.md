@@ -82,19 +82,19 @@ One target folder contains one Target Solution and one or more projects. There i
 
 The build result is landing into the target bin folder.
 
-Building artefacts are landing into thje x64 folder, as ususal for 64bit targets.
+Building artefacts are landing into the x64 folder, as usual for 64bit targets.
 
 .vs is usual Visual Studio private temporary (hidden) folder.
 
 Library projects are added and references to the Target Solution. Thus, they are landing into the bin folder here.
 
-That is doen by using the `/OUT` linker switch. It is not default and it is manually defined as:
+That is done by using the `/OUT` linker switch. It is not default and it is manually defined as:
 ```
 $(OutDir)$(TargetName)$(TargetExt)
 ```
 In each library and host exe project setting for a linker.
 
-where "Output Directory" is also manualy set in the project configuration General Properties as
+where "Output Directory" is also manually set in the project configuration General Properties as
 ```
 $(SolutionDir)bin
 ```
