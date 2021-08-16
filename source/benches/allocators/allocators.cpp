@@ -1,9 +1,9 @@
 /// (c) 2020 by dbj.org
 
-#include "../../ubut/ubench.h"
+#include "../../../ubut/ubench.h"
 
 #include "dbj_heap_alloc.h"
-#include "../../dbj-fwk/wallofmacros.h"
+#include "../../../dbj-fwk/wallofmacros.h"
 
 /// ---------------------------------------------------------------------
 #include "kalloc/dbj_kalloc.h"

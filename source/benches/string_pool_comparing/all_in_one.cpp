@@ -1,15 +1,17 @@
-#include "../../ht_testing_common.h"
-// #include "slot_array_map_ustrings.h"
-#include "uthash_ustrings.h"
-#include <dbj/dbj_ustrings.h>
-#include <ubut/ubench.h>
-#include <uthash/uthash.h>
-
-#include <string_view>
-
 /****************************************************************************************/
  // demo and benchmarking
  //https://godbolt.org/z/PsKT19
+// this is one very crowded file
+
+#include "common/ht_testing_common.h"
+#include "../../../ubut/ubench.h"
+
+// #include "slot_array_map_ustrings.h"
+#include "common/dbj_ustrings.h"
+#include "../../../uthash/src/uthash.h"
+
+#include <string_view>
+
 /****************************************************************************************/
 // (c) 2021 by dbj@dbj.org
 struct dbj_uss final {
@@ -43,7 +45,7 @@ struct dbj_uss final {
 }; // dbj_uss
 
 /****************************************************************************************/
-#include "../../loki_assoc_vector.h"
+// #include "../../loki_assoc_vector.h"
 
 //struct loki_assoc_vector_pool final
 //{

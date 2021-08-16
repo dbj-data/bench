@@ -1,8 +1,8 @@
 /// (c) 2020 by dbj.org
 /// comparing allocation pools 
 
-#include "../../ubut/ubench.h"
-#include "../../dbj-fwk/wallofmacros.h"
+#include "../../../ubut/ubench.h"
+#include "../../../dbj-fwk/wallofmacros.h"
 
 /// ---------------------------------------------------------------------
 #include "Kenwright/kenwright_mempool.h"
@@ -11,7 +11,7 @@
 
 struct defaul_allocator final {
 	void* allocate(size_t sz) { return ::operator new(sz); }
-	void  deallocate(void *p) { ::operator delete(p);      }
+	void  deallocate(void* p) { ::operator delete(p); }
 };
 
 using test_array_type = double;
@@ -30,12 +30,12 @@ struct X final
 		return   allocator::allocate(sz);
 	}
 
-	static void operator delete(void* ptr) noexcept
+		static void operator delete(void* ptr) noexcept
 	{
 		return   allocator::deallocate(ptr);
 	}
 
-	static void operator delete [] (void* ptr) noexcept
+	static void operator delete [](void* ptr) noexcept
 	{
 		return   allocator::deallocate(ptr);
 	}
@@ -67,7 +67,7 @@ UBENCH(pullocators, default_pool)
 	static defaul_allocator dflt;
 
 	meta_driver(
-		[&](size_t sze_) { return dflt.allocate(sze_ ); },
+		[&](size_t sze_) { return dflt.allocate(sze_); },
 		[&](test_array_type* p_) { dflt.deallocate(p_); });
 }
 

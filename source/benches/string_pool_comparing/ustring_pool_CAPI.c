@@ -1,10 +1,10 @@
-#include "../../ustring_pool_interface_CAPI.h"
+#include "common/ustring_pool_interface_CAPI.h"
 
 /****************************************************************************************/
 #pragma region STB DS pool
 
 #define STB_DS_IMPLEMENTATION
-#include <stb/stb_ds.h>
+#include "stb/stb_ds.h"
 
 // the implementation
 enum { stb_pool_value_max_len = 0xFF };
@@ -126,7 +126,7 @@ static void stb_pool_destruct(void)
 // its private hash function looks simplistic?
 
 #define STRPOOL_IMPLEMENTATION
-#include <mg/strpool.h>
+#include "mg/strpool.h"
 
 // this cofig was found to be necessary 
 // so that gustavson gustavson_pool_ has decent speed
