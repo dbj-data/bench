@@ -1,2 +1,0 @@
-- [`program.cpp`](program.cpp) implements what is required by `dbj-fwk` library.
-- the rest is code common for various tests and benches

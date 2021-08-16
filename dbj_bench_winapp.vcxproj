@@ -178,9 +178,6 @@
       <Project>{ed08b54b-56d4-4073-b6a9-afe2c756368e}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\MACHINE_WIDE\dbj_cpp\dbj_valstat.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

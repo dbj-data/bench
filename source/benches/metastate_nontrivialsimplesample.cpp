@@ -6,7 +6,7 @@
 #undef  SX
 #define SX(fmt_,x_) UBUT_INFO( "%s : " fmt_, #x_, (x_) )
 
-#include "dbj_valstat.h"
+#include  "../common/dbj_valstat.h"
 #include <string>
 
 /*

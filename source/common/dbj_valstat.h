@@ -1,7 +1,6 @@
 #ifndef DJB_VALSTAT_INC_
 #define DJB_VALSTAT_INC_
 
-// #include "dbj_common.h"
 #include <optional>
 
 namespace dbj {
@@ -32,13 +31,16 @@ namespace dbj {
 			// to be JSON formated strings
 			// obviously mandate is never to free status messages
 			status_type status{};
-		};
+		}; // valstat
 
 		// one could formalize the stage 1 metastate decoding (are fields 'empty' or not)
-		// by suggesting these two (potentialy) compilet time functions
+		// by suggesting these two (potentialy) compile time functions
 		// return true if field is empty
-		[[nodiscard]] inline auto empty_value = [](auto vstat_) constexpr noexcept -> bool { return vstat_->value != nullptr; };
-		[[nodiscard]] inline auto empty_status = [](auto vstat_)  constexpr noexcept -> bool { return vstat_->status != nullptr; };
+		template<typename T>
+		[[nodiscard]] constexpr inline auto empty_value(valstat<T> vstat_)  noexcept -> bool { return vstat_->value != nullptr; };
+
+		template<typename T>
+		[[nodiscard]] constexpr inline auto empty_status(valstat<T>  vstat_)  noexcept -> bool { return vstat_->status != nullptr; };
 
 	} // light
 
@@ -66,8 +68,11 @@ namespace dbj {
 		};
 
 		// return true if empty
-		[[nodiscard]] inline auto empty_value = [](auto vstat_) constexpr noexcept -> bool { return !vstat_.value.has_value(); };
-		[[nodiscard]] inline auto empty_status = [](auto vstat_)  constexpr noexcept -> bool { return !vstat_.status.has_value(); };
+		template<typename T, typename S>
+		[[nodiscard]] constexpr inline auto empty_value(valstat<T, S> vstat_)  noexcept -> bool { return vstat_->value != nullptr; };
+
+		template<typename T, typename S>
+		[[nodiscard]] constexpr inline auto empty_status(valstat<T, S>  vstat_)  noexcept -> bool { return vstat_->status != nullptr; };
 
 
 
