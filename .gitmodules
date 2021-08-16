@@ -7,3 +7,6 @@
 [submodule "simplelog"]
 	path = simplelog
 	url = https://github.com/dbj-data/dbj--simplelog.git
+[submodule "uthash"]
+	path = uthash
+	url = https://github.com/troydhanson/uthash.git
