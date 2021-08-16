@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include <ubut/ubench.h>
+#include "../../ubut/ubench.h"
 
 // warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
 #pragma warning( push )

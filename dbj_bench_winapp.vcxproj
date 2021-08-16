@@ -131,7 +131,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ExceptionHandling>false</ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
     </ClCompile>
@@ -163,6 +163,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\benches\count_ones.c" />
+    <ClCompile Include="source\benches\metastate_nontrivialsimplesample.cpp" />
+    <ClCompile Include="source\benches\squareroot.c" />
+    <ClCompile Include="source\benches\vector_sampling_excpt_overhead.cpp" />
     <ClCompile Include="source\ubenchprogram.cpp" />
     <ClCompile Include="source\utestprogram.cpp" />
   </ItemGroup>
@@ -173,6 +177,9 @@
     <ProjectReference Include="simplelog\dbj-simplelog-clang-no-cppx.vcxproj">
       <Project>{ed08b54b-56d4-4073-b6a9-afe2c756368e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\MACHINE_WIDE\dbj_cpp\dbj_valstat.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

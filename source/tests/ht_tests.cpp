@@ -5,7 +5,7 @@
 #pragma warning( disable : 6308)
 // #pragma warning( supress : 6308)
 
-#include <ubut/utest.h>
+#include "../../ubut/utest.h"
 #include "../ht_testing_common.h"
 
 // #if __STDC_VERSION__ >= 201112L || __cplusplus >= 201103L

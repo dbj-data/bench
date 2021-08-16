@@ -1,4 +1,4 @@
-/* 
+/*
 (c) 2020 by dbj.org  -- https://dbj.org/license_dbj
 */
 
@@ -6,7 +6,7 @@
 #undef  SX
 #define SX(fmt_,x_) UBUT_INFO( "%s : " fmt_, #x_, (x_) )
 
-#include <dbj/dbj_valstat.h>
+#include "dbj_valstat.h"
 #include <string>
 
 /*
@@ -34,6 +34,7 @@ https://godbolt.org/z/7bn9r5
 // easily
 //
 #include<system_error> 
+#include<vector> 
 
 using std::string;
 using buff_t = std::vector<char>;
@@ -61,17 +62,17 @@ std-proposals discussion -- implement this with valstat
 
 static string errc_str(std::errc ec_, const char* user_msg_)
 {
-    auto ecs_ = std::make_error_code(ec_).message();
+	auto ecs_ = std::make_error_code(ec_).message();
 
-    size_t size_required = snprintf(nullptr, 0, "%s", user_msg_);
-    buff_t buf(size_required, char(0));
-    std::snprintf(buf.data(), buf.size(), "%s", user_msg_);
-    return ecs_.append(buf.data());
+	size_t size_required = snprintf(nullptr, 0, "%s", user_msg_);
+	buff_t buf(size_required, char(0));
+	std::snprintf(buf.data(), buf.size(), "%s", user_msg_);
+	return ecs_.append(buf.data());
 }
 
 static auto initialize_once = []() {
-    srand((unsigned)time(0));
-    return true;
+	srand((unsigned)time(0));
+	return true;
 } ();
 
 // random 0/1 flip
@@ -85,42 +86,42 @@ static auto initialize_once = []() {
 
 struct UserId         final {};
 struct ContactsServer final {
-    valstat<UserId>    GetUserId() {
-        static UserId uid_;
-        // random flip OK or ERROR metestate return 
-        if (RANDOM_0_OR_1)	return { uid_, {} };
-        return { {}, errc_str(std::errc::owner_dead, " -- while trying to obtain user id.") };
-    }
+	valstat<UserId>    GetUserId() {
+		static UserId uid_;
+		// random flip OK or ERROR metestate return 
+		if (RANDOM_0_OR_1)	return { uid_, {} };
+		return { {}, errc_str(std::errc::owner_dead, " -- while trying to obtain user id.") };
+	}
 };
 
 struct Location       final
 {
-    // we are deliberately meandering between various
-    // types when composing the various valstat's
-    // this is to show its maleability
-    // and composability
-    // remember we have choosen valstat to be struct of two std options
-    // where second option (aka status) is predefined to hold string
-    valstat<const char*>  GetCityName() { return { "Valhala", {} }; }
+	// we are deliberately meandering between various
+	// types when composing the various valstat's
+	// this is to show its maleability
+	// and composability
+	// remember we have choosen valstat to be struct of two std options
+	// where second option (aka status) is predefined to hold string
+	valstat<const char*>  GetCityName() { return { "Valhala", {} }; }
 };
 struct GeoServer      final
 {
-    valstat<Location>  GetLocation(UserId* uid) {
-        static Location loc_;
-        if (RANDOM_0_OR_1) return { loc_ , {} };
-        return { {} , errc_str(std::errc::state_not_recoverable, " --  upon getting the location. ") };
-    }
+	valstat<Location>  GetLocation(UserId* uid) {
+		static Location loc_;
+		if (RANDOM_0_OR_1) return { loc_ , {} };
+		return { {} , errc_str(std::errc::state_not_recoverable, " --  upon getting the location. ") };
+	}
 };
 
 valstat<ContactsServer> GetOrOpenContactsServerConnection() noexcept {
-    static ContactsServer cs{}; if (RANDOM_0_OR_1) return{ cs, {} };
-    return { {}, errc_str(std::errc::protocol_error, " --  while trying to get or open the server connection") };
+	static ContactsServer cs{}; if (RANDOM_0_OR_1) return{ cs, {} };
+	return { {}, errc_str(std::errc::protocol_error, " --  while trying to get or open the server connection") };
 }
 
 valstat<GeoServer>      GetOrOpenGeoServerConnection() noexcept {
-    static GeoServer gs_;
-    if (RANDOM_0_OR_1) return { gs_, {} };
-    return { {}, errc_str(std::errc::protocol_not_supported, " -- Could not open geo server connection") };
+	static GeoServer gs_;
+	if (RANDOM_0_OR_1) return { gs_, {} };
+	return { {}, errc_str(std::errc::protocol_not_supported, " -- Could not open geo server connection") };
 }
 
 // call actually returns on error
@@ -138,14 +139,14 @@ valstat<GeoServer>      GetOrOpenGeoServerConnection() noexcept {
 // return type is record of two fields aka valstat
 valstat<std::string> FindUsersCity() noexcept
 {
-    call(contacts, GetOrOpenContactsServerConnection());
-    call(uid, contacts.value->GetUserId());
-    call(geo, GetOrOpenGeoServerConnection());
-    call(uloc, geo.value->GetLocation(&*uid.value));
-    call(cityname, (uloc.value)->GetCityName());
-    // all the call's above do return_on_no_value
-    // thus the value must exist here 
-    return { { *cityname.value } , {} };
+	call(contacts, GetOrOpenContactsServerConnection());
+	call(uid, contacts.value->GetUserId());
+	call(geo, GetOrOpenGeoServerConnection());
+	call(uloc, geo.value->GetLocation(&*uid.value));
+	call(cityname, (uloc.value)->GetCityName());
+	// all the call's above do return_on_no_value
+	// thus the value must exist here 
+	return { { *cityname.value } , {} };
 }
 
 #undef call
@@ -153,34 +154,34 @@ valstat<std::string> FindUsersCity() noexcept
 
 static int test_()
 {
-    int id_ = 0;
+	int id_ = 0;
 
-    // loop until conditions are right
-    do {
-        id_ += 1;
-        auto [city_name, errc] = FindUsersCity();
+	// loop until conditions are right
+	do {
+		id_ += 1;
+		auto [city_name, errc] = FindUsersCity();
 
-        if (city_name) {
-            // city has been found
-            // SX("%s", city_name->data());
-            break;
-        }
+		if (city_name) {
+			// city has been found
+			// SX("%s", city_name->data());
+			break;
+		}
 
-        if (errc) {
-            // some error
-            // SX("%s", errc->data());
-        }
+		if (errc) {
+			// some error
+			// SX("%s", errc->data());
+		}
 
-    } while (true);
+	} while (true);
 
-    return id_;
+	return id_;
 }
 
-UBENCH( metastate, simplesample) 
+UBENCH(metastate, simplesample)
 {
-        // test "tries" times until city is found
-        int tries = test_();
-        DBJ_UNUSED(tries);
+	// test "tries" times until city is found
+	int tries = test_();
+	(void)(tries);
 }
 
 /* ---------------------------------------------------------- */

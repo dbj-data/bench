@@ -1,8 +1,8 @@
 /// https://godbolt.org/z/TE74oK
 /// https://github.com/attractivechaos/benchmarks
 
-#include <ubut/ubench.h>
-#include "../dbj-fwk/printing_macros.h"
+#include "../../ubut/ubench.h"
+#include "../../dbj-fwk/printing_macros.h"
 
 #include <stdexcept>
 #include <minwinbase.h>
@@ -169,67 +169,6 @@ UBENCH(bad_index_vector, ms_stl_vec_)
 		}
 	}
 
-}
-
-///-----------------------------------------------
-/// EASTL2020 CORE
-
-/// In debug builds EASTL will call debug break
-/// which will attach to the debuger if one is running
-/// and keep you on that same spot for ever
-/// 
-/// EASTL does not use SEH
-
-// #ifndef _DEBUG
-
-#include <EASTL/vector.h>
-
-static void eastl_vector_of_strings()
-{
-#if _CPPUNWIND
-	try {
-#endif
-		eastl::vector<test_array_type> array_{};
-		array_.push_back(test_array_element);
-		array_.push_back(test_array_element);
-		array_.push_back(test_array_element);
-		// use illegal index
-		// if there are no C++ exceptions
-		// EASTL does EASTL_FAIL_MSG()
-		// which boils down to __debugbreak()
-		// __debugbreak() it seems raises the SE
-		// it debugger is not present?
-		// but in release builds nothing happens here?
-		(void)array_.operator[](9);
-		// so this should bomb
-		(array_.operator[](9)).data[13] = '!';
-
-#if _CPPUNWIND
-	}
-	catch (std::out_of_range& x)
-	{
-		// yes EASTL will use std:: exceptions
-		(void)x.what();
-	}
-#endif
-}
-
-UBENCH(bad_index_vector, eastl_vec_)
-{
-	static bool done_that = false;
-
-	__try {
-		eastl_vector_of_strings();
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER) {
-		// _debugbreak() it seems raises the SE
-		// if debugger is not present ?
-		// but only in debug builds
-		if (!done_that) {
-			DBJ_WARN("EASTL caught by SEH, on each call!");
-			done_that = true;
-		}
-	}
 }
 
 // #endif // _DEBUG
