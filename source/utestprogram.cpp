@@ -6,7 +6,7 @@
 #include "../dbj-fwk/meta.h"
 #include "../dbj-fwk/win/win_cli_args.h"
 
-#include <ubut/utest.h>
+#include "../ubut/utest.h"
 
 UTEST_STATE;
 
