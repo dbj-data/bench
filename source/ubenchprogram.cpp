@@ -1,12 +1,13 @@
-
+// (c) 2021 by dbj@dbj.org
+#define UBENCH_IMPLEMENTATION
+#include "../ubut/ubench.h"
 /// ------------------------------------------------------------------------
-/// this goes to DBJ+FWK main.cpp
-/// since it knows is it on gui or console windows app
+/// DBJ+FWK
+/// knows if it is on gui or console windows app
 /// 
 #include "../dbj-fwk/meta.h"
 #include "../dbj-fwk/win/win_cli_args.h"
 
-#include "../ubut/ubench.h"
 
 UBENCH_STATE;
 
