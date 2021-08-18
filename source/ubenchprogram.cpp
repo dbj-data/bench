@@ -5,8 +5,8 @@
 /// DBJ+FWK
 /// knows if it is on gui or console windows app
 /// 
-#include "../dbj-fwk/meta.h"
-#include "../dbj-fwk/win/win_cli_args.h"
+//#include "../dbj-fwk/meta.h"
+//#include "../dbj-fwk/win/win_cli_args.h"
 
 
 UBENCH_STATE;

@@ -102,7 +102,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /DDBJ_FWK_USES_SIMPLELOG /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,7 +122,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /DDBJ_FWK_USES_SIMPLELOG /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +142,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /DDBJ_FWK_USES_SIMPLELOG /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,7 +162,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
+      <AdditionalOptions>/D_HAS_EXCEPTIONS=0 /D_CRT_SECURE_NO_WARNINGS /DDBJ_FWK_USES_SIMPLELOG /nologo /permissive- /DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /kernel </AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

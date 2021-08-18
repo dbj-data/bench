@@ -1,0 +1,27 @@
+19:50:25 INFO :                                                                
+19:50:25 INFO :  --------------------------------------------------------------
+19:50:25 INFO :  Start time: 2021-08-18 19:50:25
+19:50:25 INFO :                                                                
+19:50:25 INFO :  Log file: C:\Users\User\source\repos\dbj-bench\bin\dbj_bench_winapp_Debug.exe.log
+19:50:25 INFO :                                                                
+19:50:25 INFO :  
+19:50:25 INFO : BEGIN Internal Test
+19:50:25 INFO :  
+19:50:25 INFO : LOCAL.user_data       :  9EF615E0
+19:50:25 INFO : LOCAL.lock            :  9EEFEA20
+19:50:25 INFO : LOCAL.fp              :  3F9C86B0
+19:50:25 INFO : LOCAL.level           :  0
+19:50:25 INFO : LOCAL.no_console      :  1
+19:50:25 INFO : LOCAL.file_line_show  :  false
+19:50:25 INFO : LOCAL.full_time_stamp :  false
+19:50:25 INFO : LOCAL.log_f_name set  :  true
+19:50:25 INFO :  
+19:50:25 TRACE: Log  TRACE
+19:50:25 DEBUG: Log  DEBUG
+19:50:25 INFO : Log  INFO
+19:50:25 WARN : Log  WARN
+19:50:25 ERROR: Log  ERROR
+19:50:25 FATAL: Log  FATAL
+19:50:25 INFO :  
+19:50:25 INFO : END Internal Test
+19:50:25 INFO :  
