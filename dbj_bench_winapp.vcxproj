@@ -194,7 +194,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\MACHINE_WIDE\dbj_cpp\dbj_ustrings.h_DELETE" />
     <ClInclude Include="source\benches\string_pool_comparing\mg\strpool.h" />
     <ClInclude Include="source\benches\string_pool_comparing\stb\stb_ds.h" />
   </ItemGroup>
