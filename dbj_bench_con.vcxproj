@@ -176,6 +176,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\benches\dbj_vla.cpp" />
     <ClCompile Include="source\benches\allocators\allocators.cpp" />
     <ClCompile Include="source\benches\allocators\kalloc\kalloc.c" />
     <ClCompile Include="source\benches\allocators\pullocators.cpp" />

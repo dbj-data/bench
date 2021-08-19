@@ -13,6 +13,9 @@
 #include <stdint.h>
 #include <random>
 
+#undef DBJ_REPEAT
+#define DBJ_REPEAT(N) for (size_t dbj_repeat_counter_ = 0; dbj_repeat_counter_ < (size_t)(N); ++dbj_repeat_counter_)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
