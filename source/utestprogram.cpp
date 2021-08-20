@@ -1,11 +1,5 @@
-
 /// ------------------------------------------------------------------------
-/// this goes to DBJ+FWK main.cpp
-/// since it knows is it on gui or console windows app
-/// 
-//#include "../dbj-fwk/meta.h"
-//#include "../dbj-fwk/win/win_cli_args.h"
-
+#define UTEST_IMPLEMENTATION
 #include "../ubut/utest.h"
 
 UTEST_STATE;
